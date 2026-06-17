@@ -14,7 +14,7 @@ export default function NavBar() {
     },
     {
       path: "/properties",
-      label: "All Properties",
+      label: "Properties",
     },
     {
       path: "/services",
@@ -31,11 +31,12 @@ export default function NavBar() {
   ];
 
   return (
-    <nav className="sticky bg-background top-0 z-40 w-full border-b border-separator  py-4">
-      <header className="mx-auto container flex   items-center justify-between px-6 ">
+    <nav className="sticky top-0 z-40 w-full border-b border-separator bg-background/90 backdrop-blur-md py-4">
+      <header className="mx-auto container flex items-center justify-between px-6">
+        {/* LEFT SIDE */}
         <div className="flex items-center gap-4">
           <button
-            className="md:hidden"
+            className="md:hidden p-2 rounded-lg hover:bg-muted transition"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle menu"
             aria-expanded={isMenuOpen}
@@ -64,34 +65,51 @@ export default function NavBar() {
               )}
             </svg>
           </button>
-          <div className="flex items-center gap-2 ">
+
+          {/* LOGO */}
+          <div className="flex items-center gap-3">
             <Image
               src={logo}
-              className="max-w-full w-12 md:w-16  max-h-full "
+              className="hidden lg:block w-12 md:w-14"
               width={600}
               height={600}
               alt="logo"
-            ></Image>
-            <p className="font-extrabold  uppercase text-primary text-xl md:text-2xl lg:text-3xl xl:text-4xl">
+            />
+
+            <p className="font-extrabold uppercase text-primary text-xl md:text-2xl lg:text-3xl">
               Basha<span className="text-secondary">Nest</span>
             </p>
           </div>
         </div>
-        <ul className="hidden items-center gap-1 md:flex">
+
+        {/* CENTER NAV */}
+        <ul className="hidden md:flex items-center gap-2">
           {navItems.map((navItem) => (
-            <NavLink key={navItem?.path} navItem={navItem} />
+            <NavLink key={navItem.path} navItem={navItem} />
           ))}
         </ul>
-        <div className="hidden items-center gap-4 md:flex">
-          <Link href="#">Login</Link>
-          <Button>Sign Up</Button>
+
+        {/* RIGHT ACTIONS */}
+        <div className="flex items-center gap-3">
+          <Link
+            className="text-sm px-4 py-2 rounded-lg bg-secondary text-background font-semibold hover:opacity-90 transition"
+            href="#"
+          >
+            Login
+          </Link>
+
+          <Button className="hidden lg:inline-flex text-sm px-4 py-2">
+            Sign Up
+          </Button>
         </div>
       </header>
+
+      {/* MOBILE MENU */}
       {isMenuOpen && (
-        <div className="border-t border-separator md:hidden">
+        <div className="border-t border-separator md:hidden bg-background">
           <ul className="flex flex-col gap-2 p-4">
             {navItems.map((navItem) => (
-              <NavLink key={navItem?.path} navItem={navItem} />
+              <NavLink key={navItem.path} navItem={navItem} />
             ))}
           </ul>
         </div>

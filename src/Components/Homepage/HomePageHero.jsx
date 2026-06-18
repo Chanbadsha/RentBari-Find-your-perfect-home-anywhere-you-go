@@ -49,7 +49,7 @@ const HomePageHero = () => {
             {/* Search Card */}
             <div className="mt-6 w-full md:w-10/12 lg:w-full">
               {/* <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl  shadow-xl"> */}
-              <PropertySearchBar />
+              <PropertySearchBar width={"lg:w-10/12 xl:w-8/12"} />
               {/* </div> */}
             </div>
           </div>

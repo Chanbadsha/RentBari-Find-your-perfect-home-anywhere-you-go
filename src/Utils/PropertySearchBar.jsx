@@ -1,6 +1,12 @@
 "use client";
 
-import { CircleDollar, House, Magnifier, MapPin } from "@gravity-ui/icons";
+import {
+  ArrowRotateLeft,
+  CircleDollar,
+  House,
+  Magnifier,
+  MapPin,
+} from "@gravity-ui/icons";
 import {
   TextField,
   Input,
@@ -10,10 +16,12 @@ import {
   Button,
 } from "@heroui/react";
 
-export default function PropertySearchBar() {
+export default function PropertySearchBar({ width }) {
   return (
     <section className="w-full">
-      <div className="mx-auto  lg:w-10/12 xl:w-8/12  rounded-3xl bg-background p-6 shadow-2xl">
+      <div
+        className={`mx-auto  ${width}   rounded-3xl bg-background p-6 shadow-2xl`}
+      >
         <div className="grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-6">
           {/* Location */}
           <div className="xl:col-span-2">
@@ -138,23 +146,28 @@ export default function PropertySearchBar() {
           </div>
 
           {/* Search Button */}
-          <div className="flex items-end col-span-2 lg:col-span-1">
+          <div className="flex gap-2 items-end col-span-2 lg:col-span-1">
             <Button
               className="
-                h-14
-                w-full
-                rounded-2xl
-                bg-secondary
-                text-white
-                font-semibold
-                shadow-lg
-                transition-all
-                duration-300
-                hover:scale-[1.02]
-              "
+      h-14
+      flex-1
+      rounded-2xl
+      bg-secondary
+      text-white
+      font-semibold
+      shadow-lg
+      transition-all
+      duration-300
+      hover:scale-[1.02]
+    "
             >
               <Magnifier size={18} />
               Search
+            </Button>
+
+            <Button variant="outline" className="h-14 px-4 rounded-2xl">
+              <ArrowRotateLeft size={18} />
+              Clear
             </Button>
           </div>
         </div>

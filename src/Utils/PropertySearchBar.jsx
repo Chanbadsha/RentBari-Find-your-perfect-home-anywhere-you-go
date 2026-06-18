@@ -13,10 +13,10 @@ import {
 export default function PropertySearchBar() {
   return (
     <section className="w-full">
-      <div className="mx-auto w-10/12  rounded-3xl bg-background p-6 shadow-2xl">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-6">
+      <div className="mx-auto  lg:w-10/12 xl:w-8/12  rounded-3xl bg-background p-6 shadow-2xl">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-6">
           {/* Location */}
-          <div className="col-span-2">
+          <div className="xl:col-span-2">
             <Label className="mb-2 block text-sm font-medium text-foreground/70">
               Location
             </Label>
@@ -25,9 +25,20 @@ export default function PropertySearchBar() {
               <div className="relative">
                 <MapPin className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-primary" />
 
-                <Input
+                {/* <Input
                   placeholder="Where to?"
                   className="h-14 w-full  rounded-2xl placeholder:text-foreground/70 text-foreground border border-foreground/20 bg-background pl-12"
+                /> */}
+                <Input
+                  placeholder="Where to?"
+                  className="
+    h-14 w-full rounded-2xl
+    placeholder:text-foreground/70
+    text-sm sm:text-base lg:text-lg
+    text-foreground
+    border border-foreground/20
+    bg-background pl-12
+  "
                 />
               </div>
             </TextField>
@@ -39,11 +50,16 @@ export default function PropertySearchBar() {
               Property Type
             </Label>
 
-            <Select defaultSelectedKey="apartment">
+            <Select defaultValue={"apartment"}>
               <Select.Trigger className="h-14 rounded-2xl border border-foreground/20 bg-background">
                 <div className="flex items-center gap-3">
                   <House className="h-5 w-5 text-primary" />
-                  <Select.Value className={`text-foreground/70`} />
+                  <Select.Value
+                    className="
+    text-sm sm:text-base
+    text-foreground/70
+  "
+                  />
                 </div>
 
                 <Select.Indicator />
@@ -84,7 +100,13 @@ export default function PropertySearchBar() {
                 <Input
                   type="number"
                   placeholder="Max Price"
-                  className="h-14 w-full text-foreground rounded-2xl border border-foreground/20 bg-background pl-12"
+                  className="
+    h-14 w-full rounded-2xl
+    border border-foreground/20
+    bg-background pl-12
+    text-sm sm:text-base 
+    text-foreground
+  "
                 />
               </div>
             </TextField>
@@ -103,14 +125,20 @@ export default function PropertySearchBar() {
                 <Input
                   type="number"
                   placeholder="Min Price"
-                  className="h-14 w-full rounded-2xl border border-foreground/20 bg-background pl-12"
+                  className="
+    h-14 w-full rounded-2xl
+    border border-foreground/20
+    bg-background pl-12
+    text-sm sm:text-base
+    text-foreground
+  "
                 />
               </div>
             </TextField>
           </div>
 
           {/* Search Button */}
-          <div className="flex items-end">
+          <div className="flex items-end col-span-2 lg:col-span-1">
             <Button
               className="
                 h-14

@@ -5,7 +5,7 @@ import PopularLocations from "@/Components/Homepage/PopularLocations";
 import RecentlyAdded from "@/Components/Homepage/RecentlyAdded";
 import WhyChooseUs from "@/Components/Homepage/WhyChooseUs";
 
-const HomePage = () => {
+const HomePage = async () => {
   return (
     <div>
       <HomePageHero />

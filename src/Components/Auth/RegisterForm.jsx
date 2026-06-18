@@ -45,7 +45,7 @@ const RegisterForm = () => {
       setLoading(true);
       setAuthError(null);
       setUser(null);
-      console.log(data);
+
       const { data: user, error } = await signUp.email(data);
 
       if (error) {

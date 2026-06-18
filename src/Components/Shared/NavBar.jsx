@@ -1,13 +1,17 @@
 "use client";
+import { authClient } from "@/app/lib/auth-client";
 import logo from "@/images/logo.png";
 import NavLink from "@/Utils/NavLink";
 import { ThemeSwitch } from "@/Utils/ThemeSwitch";
-import { Link } from "@heroui/react";
+import { Avatar, Link } from "@heroui/react";
 import Image from "next/image";
 import { useState } from "react";
+import toast from "react-hot-toast";
 export default function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const [open, setOpen] = useState(false);
+  const { data: session, isPending } = authClient.useSession();
+  const user = session?.user;
   const navItems = [
     {
       path: "/",
@@ -93,19 +97,82 @@ export default function NavBar() {
         {/* RIGHT ACTIONS */}
         <div className="flex items-center gap-3">
           <ThemeSwitch />
-          <Link
-            className="text-sm no-underline px-4 py-2 rounded-lg bg-secondary text-white font-semibold hover:opacity-90 transition"
-            href="/auth/login"
-          >
-            Login
-          </Link>
+          {user ? (
+            <>
+              <>
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setOpen(!open)}
+                    className="rounded-full transition-transform duration-200 hover:scale-105"
+                  >
+                    <Avatar className="ring-2 ring-border hover:ring-primary/30 transition-all">
+                      <Avatar.Image
+                        alt="Profile"
+                        src="https://img.heroui.chat/image/avatar?w=400&h=400&u=3"
+                      />
+                      <Avatar.Fallback>SR</Avatar.Fallback>
+                    </Avatar>
+                  </button>
 
-          <Link
-            href="/auth/register"
-            className="hidden no-underline lg:inline-flex text-sm px-4 py-2 rounded-lg bg-secondary text-white font-semibold hover:opacity-90 transition"
-          >
-            Sign Up
-          </Link>
+                  {open && (
+                    <ul className="absolute right-0 top-12 z-50 w-52 overflow-hidden rounded-2xl border border-border bg-background/95 backdrop-blur-xl shadow-xl animate-in fade-in zoom-in-95 duration-200">
+                      <li>
+                        <Link
+                          href="/dashboard"
+                          className="flex bg-background no-underline w-full items-center gap-3 px-4 py-3 text-sm font-medium transition-colors hover:bg-foreground/30  duration-300 ease-out"
+                          onClick={() => {
+                            setValue("userRole", "job-seeker");
+                            setOpen(false);
+                          }}
+                        >
+                          {/* <LayoutDashboard size={16} /> */}
+                          Dashboard
+                        </Link>
+                      </li>
+
+                      <li>
+                        <button
+                          type="button"
+                          className="flex bg-background no-underline w-full items-center gap-3 px-4 py-3 text-sm font-medium transition-colors hover:bg-foreground/30 text-danger duration-300 ease-out"
+                          onClick={async () => {
+                            await authClient.signOut({
+                              fetchOptions: {
+                                onSuccess: () => {
+                                  toast.success("User successfully logout");
+                                },
+                              },
+                            });
+
+                            setOpen(false);
+                          }}
+                        >
+                          {/* <LogOut size={16} /> */}
+                          Log out
+                        </button>
+                      </li>
+                    </ul>
+                  )}
+                </div>
+              </>
+            </>
+          ) : (
+            <>
+              {" "}
+              <Link
+                className="text-sm no-underline px-4 py-2 rounded-lg bg-secondary text-white font-semibold hover:opacity-90 transition"
+                href="/auth/login"
+              >
+                Login
+              </Link>
+              <Link
+                href="/auth/register"
+                className="hidden no-underline lg:inline-flex text-sm px-4 py-2 rounded-lg bg-secondary text-white font-semibold hover:opacity-90 transition"
+              >
+                Sign Up
+              </Link>
+            </>
+          )}
         </div>
       </header>
 

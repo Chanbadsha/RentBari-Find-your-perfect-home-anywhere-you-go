@@ -84,7 +84,7 @@ export default function NavBar() {
         </div>
 
         {/* CENTER NAV */}
-        <ul className="hidden md:flex items-center gap-2">
+        <ul className="hidden md:flex items-center xl:gap-2 ">
           {navItems.map((navItem) => (
             <NavLink key={navItem.path} navItem={navItem} />
           ))}

@@ -2,7 +2,7 @@
 @import "@heroui/styles";
 
 :root {
-  --mainBackground: #ffffff;
+  --mainBackground: #f7f7f7;
   --background: #faf9f5;
   --foreground: #181c1b;
   --primary: #028889;

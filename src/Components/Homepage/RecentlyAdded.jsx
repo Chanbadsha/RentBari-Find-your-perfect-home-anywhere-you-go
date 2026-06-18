@@ -5,7 +5,7 @@ const RecentlyAdded = () => {
   const properties = Array.from({ length: 4 });
 
   return (
-    <section className="container mx-auto px-3 sm:px-4 my-8 ">
+    <section className="container mx-auto px-3 sm:px-4 my-8 mb-12 ">
       {/* Header */}
       <div className="mb-6">
         <h2 className="text-2xl sm:text-3xl font-semibold text-foreground">

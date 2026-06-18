@@ -37,7 +37,7 @@ export default function WhyChooseUs() {
   ];
 
   return (
-    <section className=" bg-background/70 py-16 px-4 sm:px-6 lg:px-8 font-inter text-foreground">
+    <section className=" border-t border-t-foreground/20 py-16 px-4 sm:px-6 lg:px-8 font-inter text-foreground">
       <div className="max-w-7xl mx-auto text-center mb-12">
         <h2 className="text-3xl font-bold  tracking-tight sm:text-4xl">
           Why Choose Us

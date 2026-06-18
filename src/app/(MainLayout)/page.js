@@ -1,3 +1,4 @@
+import ClientExperiences from "@/Components/Homepage/ClientExperiences";
 import FeaturedSection from "@/Components/Homepage/FeaturedSection";
 import HomePageHero from "@/Components/Homepage/HomePageHero";
 import PopularLocations from "@/Components/Homepage/PopularLocations";
@@ -12,6 +13,7 @@ const HomePage = () => {
       <PopularLocations />
       <RecentlyAdded />
       <WhyChooseUs />
+      <ClientExperiences />
     </div>
   );
 };

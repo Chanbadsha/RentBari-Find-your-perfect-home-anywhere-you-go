@@ -1,3 +1,4 @@
+import Footer from "@/Components/Shared/Footer";
 import NavBar from "@/Components/Shared/NavBar";
 
 const MainLayout = ({ children }) => {
@@ -5,7 +6,8 @@ const MainLayout = ({ children }) => {
     <div className="bg-main-background">
       {/* NavBar */}
       <NavBar />
-      {children}
+      <main> {children}</main>
+      <Footer />
     </div>
   );
 };

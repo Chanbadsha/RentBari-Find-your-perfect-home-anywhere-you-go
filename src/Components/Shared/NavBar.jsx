@@ -1,10 +1,10 @@
 "use client";
-import { useState } from "react";
-import { Link, Button } from "@heroui/react";
 import logo from "@/images/logo.png";
-import Image from "next/image";
 import NavLink from "@/Utils/NavLink";
 import { ThemeSwitch } from "@/Utils/ThemeSwitch";
+import { Link } from "@heroui/react";
+import Image from "next/image";
+import { useState } from "react";
 export default function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -94,8 +94,8 @@ export default function NavBar() {
         <div className="flex items-center gap-3">
           <ThemeSwitch />
           <Link
-            className="text-sm px-4 py-2 rounded-lg bg-secondary text-white font-semibold hover:opacity-90 transition"
-            href="#"
+            className="text-sm no-underline px-4 py-2 rounded-lg bg-secondary text-white font-semibold hover:opacity-90 transition"
+            href="/auth/login"
           >
             Login
           </Link>

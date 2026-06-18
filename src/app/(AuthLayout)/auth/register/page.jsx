@@ -1,10 +1,8 @@
 import RegisterForm from "@/Components/Auth/RegisterForm";
-import { Button } from "@heroui/react";
-import { Icon } from "@iconify/react";
-import { Shell, ShieldCheck, Zap } from "lucide-react";
-import Link from "next/link";
 import logo from "@/images/logo.png";
+import { ShieldCheck, Zap } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 const RegisterPage = () => {
   return (

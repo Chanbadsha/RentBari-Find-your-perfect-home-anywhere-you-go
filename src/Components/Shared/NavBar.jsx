@@ -32,7 +32,7 @@ export default function NavBar() {
   ];
 
   return (
-    <nav className="sticky top-0 z-40 w-full border-b border-separator bg-background/90  py-4">
+    <nav className="sticky top-0 z-40 w-full border-b border-separator bg-background   py-4">
       <header className="mx-auto container flex items-center justify-between px-6">
         {/* LEFT SIDE */}
         <div className="flex items-center gap-4">

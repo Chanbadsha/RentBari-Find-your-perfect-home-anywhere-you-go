@@ -71,7 +71,7 @@ export default function PropertyFeaturedCard({ property }) {
   };
 
   return (
-    <div className="group w-full max-w-85 rounded-2xl overflow-hidden bg-background border border-foreground/30 shadow-lg hover:shadow-2xl hover:border-slate-700/60 transition-all duration-300">
+    <div className="group w-full  rounded-2xl overflow-hidden bg-background border border-foreground/30 shadow-lg hover:shadow-2xl hover:border-slate-700/60 transition-all duration-300">
       {/* IMAGE SECTION */}
       <div className="relative h-56 w-full overflow-hidden">
         <Image
@@ -156,7 +156,7 @@ export default function PropertyFeaturedCard({ property }) {
           flex gap-0.5 items-center justify-center
                 w-full py-2.5 mt-1 rounded-xl
                 border border-secondary/70 bg-secondary/80
-                text-foreground  font-semibold text-sm
+                text-white/90   font-semibold text-sm
                 hover:bg-secondary hover:scale-[1.02] 
                 active:scale-[0.99]
                 transition-all duration-300

@@ -12,7 +12,7 @@ export default function Footer() {
   return (
     <footer className="bg-background text-foreground font-inter border-t border-foreground/20">
       {/* Upper Main Footer Content */}
-      <div className="max-w-7xl mx-auto px-6 py-12 md:py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+      <div className="container mx-auto px-6 py-12 md:py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
         {/* Column 1: Brand & Description */}
         <div className="flex flex-col space-y-5">
           <h2 className=" tracking-wide font-extrabold uppercase text-primary text-xl md:text-2xl lg:text-3xl">

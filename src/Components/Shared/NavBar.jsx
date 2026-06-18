@@ -100,9 +100,12 @@ export default function NavBar() {
             Login
           </Link>
 
-          <Button className="hidden lg:inline-flex text-sm px-4 py-2">
+          <Link
+            href="/auth/register"
+            className="hidden no-underline lg:inline-flex text-sm px-4 py-2 rounded-lg bg-secondary text-white font-semibold hover:opacity-90 transition"
+          >
             Sign Up
-          </Button>
+          </Link>
         </div>
       </header>
 

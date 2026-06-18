@@ -3,7 +3,8 @@ import { useState } from "react";
 import { Link, Button } from "@heroui/react";
 import logo from "@/images/logo.png";
 import Image from "next/image";
-import NavLink from "@/app/Utils/NavLink";
+import NavLink from "@/Utils/NavLink";
+import { ThemeSwitch } from "@/Utils/ThemeSwitch";
 export default function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -31,7 +32,7 @@ export default function NavBar() {
   ];
 
   return (
-    <nav className="sticky top-0 z-40 w-full border-b border-separator bg-background/90 backdrop-blur-md py-4">
+    <nav className="sticky top-0 z-40 w-full border-b border-separator bg-background/90  py-4">
       <header className="mx-auto container flex items-center justify-between px-6">
         {/* LEFT SIDE */}
         <div className="flex items-center gap-4">
@@ -77,7 +78,7 @@ export default function NavBar() {
             />
 
             <p className="font-extrabold uppercase text-primary text-xl md:text-2xl lg:text-3xl">
-              Basha<span className="text-secondary">Nest</span>
+              Rent<span className="text-secondary">Bari</span>
             </p>
           </div>
         </div>
@@ -91,8 +92,9 @@ export default function NavBar() {
 
         {/* RIGHT ACTIONS */}
         <div className="flex items-center gap-3">
+          <ThemeSwitch />
           <Link
-            className="text-sm px-4 py-2 rounded-lg bg-secondary text-background font-semibold hover:opacity-90 transition"
+            className="text-sm px-4 py-2 rounded-lg bg-secondary text-white font-semibold hover:opacity-90 transition"
             href="#"
           >
             Login

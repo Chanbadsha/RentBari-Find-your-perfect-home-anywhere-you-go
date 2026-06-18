@@ -1,7 +1,9 @@
+import HomePageHero from "@/Components/Homepage/HomePageHero";
+
 const HomePage = () => {
   return (
     <div>
-      <h2>This is HomePage</h2>
+      <HomePageHero />
     </div>
   );
 };

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { Heart, MapPin, LayoutCellsLarge, ArrowRight } from "@gravity-ui/icons";
+import Link from "next/link";
 
 // Inline custom mini SVG components for metrics to match layout style seamlessly
 const BedIcon = () => (
@@ -151,7 +152,8 @@ export default function PropertyFeaturedCard({ property }) {
           </div>
         </div>
 
-        <button
+        <Link
+          href={`/properties/hi`}
           className="
           flex gap-0.5 items-center justify-center
                 w-full py-2.5 mt-1 rounded-xl
@@ -165,7 +167,7 @@ export default function PropertyFeaturedCard({ property }) {
         >
           View Details{" "}
           <ArrowRight className="transition-transform duration-300 group-hover:translate-x-1" />
-        </button>
+        </Link>
       </div>
     </div>
   );

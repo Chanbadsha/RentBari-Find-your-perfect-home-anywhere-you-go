@@ -6,8 +6,7 @@ import { usePathname } from "next/navigation";
 const DashBoardNavLink = ({ navItem }) => {
   const pathname = usePathname();
 
-  const isActive =
-    pathname === navItem.path || pathname.startsWith(navItem.path + "/");
+  const isActive = pathname === navItem.path;
 
   return (
     <li>

@@ -1,8 +1,8 @@
 import { getUserSession } from "@/app/lib/core/session";
 import DashBoardNavLink from "@/Utils/DashBoardNavLink";
+import LogoutBtn from "@/Utils/LogoutBtn";
 import { ChartPie, CircleInfo, Gear, Heart, Persons } from "@gravity-ui/icons";
 import Image from "next/image";
-import Link from "next/link";
 import { FaCalendar, FaClipboardList, FaPlus, FaUsers } from "react-icons/fa";
 import { FaBuilding } from "react-icons/fa6";
 
@@ -14,7 +14,7 @@ const DashBoardNavBar = async () => {
     // TENANT
     // =========================
     {
-      path: "/dashboard",
+      path: "/dashboard/tenant",
       label: "Dashboard",
       icon: <ChartPie />,
       role: "tenant",
@@ -181,9 +181,7 @@ const DashBoardNavBar = async () => {
         {/* BOTTOM SECTION */}
         <div className="mt-auto   p-4 space-y-3">
           {/* Logout */}
-          <button className="w-full mt-3 px-4 py-2 rounded-xl bg-red-50 text-red-600 font-medium hover:bg-red-100 transition flex items-center justify-center gap-2">
-            Logout
-          </button>
+          <LogoutBtn />
         </div>
       </div>
 

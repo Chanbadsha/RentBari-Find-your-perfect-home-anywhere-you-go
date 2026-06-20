@@ -30,7 +30,7 @@ export default function NavBar() {
       label: "Blogs",
     },
     {
-      path: "/dashboard",
+      path: `/dashboard/${user?.userRole}`,
       label: "Dashboard",
     },
   ];

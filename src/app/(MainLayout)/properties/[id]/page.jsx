@@ -8,6 +8,12 @@ import { FaWifi } from "react-icons/fa6";
 import { RiSofaFill } from "react-icons/ri";
 
 const PropertyDetailPage = () => {
+  const instantBooking = true;
+  const securityDepositRequired = false;
+  const securityDepositAmount = 500;
+
+  const isFurnished = true;
+
   const isFavorite = false;
   const amenityList = [
     {
@@ -77,7 +83,6 @@ const PropertyDetailPage = () => {
               className="w-full h-125 object-cover"
             />
           </div>
-
           {/* Gallery */}
           <div className="grid grid-cols-3 gap-3">
             {images.slice(1, 4).map((img, i) => (
@@ -98,20 +103,43 @@ const PropertyDetailPage = () => {
               </div>
             ))}
           </div>
-
           {/* Description */}
-          <section className="bg-background border border-foreground/30 rounded-3xl p-6">
-            <h2 className="text-2xl font-bold text-foreground mb-4">
-              Description
-            </h2>
+          <section className="bg-background border border-foreground/10 rounded-3xl p-6 md:p-8 shadow-sm hover:shadow-md transition-all duration-300 space-y-4">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-foreground/10 pb-3">
+              <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground">
+                Description
+              </h2>
+            </div>
 
-            <p className="text-foreground/70 leading-relaxed">
-              Experience luxury living with breathtaking ocean views at the
-              Oceanic Vista Villa. This architectural masterpiece combines
-              modern elegance with the beauty of Cox&apos;s Bazar.
+            {/* Content */}
+            <p className="text-foreground/70 leading-relaxed text-sm md:text-base tracking-wide">
+              Experience luxury living with breathtaking, uninterrupted ocean
+              views at the Oceanic Vista Villa, a true architectural masterpiece
+              designed to redefine modern coastal elegance. This premium
+              residence blends contemporary design with timeless sophistication,
+              offering spacious interiors, natural light-filled rooms, and
+              high-end finishes throughout. Located in the heart of Cox’s Bazar
+              coastline, the villa provides a serene escape where comfort meets
+              exclusivity. Residents can enjoy peaceful mornings overlooking the
+              sea, relaxing evenings with golden sunsets, and a lifestyle
+              enriched by nature’s beauty. Perfect for families, travelers, or
+              long-term stays, this property delivers both comfort and prestige
+              in every detail, making it an ideal choice for those seeking a
+              refined and luxurious living experience by the ocean.
             </p>
-          </section>
 
+            {/* Footer hint */}
+            <div className="flex items-center justify-between pt-3 border-t border-foreground/10">
+              <p className="text-xs text-foreground/50">
+                Updated recently • Verified listing
+              </p>
+
+              <button className="text-xs font-medium text-[#0a5246] hover:underline">
+                Read more
+              </button>
+            </div>
+          </section>
           {/* Amenities */}
           <div className="w-full max-w-5xl p-6 bg-background shadow rounded-xl">
             <h2 className="text-2xl font-bold text-foreground tracking-tight mb-5">
@@ -136,6 +164,99 @@ const PropertyDetailPage = () => {
             </div>
           </div>
 
+          {/* Booking & Property Preferences */}
+          <div className="bg-background border border-foreground/20 rounded-2xl p-6">
+            <h2 className="text-xl font-bold text-foreground mb-5">
+              Booking & Property Preferences
+            </h2>
+
+            <div className="space-y-4">
+              {/* Instant Booking */}
+              <div className="flex items-center justify-between rounded-xl border border-foreground/10 p-4">
+                <div>
+                  <h3 className="font-medium text-foreground">
+                    Instant Booking
+                  </h3>
+                  <p className="text-sm text-foreground/60">
+                    Guests can book instantly without approval.
+                  </p>
+                </div>
+
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                    instantBooking
+                      ? "bg-green-100 text-green-700"
+                      : "bg-red-100 text-red-700"
+                  }`}
+                >
+                  {instantBooking ? "Yes" : "No"}
+                </span>
+              </div>
+
+              {/* Security Deposit */}
+              <div className="rounded-xl border border-foreground/10 p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-medium text-foreground">
+                      Security Deposit Required
+                    </h3>
+                    <p className="text-sm text-foreground/60">
+                      Refundable deposit for potential damages.
+                    </p>
+                  </div>
+
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                      securityDepositRequired
+                        ? "bg-green-100 text-green-700"
+                        : "bg-red-100 text-red-700"
+                    }`}
+                  >
+                    {securityDepositRequired ? "Yes" : "No"}
+                  </span>
+                </div>
+
+                {securityDepositRequired ? (
+                  <div className="mt-4 rounded-lg bg-primary/5 border border-primary/10 p-3">
+                    <p className="text-sm text-foreground/70">
+                      Security Deposit Amount
+                    </p>
+                    <p className="text-lg font-bold text-primary">
+                      ${securityDepositAmount}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="mt-4 rounded-lg bg-muted/40 border border-foreground/10 p-3">
+                    <p className="text-sm text-foreground/60">
+                      No security deposit is required for this property.
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Furnishing Type */}
+              <div className="rounded-xl border border-foreground/10 p-4">
+                <h3 className="font-medium text-foreground mb-3">
+                  Furnishing Type
+                </h3>
+
+                <div className="flex gap-3 flex-wrap">
+                  {/* Fully Furnished */}
+
+                  <span
+                    className={`px-3 py-1 rounded-full bg-secondary text-white text-xs font-semibold `}
+                  >
+                    {isFurnished ? "Fully Furnished" : "Semi Furnished"}
+                  </span>
+                </div>
+
+                <p className="text-sm text-foreground/60 mt-3">
+                  Indicates the level of furniture and interior setup available
+                  in this property.
+                </p>
+              </div>
+            </div>
+          </div>
           <div className="w-full  bg-background rounded-2xl p-6 md:p-8 shadow-xs border border-foreground/30">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12">
               {/* Left Column: House Rules */}
@@ -181,7 +302,6 @@ const PropertyDetailPage = () => {
               </div>
             </div>
           </div>
-
           {/* Review Section */}
           <ReviewsSection />
         </div>

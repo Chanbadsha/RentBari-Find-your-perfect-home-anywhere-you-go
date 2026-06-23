@@ -1,4 +1,6 @@
+import { getPropertiesById } from "@/app/lib/api/properties";
 import ReviewsSection from "@/Components/Shared/ReviewsSection";
+import { ValidImgUrl } from "@/Utils/ValidImgUrl";
 import { Car, ShieldCheck, Snowflake } from "@gravity-ui/icons";
 import { ChevronRight, Heart, MapPin, Phone } from "lucide-react";
 import Image from "next/image";
@@ -7,12 +9,13 @@ import { FaCheckCircle, FaSwimmingPool } from "react-icons/fa";
 import { FaWifi } from "react-icons/fa6";
 import { RiSofaFill } from "react-icons/ri";
 
-const PropertyDetailPage = () => {
+const PropertyDetailPage = async ({ params }) => {
+  const { id } = await params;
+  const property = await getPropertiesById(id);
+  console.log(property);
   const instantBooking = true;
   const securityDepositRequired = false;
   const securityDepositAmount = 500;
-
-  const isFurnished = true;
 
   const isFavorite = false;
   const amenityList = [
@@ -44,12 +47,6 @@ const PropertyDetailPage = () => {
     },
   ];
 
-  const images = [
-    "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80",
-    "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80",
-    "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=400&q=80",
-    "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=400&q=80",
-  ];
   return (
     <div className="container mx-auto">
       {/* Breadcrumbs link path */}
@@ -62,11 +59,11 @@ const PropertyDetailPage = () => {
         </Link>
         <ChevronRight className="w-3 h-3 text-gray-300" />
         <a href="#" className="hover:text-foreground transition-colors">
-          Cox&apos;s Bazar
+          {property?.propertyType}
         </a>
         <ChevronRight className="w-3 h-3 text-foreground/30" />
         <span className="hover:text-foreground truncate">
-          Oceanic Vista Villa
+          {property?.propertyTitle}
         </span>
       </div>
 
@@ -76,7 +73,7 @@ const PropertyDetailPage = () => {
           {/* Hero Image */}
           <div className="overflow-hidden rounded-3xl">
             <Image
-              src={images[0]}
+              src={ValidImgUrl(property?.coverImage)}
               alt="Property"
               width={1400}
               height={900}
@@ -85,11 +82,11 @@ const PropertyDetailPage = () => {
           </div>
           {/* Gallery */}
           <div className="grid grid-cols-3 gap-3">
-            {images.slice(1, 4).map((img, i) => (
+            {property?.galleryImages?.map((img, i) => (
               <div key={i} className="relative overflow-hidden rounded-2xl">
                 <Image
-                  src={img}
-                  alt={`Gallery ${i}`}
+                  src={ValidImgUrl(img?.url)}
+                  alt={`Gallery ${img?.alt}`}
                   width={400}
                   height={300}
                   className="w-full h-36 object-cover hover:scale-105 transition duration-300 cursor-pointer"
@@ -246,7 +243,9 @@ const PropertyDetailPage = () => {
                   <span
                     className={`px-3 py-1 rounded-full bg-secondary text-white text-xs font-semibold `}
                   >
-                    {isFurnished ? "Fully Furnished" : "Semi Furnished"}
+                    {property?.isFurnished
+                      ? "Fully Furnished"
+                      : "Semi Furnished"}
                   </span>
                 </div>
 
@@ -265,18 +264,15 @@ const PropertyDetailPage = () => {
                   House Rules
                 </h3>
                 <ul className="space-y-3">
-                  <li className="flex items-center gap-3 text-sm font-medium text-foreground/70">
-                    <FaCheckCircle />
-                    <span>No smoking indoors</span>
-                  </li>
-                  <li className="flex items-center gap-3 text-sm font-medium text-foreground/70">
-                    <FaCheckCircle />
-                    <span>Pets allowed (small breeds)</span>
-                  </li>
-                  <li className="flex items-center gap-3 text-sm font-medium text-foreground/70">
-                    <FaCheckCircle />
-                    <span>Check-in: 2:00 PM</span>
-                  </li>
+                  {property?.houseRules.map((rule, index) => (
+                    <li
+                      key={index}
+                      className="flex items-center gap-3 text-sm font-medium text-foreground/70"
+                    >
+                      <FaCheckCircle />
+                      <span>{rule}</span>
+                    </li>
+                  ))}
                 </ul>
               </div>
 
@@ -286,18 +282,15 @@ const PropertyDetailPage = () => {
                   Extra Features
                 </h3>
                 <ul className="space-y-3">
-                  <li className="flex items-center gap-3 text-sm font-medium text-foreground/70">
-                    <FaCheckCircle />
-                    <span>Solar backup power</span>
-                  </li>
-                  <li className="flex items-center gap-3 text-sm font-medium text-foreground/70">
-                    <FaCheckCircle />
-                    <span>Rooftop garden access</span>
-                  </li>
-                  <li className="flex items-center gap-3 text-sm font-medium text-foreground/70">
-                    <FaCheckCircle />
-                    <span>Private beach access point</span>
-                  </li>
+                  {property?.extraFeatures.map((feature, index) => (
+                    <li
+                      key={index}
+                      className="flex items-center gap-3 text-sm font-medium text-foreground/70"
+                    >
+                      <FaCheckCircle />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>
@@ -314,27 +307,29 @@ const PropertyDetailPage = () => {
               <div className="flex justify-between items-start">
                 <div>
                   <h1 className="text-2xl font-bold text-foreground">
-                    Oceanic Vista Villa
+                    {property?.propertyTitle}
                   </h1>
 
                   <div className="flex items-center gap-2 mt-2 text-foreground/60">
                     <MapPin className="w-4 h-4" />
-                    <span>Inani, Cox&apos;s Bazar</span>
+                    <span>{property?.location}</span>
                   </div>
                 </div>
 
                 <div className="text-right">
                   <div className="text-3xl font-bold text-[#1a7361]">
-                    $3,500
+                    ${property?.rentPrice}
                   </div>
 
-                  <div className="text-sm text-foreground/60">per month</div>
+                  <div className="text-sm text-foreground/60">
+                    per {property?.rentType}
+                  </div>
                 </div>
               </div>
 
               <div className="flex gap-2">
                 <span className="px-3 py-1 rounded-full bg-secondary text-white text-xs font-medium">
-                  Villa
+                  {property?.propertyType}
                 </span>
 
                 <span className="px-3 py-1 rounded-full bg-green-600 text-white text-xs font-medium">
@@ -346,17 +341,17 @@ const PropertyDetailPage = () => {
               <div className="grid grid-cols-3 gap-3">
                 <div className="bg-background/90 border border-primary/10 rounded-2xl p-3 text-center">
                   <p className="text-xs text-foreground/70">Beds</p>
-                  <p className="font-bold text-lg">5</p>
+                  <p className="font-bold text-lg">{property?.bedrooms}</p>
                 </div>
 
                 <div className="bg-background/90 border border-primary/10 rounded-2xl p-3 text-center">
                   <p className="text-xs text-foreground/70">Baths</p>
-                  <p className="font-bold text-lg">4</p>
+                  <p className="font-bold text-lg">{property?.bathrooms}</p>
                 </div>
 
                 <div className="bg-background/90 border border-primary/10 rounded-2xl p-3 text-center">
                   <p className="text-xs text-foreground/70">Size</p>
-                  <p className="font-bold text-lg">4200</p>
+                  <p className="font-bold text-lg">{property?.flatSize} sqft</p>
                 </div>
               </div>
 

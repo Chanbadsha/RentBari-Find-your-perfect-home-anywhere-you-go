@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { Heart, MapPin, LayoutCellsLarge, ArrowRight } from "@gravity-ui/icons";
 import Link from "next/link";
+import { ValidImgUrl } from "@/Utils/ValidImgUrl";
 
 // Inline custom mini SVG components for metrics to match layout style seamlessly
 const BedIcon = () => (
@@ -59,7 +60,7 @@ export default function PropertyFeaturedCard({ property }) {
   const [liked, setLiked] = useState(false);
 
   // Fallback data mapping matching your precise Dark card UI requirements
-  const data = property || {
+  const data = {
     title: "Skyline Penthouse",
     price: "৳ 120,000",
     location: "Gulshan 2, Dhaka",
@@ -76,8 +77,8 @@ export default function PropertyFeaturedCard({ property }) {
       {/* IMAGE SECTION */}
       <div className="relative h-56 w-full overflow-hidden">
         <Image
-          src={data.image}
-          alt={data.title}
+          src={ValidImgUrl(property?.coverImage)}
+          alt={property?.propertyTitle}
           fill
           unoptimized // Used for external unsplash URL rendering stability
           className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -120,11 +121,11 @@ export default function PropertyFeaturedCard({ property }) {
       <div className="p-4 space-y-4">
         {/* Title & Price Header Line */}
         <div className="flex items-start justify-between gap-2">
-          <h3 className="text-xl font-bold tracking-tight text-foreground truncate max-w-45">
-            {data.title}
+          <h3 className="text-xl font-bold tracking-tight text-foreground  ">
+            {property?.propertyTitle}
           </h3>
           <span className="text-lg font-extrabold text-primary shrink-0">
-            {data.price}
+            {property?.rentPrice}
             <span className="text-xs font-medium text-foreground/70">/mo</span>
           </span>
         </div>
@@ -132,7 +133,7 @@ export default function PropertyFeaturedCard({ property }) {
         {/* Location Row */}
         <div className="flex items-center gap-1.5 text-xs text-foreground/70 font-medium">
           <MapPin className="h-3.5 w-3.5 text-primary" />
-          <span>{data.location}</span>
+          <span>{property?.location}</span>
         </div>
 
         <div className="h-px bg-slate-800/80" />
@@ -140,20 +141,20 @@ export default function PropertyFeaturedCard({ property }) {
         <div className="flex items-center justify-between text-xs font-semibold text-foreground py-0.5">
           <div className="flex items-center gap-1.5">
             <BedIcon />
-            <span>{data.beds} Bed</span>
+            <span>{property?.bedrooms} Bed</span>
           </div>
           <div className="flex items-center gap-1.5">
             <BathIcon />
-            <span>{data.baths} Bath</span>
+            <span>{property?.bathrooms} Bath</span>
           </div>
           <div className="flex items-center gap-1.5 text-foreground/70">
             <LayoutCellsLarge className="h-3.5 w-3.5 text-foreground/70" />
-            <span>{data.size}</span>
+            <span>{property?.flatSize} sqft</span>
           </div>
         </div>
 
         <Link
-          href={`/properties/hi`}
+          href={`/properties/${property._id}`}
           className="
           flex gap-0.5 items-center justify-center
                 w-full py-2.5 mt-1 rounded-xl

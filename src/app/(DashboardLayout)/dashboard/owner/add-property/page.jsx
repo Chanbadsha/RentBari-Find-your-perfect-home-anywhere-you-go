@@ -23,10 +23,50 @@ export default function ListPropertyPage() {
   const [bedrooms, setBedrooms] = useState(3);
   const [bathrooms, setBathrooms] = useState(2);
   const [isFurnished, setIsFurnished] = useState(false);
+  const [extraFeatures, setExtraFeatures] = useState([]);
+  const [houseRules, setHouseRules] = useState([]);
 
+  const [featureInput, setFeatureInput] = useState("");
+  const [ruleInput, setRuleInput] = useState("");
+  const [featureError, setFeatureError] = useState("");
   // Toggles for extra features
   const [instantBooking, setInstantBooking] = useState(true);
   const [securityDeposit, setSecurityDeposit] = useState(false);
+  const [ruleError, setRuleError] = useState("");
+
+  const addExtraFeature = () => {
+    const value = featureInput.trim();
+
+    if (!value) {
+      setFeatureError("Please enter a feature");
+      return;
+    }
+
+    setExtraFeatures((prev) => [...prev, value]);
+    setFeatureInput("");
+    setFeatureError("");
+  };
+
+  const removeExtraFeature = (index) => {
+    setExtraFeatures((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const addHouseRule = () => {
+    const value = ruleInput.trim();
+
+    if (!value) {
+      setRuleError("Please enter a house rule");
+      return;
+    }
+
+    setHouseRules((prev) => [...prev, value]);
+    setRuleInput("");
+    setRuleError("");
+  };
+
+  const removeHouseRule = (index) => {
+    setHouseRules((prev) => prev.filter((_, i) => i !== index));
+  };
 
   // Selected Amenities List
   const [amenities, setAmenities] = useState({
@@ -49,6 +89,14 @@ export default function ListPropertyPage() {
   } = useForm();
 
   const onSubmit = async (data) => {
+    if (extraFeatures.length === 0) {
+      setFeatureError("Please add at least one extra feature");
+      return;
+    }
+    if (houseRules.length === 0) {
+      setRuleError("Please add at least one house rule");
+      return;
+    }
     const property = {
       ...data,
       amenities: amenities,
@@ -57,10 +105,12 @@ export default function ListPropertyPage() {
       securityDeposit,
       instantBooking,
       isFurnished,
+      extraFeatures,
+      houseRules,
       userId: user?.id,
     };
-    // await AddProperty(property);
     console.log(property);
+    // await AddProperty(property);
   };
 
   const toggleAmenity = (key) => {
@@ -471,6 +521,128 @@ export default function ListPropertyPage() {
                   >
                     <Plus className="w-3.5 h-3.5" /> Custom
                   </button>
+                </div>
+              </div>
+
+              {/* 4. EXTRA FEATURES LIST (ARRAY) */}
+              <div className="bg-background border border-foreground/30 rounded-2xl p-6 shadow-xs space-y-4">
+                <div className="flex items-center gap-2 text-[#0a5246] font-bold text-base border-b border-foreground/20 pb-2">
+                  <Plus className="w-4 h-4" />
+                  <h2>Extra Features</h2>
+                </div>
+
+                <div className="space-y-2">
+                  {/* Input Row */}
+                  <div className="flex gap-2 items-stretch">
+                    <input
+                      value={featureInput}
+                      onChange={(e) => setFeatureInput(e.target.value)}
+                      placeholder="e.g. Rooftop access, Balcony view"
+                      className="flex-1 text-sm border border-foreground/30 rounded-xl px-4 py-2
+                 focus:outline-none focus:border-[#0a5246] focus:ring-2 focus:ring-[#0a5246]/10"
+                    />
+
+                    <button
+                      type="button"
+                      onClick={addExtraFeature}
+                      disabled={!featureInput.trim()}
+                      className={`px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200
+        flex items-center justify-center
+        ${
+          featureInput.trim()
+            ? "bg-[#0a5246] text-white hover:bg-[#073c33]"
+            : "bg-gray-200 text-gray-500 cursor-not-allowed"
+        }`}
+                    >
+                      Add
+                    </button>
+                  </div>
+
+                  {/* Error Message */}
+                  {featureError && (
+                    <p className="text-xs text-red-500 font-medium pl-1">
+                      {featureError}
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  {extraFeatures.map((item, idx) => (
+                    <span
+                      key={idx}
+                      className="px-3 py-1 text-xs rounded-full border border-foreground/30 flex items-center gap-2"
+                    >
+                      {item}
+                      <button
+                        type="button"
+                        onClick={() => removeExtraFeature(idx)}
+                        className="text-red-500 font-bold"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* 5. HOUSE RULES (ARRAY) */}
+              <div className="bg-background border border-foreground/30 rounded-2xl p-6 shadow-xs space-y-4">
+                <div className="flex items-center gap-2 text-[#0a5246] font-bold text-base border-b border-foreground/20 pb-2">
+                  <CircleInfo className="w-4 h-4" />
+                  <h2>House Rules</h2>
+                </div>
+
+                <div className="space-y-2">
+                  {/* Input Row */}
+                  <div className="flex gap-2 items-stretch">
+                    <input
+                      value={ruleInput}
+                      onChange={(e) => setRuleInput(e.target.value)}
+                      placeholder="e.g. No smoking, No loud music after 10PM"
+                      className="flex-1 text-sm border border-foreground/30 rounded-xl px-4 py-2 
+                 focus:outline-none focus:border-[#0a5246] focus:ring-2 focus:ring-[#0a5246]/10"
+                    />
+
+                    <button
+                      type="button"
+                      onClick={addHouseRule}
+                      disabled={!ruleInput.trim()}
+                      className={`px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200
+        flex items-center justify-center
+        ${
+          ruleInput.trim()
+            ? "bg-[#0a5246] text-white hover:bg-[#073c33]"
+            : "bg-gray-200 text-gray-500 cursor-not-allowed"
+        }`}
+                    >
+                      Add
+                    </button>
+                  </div>
+
+                  {/* Error Message */}
+                  {ruleError && (
+                    <p className="text-xs text-red-500 font-medium pl-1">
+                      {ruleError}
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  {houseRules.map((item, idx) => (
+                    <span
+                      key={idx}
+                      className="px-3 py-1 text-xs rounded-full border border-foreground/30 flex items-center gap-2"
+                    >
+                      {item}
+                      <button
+                        type="button"
+                        onClick={() => removeHouseRule(idx)}
+                        className="text-red-500 font-bold"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
                 </div>
               </div>
             </div>

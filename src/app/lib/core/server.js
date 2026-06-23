@@ -10,3 +10,13 @@ export const serverMutation = async (path, data) => {
 
   return result;
 };
+
+//
+export const serverFetch = async (path, query = {}) => {
+  const queryString = new URLSearchParams(query).toString();
+
+  const response = await fetch(`http://localhost:5000/${path}?${queryString}`);
+  const result = await response.json();
+
+  return result;
+};

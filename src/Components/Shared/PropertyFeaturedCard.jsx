@@ -1,16 +1,22 @@
 "use client";
-import Image from "next/image";
+import { ValidImgUrl } from "@/Utils/ValidImgUrl";
 import { Heart, MapPin } from "@gravity-ui/icons";
-import Img from "@/images/day-villa.jpg";
+import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
-export default function PropertyFeaturedCard() {
+export default function PropertyFeaturedCard({ property }) {
   const [liked, setLiked] = useState(false);
+
+  if (!property) {
+    return <div className="h-72 animate-pulse bg-gray-200 rounded-2xl" />;
+  }
+
   return (
     <div className="group w-full max-w-sm rounded-2xl overflow-hidden bg-background border border-foreground/10 shadow-lg hover:shadow-2xl transition-all duration-300">
       {/* IMAGE SECTION */}
       <div className="relative h-56 w-full overflow-hidden">
         <Image
-          src={Img}
+          src={ValidImgUrl(property?.coverImage)}
           alt="Property"
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -41,18 +47,18 @@ export default function PropertyFeaturedCard() {
         {/* Title + Tag */}
         <div className="flex items-start justify-between gap-3">
           <h3 className="text-lg font-semibold text-foreground leading-tight">
-            Emerald Sky Penthouse
+            {property?.propertyTitle}
           </h3>
 
           <span className="inline-flex items-center px-3 py-1 text-xs font-semibold tracking-wide rounded-full bg-primary/15 text-primary border border-primary/20 shadow-sm ">
-            Villa
+            {property?.propertyType}
           </span>
         </div>
 
         {/* Location */}
         <div className="flex items-center gap-1 text-sm text-foreground/60">
           <MapPin className="h-4 w-4 text-primary" />
-          Gulshan 2, Dhaka
+          {property?.location}
         </div>
 
         {/* Divider */}
@@ -62,12 +68,13 @@ export default function PropertyFeaturedCard() {
         <div className="flex items-center justify-between">
           {/* Price */}
           <p className="text-primary font-bold text-lg">
-            ৳145,000
+            ৳{property?.rentPrice}
             <span className="text-sm text-foreground/60 font-normal">/mo</span>
           </p>
 
           {/* Button */}
-          <button
+          <Link
+            href={`/properties/${property._id}`}
             className="
             px-4 py-2 rounded-xl
             bg-secondary text-white
@@ -77,7 +84,7 @@ export default function PropertyFeaturedCard() {
           "
           >
             Details
-          </button>
+          </Link>
         </div>
       </div>
     </div>

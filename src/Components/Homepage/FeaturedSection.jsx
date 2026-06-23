@@ -1,8 +1,9 @@
 import { ArrowRight } from "@gravity-ui/icons";
 import PropertyFeaturedCard from "../Shared/PropertyFeaturedCard";
+import { getProperties } from "@/app/lib/api/properties";
 
-const FeaturedSection = () => {
-  const properties = Array.from({ length: 8 });
+const FeaturedSection = async () => {
+  const properties = await getProperties();
 
   return (
     <section className="container mx-auto px-3 sm:px-4 my-8 ">
@@ -26,8 +27,8 @@ const FeaturedSection = () => {
 
       {/* Grid */}
       <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-        {properties.map((_, i) => (
-          <PropertyFeaturedCard key={i} />
+        {properties.map((property, i) => (
+          <PropertyFeaturedCard key={i} property={property} />
         ))}
       </div>
     </section>

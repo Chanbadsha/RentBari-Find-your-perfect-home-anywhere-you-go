@@ -1,4 +1,3 @@
-import { ArrowRight } from "@gravity-ui/icons";
 import PropertyFeaturedCard from "../Shared/PropertyFeaturedCard";
 
 const RecentlyAdded = () => {

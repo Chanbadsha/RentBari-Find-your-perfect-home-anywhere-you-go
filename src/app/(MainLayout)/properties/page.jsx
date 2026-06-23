@@ -1,8 +1,9 @@
+import { getProperties } from "@/app/lib/api/properties";
 import PropertyCard from "@/Components/Shared/PropertyCard";
 import PropertySearchBar from "@/Utils/PropertySearchBar";
 
-const PropertiesPage = () => {
-  const properties = Array.from({ length: 16 });
+const PropertiesPage = async () => {
+  const properties = await getProperties();
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -24,7 +25,7 @@ const PropertiesPage = () => {
       {/* Properties Grid */}
       <div className="grid justify-items-center grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {properties.map((property, ind) => (
-          <PropertyCard key={ind} />
+          <PropertyCard key={ind} property={property} />
         ))}
       </div>
     </div>

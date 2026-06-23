@@ -33,7 +33,6 @@ export default function ReviewsSection() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log({ rating, comment });
     setComment("");
     setRating(0);
   };

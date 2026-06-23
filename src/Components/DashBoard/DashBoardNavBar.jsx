@@ -128,7 +128,7 @@ const DashBoardNavBar = async () => {
   return (
     <aside
       className="
-    h-screen w-72 sticky top-0 flex flex-col
+    h-screen w-full sticky top-0 flex flex-col
     bg-linear-to-b from-[#f8fcfb] via-[#f4faf8] to-[#eef7f4]
     dark:from-[#0b0f0e] dark:via-[#0a1210] dark:to-[#070e0c]
     border-r border-[#0a5246]/10 dark:border-[#0a5246]/20

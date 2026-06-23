@@ -12,7 +12,7 @@ import { RiSofaFill } from "react-icons/ri";
 const PropertyDetailPage = async ({ params }) => {
   const { id } = await params;
   const property = await getPropertiesById(id);
-  console.log(property);
+
   const instantBooking = true;
   const securityDepositRequired = false;
   const securityDepositAmount = 500;
@@ -378,7 +378,7 @@ const PropertyDetailPage = async ({ params }) => {
             <div className="bg-background rounded-3xl border border-foreground/20 p-5 shadow-sm">
               <div className="flex items-center gap-4">
                 <Image
-                  src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80"
+                  src={ValidImgUrl(property?.user?.image)}
                   alt="Agent"
                   width={56}
                   height={56}
@@ -388,7 +388,7 @@ const PropertyDetailPage = async ({ params }) => {
                 <div>
                   <p className="text-xs text-gray-500 uppercase">Managed by</p>
 
-                  <h3 className="font-semibold">Sarah Al-Zaman</h3>
+                  <h3 className="font-semibold">{property?.user?.name}</h3>
                 </div>
               </div>
 

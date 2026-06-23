@@ -6,3 +6,6 @@ export const getProperties = () => {
 export const getPropertiesById = (propertyId) => {
   return serverFetch(`properties/${propertyId}`) || {};
 };
+export const getPropertiesByUserId = (userId) => {
+  return serverFetch(`properties`, { userId }) || [];
+};

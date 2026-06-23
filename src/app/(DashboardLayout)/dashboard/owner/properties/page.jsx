@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Input, Button } from "@heroui/react";
+import { Card, Input, Button, AlertDialog } from "@heroui/react";
 import {
   FiPlus,
   FiSearch,
@@ -8,13 +8,23 @@ import {
   FiMapPin,
   FiChevronLeft,
   FiChevronRight,
+  FiTrash2,
 } from "react-icons/fi";
+import Image from "next/image";
+import { ValidImgUrl } from "@/Utils/ValidImgUrl";
+import { getUserSession } from "@/app/lib/core/session";
+import { getPropertiesByUserId } from "@/app/lib/api/properties";
+import { BiEdit } from "react-icons/bi";
+import DeletePropertyBtn from "@/Utils/DeletePropertyBtn";
 
-export default function MyProperties() {
+export default async function MyProperties() {
+  const user = await getUserSession();
+  const properties = await getPropertiesByUserId(user?.id);
+
   const stats = [
     {
       title: "Total Properties",
-      value: "12",
+      value: properties.length,
       badge: "+2 this month",
       badgeColor: "text-emerald-600 font-medium",
     },
@@ -32,51 +42,15 @@ export default function MyProperties() {
     },
   ];
 
-  const properties = [
-    {
-      id: "BN-45092",
-      name: "Azure Skyline Penthouse",
-      location: "Downtown, Dubai Marina",
-      price: "$4,500",
-      type: "Penthouse",
-      status: "Approved",
-      statusColor: "bg-emerald-500",
-      statusText: "text-emerald-700",
-      img: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=150&auto=format&fit=crop&q=60",
-    },
-    {
-      id: "BN-12883",
-      name: "Green Valley Villa",
-      location: "Suburbia, Maple Avenue",
-      price: "$3,200",
-      type: "Family Home",
-      status: "Pending",
-      statusColor: "bg-amber-500",
-      statusText: "text-amber-700",
-      img: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=150&auto=format&fit=crop&q=60",
-    },
-    {
-      id: "BN-99201",
-      name: "Urban Loft Studio",
-      location: "Arts District, East End",
-      price: "$1,850",
-      type: "Studio",
-      status: "Rejected",
-      statusColor: "bg-rose-500",
-      statusText: "text-rose-700",
-      img: "https://images.unsplash.com/photo-1536376072261-38c75010e6c9?w=150&auto=format&fit=crop&q=60",
-    },
-  ];
-
   return (
-    <div className="min-h-screen bg-slate-50/50 p-8 font-sans antialiased text-slate-800">
+    <div className="min-h-screen bg-background p-8 font-sans antialiased text-foreground">
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">
             My Properties
           </h1>
-          <p className="text-slate-500 mt-1">
+          <p className="text-foreground/70 mt-1">
             Manage your real estate portfolio and track application statuses.
           </p>
         </div>
@@ -91,15 +65,15 @@ export default function MyProperties() {
         {stats.map((stat, idx) => (
           <Card
             key={idx}
-            className="border border-slate-100 bg-white shadow-sm rounded-2xl p-6"
+            className="border border-foreground/20 bg-background shadow-sm rounded-2xl p-6"
           >
             <Card.Header className="p-0 pb-2">
-              <Card.Description className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+              <Card.Description className="text-xs font-semibold uppercase tracking-wider text-foreground/60">
                 {stat.title}
               </Card.Description>
             </Card.Header>
             <Card.Content className="p-0 flex items-baseline gap-2">
-              <span className="text-3xl font-bold text-slate-900">
+              <span className="text-3xl font-bold text-foreground">
                 {stat.value}
               </span>
               <span className={`text-xs ${stat.badgeColor}`}>{stat.badge}</span>
@@ -109,25 +83,25 @@ export default function MyProperties() {
       </div>
 
       {/* Main Table Card container */}
-      <Card className="border border-slate-100 bg-white shadow-sm rounded-2xl overflow-hidden">
+      <Card className="border border-foreground/20 bg-background shadow-sm rounded-2xl overflow-hidden">
         {/* Table Top Filters Header */}
-        <Card.Header className="p-6 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 border-b border-slate-100 bg-white">
+        <Card.Header className="p-6 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 border-b border-foreground/20 bg-background">
           <div className="relative flex-1 max-w-md">
-            <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg" />
+            <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-foreground/60 text-lg" />
             <Input
               aria-label="Search properties"
               placeholder="Search by title or location..."
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-100/70 border-0 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#00523A]/20 transition-all text-sm outline-none placeholder:text-slate-400"
+              className="w-full pl-10 pr-4 py-2.5 bg-background border-foreground/40 focus:border-none border rounded-xl focus:bg-background focus:ring-2 focus:ring-[#00523A]/20 transition-all text-sm outline-none placeholder:text-foreground/60"
             />
           </div>
 
           <div className="flex items-center gap-3">
-            <button className="flex items-center gap-2 border border-slate-200 hover:bg-slate-50 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-700 transition-all">
-              <FiSliders className="text-slate-500" />
+            <button className="flex items-center gap-2 border border-foreground/20 hover:bg-slate-50 px-4 py-2.5 rounded-xl text-sm font-medium text-foreground/70 transition-all">
+              <FiSliders className="text-foreground/70" />
               Filters
             </button>
-            <button className="flex items-center gap-2 border border-slate-200 hover:bg-slate-50 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-700 transition-all">
-              <FiDownload className="text-slate-500" />
+            <button className="flex items-center gap-2 border border-foreground/20 hover:bg-slate-50 px-4 py-2.5 rounded-xl text-sm font-medium text-foreground/70 transition-all">
+              <FiDownload className="text-foreground/70" />
               Export
             </button>
           </div>
@@ -135,85 +109,139 @@ export default function MyProperties() {
 
         {/* Properties Content Area */}
         <Card.Content className="p-0 overflow-x-auto">
-          <table className="w-full min-w-[800px] text-left border-collapse">
+          <table className="w-full min-w-200 text-left border-collapse">
             <thead>
-              <tr className="border-b border-slate-100 bg-slate-50/50 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              <tr className="border-b border-foreground/20 bg-background text-[11px] font-bold uppercase tracking-wider text-foreground/60">
                 <th className="py-4 px-6">Property</th>
                 <th className="py-4 px-6">Location</th>
                 <th className="py-4 px-6">Rent Price</th>
-                <th className="py-4 px-6">Type</th>
+
                 <th className="py-4 px-6">Status</th>
                 <th className="py-4 px-6">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-sm">
-              {properties.map((item) => (
+              {properties.slice(0, 3).map((property) => (
                 <tr
-                  key={item.id}
+                  key={property._id}
                   className="hover:bg-slate-50/40 transition-colors"
                 >
                   {/* Property Details */}
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-4">
-                      <img
-                        src={item.img}
-                        alt={item.name}
-                        className="w-12 h-12 object-cover rounded-xl border border-slate-100"
+                      <Image
+                        height={600}
+                        width={600}
+                        src={ValidImgUrl(property?.coverImage)}
+                        alt={property?.propertyTitle}
+                        className="w-12 h-12 object-cover rounded-xl border border-foreground/20"
                       />
                       <div>
-                        <h4 className="font-bold text-slate-800 text-[15px] leading-tight">
-                          {item.name}
+                        <h4 className="font-bold text-foreground text-[15px] leading-tight">
+                          {property?.propertyTitle}
                         </h4>
-                        <span className="text-xs text-slate-400 font-medium">
-                          ID: {item.id}
+                        <span className="text-xs text-foreground/60 font-medium">
+                          {property?.propertyType}
                         </span>
                       </div>
                     </div>
                   </td>
 
                   {/* Location */}
-                  <td className="py-4 px-6 text-slate-500 font-medium">
-                    <div className="flex items-start gap-1.5 max-w-[200px]">
-                      <FiMapPin className="text-slate-400 mt-0.5 shrink-0" />
-                      <span>{item.location}</span>
+                  <td className="py-4 px-6 text-foreground/70 font-medium">
+                    <div className="flex items-start gap-1.5 max-w-50">
+                      <FiMapPin className="text-foreground/60 mt-0.5 shrink-0" />
+                      <span>{property?.location}</span>
                     </div>
                   </td>
 
                   {/* Rent Price */}
                   <td className="py-4 px-6">
-                    <span className="font-bold text-slate-800">
-                      {item.price}
+                    <span className="font-bold text-foreground">
+                      {property?.rentPrice}$
                     </span>
-                    <span className="text-xs text-slate-400 font-medium">
+                    <span className="text-xs text-foreground/60 font-medium">
                       {" "}
-                      /mo
-                    </span>
-                  </td>
-
-                  {/* Type Badge */}
-                  <td className="py-4 px-6">
-                    <span className="inline-block px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-xs font-semibold max-w-[100px] truncate text-center">
-                      {item.type}
+                      /{property?.rentType}
                     </span>
                   </td>
 
                   {/* Status Indicator */}
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-2">
-                      <span
-                        className={`w-2 h-2 rounded-full ${item.statusColor}`}
-                      />
-                      <span className={`font-bold text-xs ${item.statusText}`}>
-                        {item.status}
+                      <span className={`w-2 h-2 rounded-full `} />
+                      <span className={`font-bold text-xs `}>
+                        {property?.status}
                       </span>
                     </div>
                   </td>
 
                   {/* Placeholder for actions */}
+
                   <td className="py-4 px-6">
-                    <button className="text-slate-400 hover:text-slate-600 font-medium text-xs">
-                      ...
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        title="Edit Property"
+                        className="p-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors"
+                      >
+                        <BiEdit size={16} />
+                      </button>
+
+                      <AlertDialog>
+                        <Button
+                          variant="outline"
+                          title="Delete Property"
+                          className="p-2 outline-none border-none rounded-lg text-red-500 hover:bg-red-50 transition-colors"
+                        >
+                          <FiTrash2 size={16} />
+                        </Button>
+                        <AlertDialog.Backdrop>
+                          <AlertDialog.Container>
+                            <AlertDialog.Dialog className="sm:max-w-100">
+                              <AlertDialog.CloseTrigger />
+                              <AlertDialog.Header>
+                                <AlertDialog.Icon status="danger" />
+                                <AlertDialog.Heading>
+                                  Delete project permanently?
+                                </AlertDialog.Heading>
+                              </AlertDialog.Header>
+                              <AlertDialog.Body>
+                                <div className="space-y-3">
+                                  <p className="text-sm text-foreground/80 leading-relaxed">
+                                    Are you sure you want to delete this
+                                    property listing?
+                                  </p>
+
+                                  <div className="rounded-xl border border-red-200 bg-red-50 p-3">
+                                    <p className="text-sm">
+                                      Property:{" "}
+                                      <strong className="font-semibold text-red-700">
+                                        {property.propertyTitle}
+                                      </strong>
+                                    </p>
+                                  </div>
+
+                                  <p className="text-sm text-foreground/60">
+                                    This action will permanently remove the
+                                    property listing, photos, amenities, house
+                                    rules, and all associated information from
+                                    RentBari. This action cannot be undone.
+                                  </p>
+                                </div>
+                              </AlertDialog.Body>
+
+                              <AlertDialog.Footer>
+                                <Button slot="close" variant="tertiary">
+                                  Keep Property
+                                </Button>
+
+                                <DeletePropertyBtn propertyId={property._id} />
+                              </AlertDialog.Footer>
+                            </AlertDialog.Dialog>
+                          </AlertDialog.Container>
+                        </AlertDialog.Backdrop>
+                      </AlertDialog>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -222,28 +250,28 @@ export default function MyProperties() {
         </Card.Content>
 
         {/* Pagination Footer */}
-        <Card.Footer className="p-4 flex flex-col sm:flex-row justify-between items-center gap-4 border-t border-slate-100 bg-white">
-          <span className="text-xs font-medium text-slate-400">
+        <Card.Footer className="p-4 flex flex-col sm:flex-row justify-between items-center gap-4 border-t border-foreground/20 bg-background">
+          <span className="text-xs font-medium text-foreground/60">
             Showing{" "}
-            <strong className="text-slate-700 font-semibold">1-3</strong> of{" "}
-            <strong className="text-slate-700 font-semibold">12</strong>{" "}
+            <strong className="text-foreground/70 font-semibold">1-3</strong> of{" "}
+            <strong className="text-foreground/70 font-semibold">12</strong>{" "}
             properties
           </span>
 
           <div className="flex items-center gap-1">
-            <button className="p-2 border border-slate-200 text-slate-400 rounded-lg hover:bg-slate-50 transition-colors">
+            <button className="p-2 border border-foreground/20 text-foreground/60 rounded-lg hover:bg-secondary transition-colors">
               <FiChevronLeft size={16} />
             </button>
-            <button className="w-8 h-8 flex items-center justify-center bg-[#00523A] text-white rounded-lg text-xs font-semibold shadow-sm">
+            <button className="w-8 h-8 flex items-center justify-center bg-secondary text-white rounded-lg text-xs font-semibold shadow-sm">
               1
             </button>
-            <button className="w-8 h-8 flex items-center justify-center border border-slate-200 text-slate-600 hover:bg-slate-50 rounded-lg text-xs font-medium transition-colors">
+            <button className="w-8 h-8 flex items-center justify-center border border-foreground/20 text-foreground/70 hover:bg-secondary rounded-lg text-xs font-medium transition-colors">
               2
             </button>
-            <button className="w-8 h-8 flex items-center justify-center border border-slate-200 text-slate-600 hover:bg-slate-50 rounded-lg text-xs font-medium transition-colors">
+            <button className="w-8 h-8 flex items-center justify-center border border-foreground/20 text-foreground/70 hover:bg-secondary rounded-lg text-xs font-medium transition-colors">
               3
             </button>
-            <button className="p-2 border border-slate-200 text-slate-400 rounded-lg hover:bg-slate-50 transition-colors">
+            <button className="p-2 border border-foreground/20 text-foreground/60 rounded-lg hover:bg-secondary transition-colors">
               <FiChevronRight size={16} />
             </button>
           </div>

@@ -109,8 +109,8 @@ export default function ListPropertyPage() {
       houseRules,
       userId: user?.id,
     };
-    console.log(property);
-    // await AddProperty(property);
+
+    await AddProperty(property);
   };
 
   const toggleAmenity = (key) => {
@@ -303,8 +303,9 @@ export default function ListPropertyPage() {
                         className="w-full text-sm font-medium bg-background border border-foreground/30 rounded-xl px-4 py-2.5"
                       >
                         <option value="">Select type</option>
-                        <option value="Monthly">Monthly</option>
-                        <option value="Yearly">Yearly</option>
+                        <option value="week">Weekly</option>
+                        <option value="month">Monthly</option>
+                        <option value="year">Yearly</option>
                       </select>
 
                       {errors.rentType && (
@@ -788,7 +789,7 @@ export default function ListPropertyPage() {
                 </div>
 
                 {/* Pro Tip Indicator Notice Box */}
-                <div className="bg-emerald-50/50 border border-emerald-500/10 rounded-xl p-3 text-left">
+                <div className="bg-background border border-emerald-500/10 rounded-xl p-3 text-left">
                   <span className="text-[9px] font-black text-emerald-800 tracking-wider bg-emerald-500/10 px-1.5 py-0.5 rounded uppercase">
                     Pro Tip
                   </span>

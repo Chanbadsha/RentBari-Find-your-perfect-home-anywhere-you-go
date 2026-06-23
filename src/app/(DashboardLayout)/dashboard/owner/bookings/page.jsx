@@ -14,29 +14,30 @@ import {
   FiDollarSign,
   FiPieChart,
 } from "react-icons/fi";
+import Image from "next/image";
 
 export default function BookingRequests() {
   const stats = [
     {
       title: "Pending Requests",
       value: "12",
-      bgClass: "bg-[#E6F4F0]",
-      textColor: "text-[#00523A]",
-      icon: <FiFileText className="text-[#00523A] text-lg" />,
+      bgClass: "bg-secondary",
+      textColor: "text-white",
+      icon: <FiFileText className="text-foreground/80 text-lg" />,
     },
     {
       title: "Total Earnings",
       value: "$14,250.00",
-      bgClass: "bg-[#FDF6E2]",
-      textColor: "text-[#855B14]",
-      icon: <FiDollarSign className="text-[#855B14] text-lg" />,
+      bgClass: "bg-secondary",
+      textColor: "text-white",
+      icon: <FiDollarSign className="text-foreground/80 text-lg" />,
     },
     {
       title: "Occupancy Rate",
       value: "94%",
-      bgClass: "bg-[#EAEAEA]",
-      textColor: "text-slate-800",
-      icon: <FiPieChart className="text-slate-700 text-lg" />,
+      bgClass: "bg-secondary",
+      textColor: "text-foreground",
+      icon: <FiPieChart className="text-foreground/80 text-lg" />,
     },
   ];
 
@@ -107,28 +108,28 @@ export default function BookingRequests() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F8FAF9] p-8 font-sans antialiased text-slate-800">
+    <div className="min-h-screen bg-background p-8 font-sans antialiased text-foreground">
       {/* Top Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">
             Booking Requests
           </h1>
-          <p className="text-slate-500 text-sm mt-1">
+          <p className="text-foreground/60 text-sm mt-1">
             Manage incoming tenant applications and booking statuses.
           </p>
         </div>
         <div className="flex items-center gap-3 w-full md:w-auto">
           <div className="relative flex-1 md:w-64">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground/60" />
             <Input
               aria-label="Search tenants"
               placeholder="Search tenants..."
-              className="w-full pl-9 pr-4 py-2 border border-slate-200 bg-white rounded-xl text-sm focus:outline-none"
+              className="w-full pl-9 pr-4 py-2 border border-foreground/20 bg-background rounded-xl text-sm focus:outline-none"
             />
           </div>
-          <button className="flex items-center gap-2 border border-slate-200 bg-white hover:bg-slate-50 px-4 py-2 rounded-xl text-sm font-medium text-slate-700 shadow-sm transition-colors">
-            <FiSliders className="text-slate-500" />
+          <button className="flex items-center gap-2 border border-foreground/20 bg-background hover:bg-slate-50 px-4 py-2 rounded-xl text-sm font-medium text-foreground/80 shadow-sm transition-colors">
+            <FiSliders className="text-foreground/60" />
             Filter
           </button>
         </div>
@@ -139,32 +140,30 @@ export default function BookingRequests() {
         {stats.map((stat, idx) => (
           <Card
             key={idx}
-            className={`border border-transparent ${stat.bgClass} rounded-2xl p-6 shadow-sm`}
+            className={`border flex justify-center items-center  border-foreground/20 bg-background rounded-2xl p-6 shadow-sm`}
           >
             <Card.Header className="p-0 flex justify-between items-center pb-2">
               <Card.Description
-                className={`text-xs font-semibold uppercase tracking-wider ${stat.textColor} opacity-80`}
+                className={`text-xs font-semibold uppercase tracking-wider  opacity-80`}
               >
                 {stat.title}
               </Card.Description>
               <div>{stat.icon}</div>
             </Card.Header>
             <Card.Content className="p-0">
-              <span className={`text-3xl font-bold ${stat.textColor}`}>
-                {stat.value}
-              </span>
+              <span className={`text-3xl font-bold `}>{stat.value}</span>
             </Card.Content>
           </Card>
         ))}
       </div>
 
       {/* Main Container Card */}
-      <Card className="border border-slate-100 bg-white shadow-sm rounded-2xl overflow-hidden">
+      <Card className="border border-foreground/20 bg-background shadow-sm rounded-2xl overflow-hidden">
         {/* Responsive Table Wrapper */}
         <Card.Content className="p-0 overflow-x-auto">
-          <table className="w-full min-w-[950px] text-left border-collapse">
+          <table className="w-full min-w-237.5 text-left border-collapse">
             <thead>
-              <tr className="bg-[#F4F6F5] text-xs font-bold tracking-wide text-slate-500 border-b border-slate-100">
+              <tr className="bg-background text-xs font-bold tracking-wide text-foreground/60 border-b border-foreground/20">
                 <th className="py-4 px-6 w-[25%]">Tenant Info</th>
                 <th className="py-4 px-6 w-[25%]">Property Name</th>
                 <th className="py-4 px-6 w-[15%]">Amount</th>
@@ -183,7 +182,9 @@ export default function BookingRequests() {
                   <td className="py-5 px-6">
                     <div className="flex items-center gap-3">
                       {row.avatar ? (
-                        <img
+                        <Image
+                          height={600}
+                          width={600}
                           src={row.avatar}
                           alt={row.name}
                           className="w-10 h-10 object-cover rounded-full bg-slate-100"
@@ -194,10 +195,10 @@ export default function BookingRequests() {
                         </div>
                       )}
                       <div>
-                        <h4 className="font-bold text-slate-800 text-sm leading-tight">
+                        <h4 className="font-bold text-foreground text-sm leading-tight">
                           {row.name}
                         </h4>
-                        <span className="text-xs text-slate-400">
+                        <span className="text-xs text-foreground/60">
                           {row.email}
                         </span>
                       </div>
@@ -207,10 +208,10 @@ export default function BookingRequests() {
                   {/* Property Name */}
                   <td className="py-5 px-6">
                     <div>
-                      <h4 className="font-semibold text-slate-700 text-sm leading-tight">
+                      <h4 className="font-semibold text-foreground/80 text-sm leading-tight">
                         {row.property}
                       </h4>
-                      <div className="flex items-center gap-1 text-xs text-slate-400 mt-1">
+                      <div className="flex items-center gap-1 text-xs text-foreground/60 mt-1">
                         <FiMapPin className="shrink-0" />
                         <span>{row.location}</span>
                       </div>
@@ -223,7 +224,7 @@ export default function BookingRequests() {
                       <span className={`font-bold ${row.amountColor}`}>
                         {row.amount}
                       </span>
-                      <p className="text-[11px] text-slate-400 mt-0.5 font-medium">
+                      <p className="text-[11px] text-foreground/60 mt-0.5 font-medium">
                         {row.paymentStatus}
                       </p>
                     </div>
@@ -232,10 +233,10 @@ export default function BookingRequests() {
                   {/* Date Range */}
                   <td className="py-5 px-6">
                     <div>
-                      <span className="font-semibold text-slate-700">
+                      <span className="font-semibold text-foreground/80">
                         {row.dates}
                       </span>
-                      <p className="text-[11px] text-slate-400 mt-0.5">
+                      <p className="text-[11px] text-foreground/60 mt-0.5">
                         {row.nights}
                       </p>
                     </div>
@@ -264,10 +265,10 @@ export default function BookingRequests() {
                         </>
                       ) : (
                         <>
-                          <button className="text-slate-400 hover:text-slate-600 transition-colors p-1">
+                          <button className="text-foreground/60 hover:text-foreground/70 transition-colors p-1">
                             <FiEye size={16} />
                           </button>
-                          <button className="text-slate-400 hover:text-slate-600 transition-colors p-1">
+                          <button className="text-foreground/60 hover:text-foreground/70 transition-colors p-1">
                             <FiDownload size={16} />
                           </button>
                         </>
@@ -281,28 +282,28 @@ export default function BookingRequests() {
         </Card.Content>
 
         {/* Dynamic Pagination Footer */}
-        <Card.Footer className="p-4 flex flex-col sm:flex-row justify-between items-center gap-4 border-t border-slate-100 bg-white">
-          <span className="text-xs font-medium text-slate-400">
+        <Card.Footer className="p-4 flex flex-col sm:flex-row justify-between items-center gap-4 border-t border-foreground/20 bg-background">
+          <span className="text-xs font-medium text-foreground/60">
             Showing{" "}
-            <strong className="text-slate-600 font-semibold">1 to 4</strong> of{" "}
-            <strong className="text-slate-600 font-semibold">12</strong>{" "}
+            <strong className="text-foreground/70 font-semibold">1 to 4</strong>{" "}
+            of <strong className="text-foreground/70 font-semibold">12</strong>{" "}
             requests
           </span>
 
           <div className="flex items-center gap-1">
-            <button className="p-2 border border-slate-200 text-slate-400 rounded-lg hover:bg-slate-50 transition-colors">
+            <button className="p-2 border border-foreground/20 text-foreground/60 rounded-lg hover:bg-secondary transition-colors">
               <FiChevronLeft size={14} />
             </button>
-            <button className="w-7 h-7 flex items-center justify-center bg-[#00523A] text-white rounded-lg text-xs font-semibold shadow-sm">
+            <button className="w-7 h-7 flex items-center justify-center bg-secondary text-white rounded-lg text-xs font-semibold shadow-sm">
               1
             </button>
-            <button className="w-7 h-7 flex items-center justify-center border border-slate-200 text-slate-600 hover:bg-slate-50 rounded-lg text-xs font-medium transition-colors">
+            <button className="w-7 h-7 flex items-center justify-center border border-foreground/20 text-foreground/70 hover:bg-secondary rounded-lg text-xs font-medium transition-colors">
               2
             </button>
-            <button className="w-7 h-7 flex items-center justify-center border border-slate-200 text-slate-600 hover:bg-slate-50 rounded-lg text-xs font-medium transition-colors">
+            <button className="w-7 h-7 flex items-center justify-center border border-foreground/20 text-foreground/70 hover:bg-secondary rounded-lg text-xs font-medium transition-colors">
               3
             </button>
-            <button className="p-2 border border-slate-200 text-slate-400 rounded-lg hover:bg-slate-50 transition-colors">
+            <button className="p-2 border border-foreground/20 text-foreground/60 rounded-lg hover:bg-secondary transition-colors">
               <FiChevronRight size={14} />
             </button>
           </div>

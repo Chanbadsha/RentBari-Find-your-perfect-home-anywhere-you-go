@@ -121,7 +121,7 @@ export default function PropertyFeaturedCard({ property }) {
       <div className="p-4 space-y-4">
         {/* Title & Price Header Line */}
         <div className="flex items-start justify-between gap-2">
-          <h3 className="text-xl font-bold tracking-tight text-foreground  ">
+          <h3 className="text-xl font-bold tracking-tight text-foreground line-clamp-2 min-h-[56px]">
             {property?.propertyTitle}
           </h3>
           <span className="text-lg font-extrabold text-primary shrink-0">

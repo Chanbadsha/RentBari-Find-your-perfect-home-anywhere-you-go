@@ -15,10 +15,9 @@ import { ValidImgUrl } from "@/Utils/ValidImgUrl";
 import { getUserSession } from "@/app/lib/core/session";
 import { getPropertiesByUserId } from "@/app/lib/api/properties";
 import { BiEdit } from "react-icons/bi";
-import Link from "next/link";
-import DashboardSummary from "@/Components/DashBoard/DashboardSummary";
+import DeletePropertyBtn from "@/Utils/DeletePropertyBtn";
 
-export default async function TenantDashBoard() {
+export default async function MyBookings() {
   const user = await getUserSession();
   const properties = await getPropertiesByUserId(user?.id);
 
@@ -49,25 +48,42 @@ export default async function TenantDashBoard() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            My Bookings
+            My Properties
           </h1>
           <p className="text-foreground/70 mt-1">
-            Manage and track your upcoming and past property stays.
+            Manage your real estate portfolio and track application statuses.
           </p>
         </div>
-        <Link
-          href={`/properties`}
-          className="flex items-center gap-2 bg-[#00523A] hover:bg-[#00402e] text-white px-5 py-2.5 rounded-xl font-medium transition-colors shadow-sm"
-        >
+        <button className="flex items-center gap-2 bg-[#00523A] hover:bg-[#00402e] text-white px-5 py-2.5 rounded-xl font-medium transition-colors shadow-sm">
           <FiPlus className="text-lg" />
-          New Booking
-        </Link>
+          Add New Property
+        </button>
       </div>
 
-      <DashboardSummary />
+      {/* Metrics Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        {stats.map((stat, idx) => (
+          <Card
+            key={idx}
+            className="border border-foreground/20 bg-background shadow-sm rounded-2xl p-6"
+          >
+            <Card.Header className="p-0 pb-2">
+              <Card.Description className="text-xs font-semibold uppercase tracking-wider text-foreground/60">
+                {stat.title}
+              </Card.Description>
+            </Card.Header>
+            <Card.Content className="p-0 flex items-baseline gap-2">
+              <span className="text-3xl font-bold text-foreground">
+                {stat.value}
+              </span>
+              <span className={`text-xs ${stat.badgeColor}`}>{stat.badge}</span>
+            </Card.Content>
+          </Card>
+        ))}
+      </div>
 
       {/* Main Table Card container */}
-      <Card className="border mt-4 border-foreground/20 bg-background shadow-sm rounded-2xl overflow-hidden">
+      <Card className="border border-foreground/20 bg-background shadow-sm rounded-2xl overflow-hidden">
         {/* Table Top Filters Header */}
         <Card.Header className="p-6 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 border-b border-foreground/20 bg-background">
           <div className="relative flex-1 max-w-md">
@@ -97,16 +113,19 @@ export default async function TenantDashBoard() {
             <thead>
               <tr className="border-b border-foreground/20 bg-background text-[11px] font-bold uppercase tracking-wider text-foreground/60">
                 <th className="py-4 px-6">Property</th>
-                <th className="py-4 px-6">Booking Date</th>
-                <th className="py-4 px-6">Amount Paid</th>
+                <th className="py-4 px-6">Location</th>
+                <th className="py-4 px-6">Rent Price</th>
 
-                <th className="py-4 px-6"> Booking Status</th>
-                <th className="py-4 px-6"> Payment Status</th>
+                <th className="py-4 px-6">Status</th>
+                <th className="py-4 px-6">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-foreground/20 text-sm">
+            <tbody className="divide-y divide-slate-100 text-sm">
               {properties.slice(0, 3).map((property) => (
-                <tr key={property._id} className=" transition-colors">
+                <tr
+                  key={property._id}
+                  className="hover:bg-slate-50/40 transition-colors"
+                >
                   {/* Property Details */}
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-4">
@@ -121,29 +140,18 @@ export default async function TenantDashBoard() {
                         <h4 className="font-bold text-foreground text-[15px] leading-tight">
                           {property?.propertyTitle}
                         </h4>
-                        {/* <span className="text-xs text-foreground/60 font-medium ">
-                          {property?.propertyType} . {property?.location}
-                        </span> */}
-                        <p className="text-xs text-foreground/60 font-medium  truncate max-w-50">
-                          {property?.propertyType} · {property?.location}
-                        </p>
+                        <span className="text-xs text-foreground/60 font-medium">
+                          {property?.propertyType}
+                        </span>
                       </div>
                     </div>
                   </td>
 
                   {/* Location */}
                   <td className="py-4 px-6 text-foreground/70 font-medium">
-                    <div className="max-w-50">
-                      <span>
-                        {new Date(property?.createdAt).toLocaleDateString(
-                          "en-US",
-                          {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          },
-                        )}
-                      </span>
+                    <div className="flex items-start gap-1.5 max-w-50">
+                      <FiMapPin className="text-foreground/60 mt-0.5 shrink-0" />
+                      <span>{property?.location}</span>
                     </div>
                   </td>
 
@@ -152,48 +160,17 @@ export default async function TenantDashBoard() {
                     <span className="font-bold text-foreground">
                       {property?.rentPrice}$
                     </span>
+                    <span className="text-xs text-foreground/60 font-medium">
+                      {" "}
+                      /{property?.rentType}
+                    </span>
                   </td>
 
                   {/* Status Indicator */}
                   <td className="py-4 px-6">
-                    <span
-                      className={`text-[11px] px-2.5 py-1 rounded-full font-semibold capitalize ${
-                        property?.status === "approved"
-                          ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400"
-                          : property?.status === "pending"
-                            ? "bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400"
-                            : property?.status === "rejected"
-                              ? "bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400"
-                              : "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-300"
-                      }`}
-                    >
-                      {property?.status}
-                    </span>
-                  </td>
-                  {/* payment status */}
-                  <td className="py-4 px-6">
                     <div className="flex items-center gap-2">
-                      {/* Dot */}
-                      <span
-                        className={`w-2 h-2 rounded-full ${
-                          property?.status === "paid"
-                            ? "bg-emerald-500"
-                            : property?.status === "unpaid"
-                              ? "bg-red-500"
-                              : "bg-slate-400"
-                        }`}
-                      />
-
-                      {/* Text */}
-                      <span
-                        className={`text-xs font-semibold capitalize ${
-                          property?.status === "paid"
-                            ? "text-emerald-600 dark:text-emerald-400"
-                            : property?.status === "unpaid"
-                              ? "text-red-600 dark:text-red-400"
-                              : "text-slate-500 dark:text-slate-400"
-                        }`}
-                      >
+                      <span className={`w-2 h-2 rounded-full `} />
+                      <span className={`font-bold text-xs `}>
                         {property?.status}
                       </span>
                     </div>
@@ -201,7 +178,7 @@ export default async function TenantDashBoard() {
 
                   {/* Placeholder for actions */}
 
-                  {/* <td className="py-4 px-6">
+                  <td className="py-4 px-6">
                     <div className="flex items-center gap-2">
                       <button
                         title="Edit Property"
@@ -265,7 +242,7 @@ export default async function TenantDashBoard() {
                         </AlertDialog.Backdrop>
                       </AlertDialog>
                     </div>
-                  </td> */}
+                  </td>
                 </tr>
               ))}
             </tbody>

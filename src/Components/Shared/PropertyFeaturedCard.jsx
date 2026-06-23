@@ -46,7 +46,7 @@ export default function PropertyFeaturedCard({ property }) {
       <div className="p-4 space-y-3">
         {/* Title + Tag */}
         <div className="flex items-start justify-between gap-3">
-          <h3 className="text-lg font-semibold text-foreground leading-tight">
+          <h3 className="text-xl font-bold tracking-tight text-foreground line-clamp-2 min-h-[56px]">
             {property?.propertyTitle}
           </h3>
 

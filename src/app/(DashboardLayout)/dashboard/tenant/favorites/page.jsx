@@ -33,7 +33,7 @@ export default async function TenantDashBoard() {
 
       {/* Main Table Card container */}
 
-      <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 items-stretch">
+      <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5 items-stretch">
         {properties.map((property, index) => (
           <div
             key={index}
@@ -113,9 +113,12 @@ export default async function TenantDashBoard() {
               </div>
 
               {/* Button */}
-              <button className="w-full py-2.5 rounded-xl bg-foreground text-background font-semibold text-[14px] hover:opacity-90 transition-opacity duration-200">
+              <Link
+                href={`/properties/${property._id}`}
+                className="w-full py-2.5 rounded-xl bg-foreground  flex justify-center items-center text-background font-semibold text-[14px] hover:opacity-90 transition-opacity duration-200"
+              >
                 View Details
-              </button>
+              </Link>
             </div>
           </div>
         ))}

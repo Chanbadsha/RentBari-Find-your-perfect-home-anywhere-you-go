@@ -1,305 +1,316 @@
 import React from "react";
-import { Card, Input, Button, AlertDialog } from "@heroui/react";
+import { Card } from "@heroui/react";
 import {
   FiPlus,
-  FiSearch,
-  FiSliders,
-  FiDownload,
+  FiHome,
+  FiHeart,
+  FiCalendar,
   FiMapPin,
-  FiChevronLeft,
-  FiChevronRight,
-  FiTrash2,
+  FiWifi,
+  FiTv,
+  FiPhone,
+  FiMessageSquare,
+  FiHelpCircle,
+  FiGift,
 } from "react-icons/fi";
 import Image from "next/image";
-import { ValidImgUrl } from "@/Utils/ValidImgUrl";
-import { getUserSession } from "@/app/lib/core/session";
-import { getPropertiesByUserId } from "@/app/lib/api/properties";
-import { BiEdit } from "react-icons/bi";
 import Link from "next/link";
-import DashboardSummary from "@/Components/DashBoard/DashboardSummary";
 
-export default async function TenantDashBoard() {
-  const user = await getUserSession();
-  const properties = await getPropertiesByUserId(user?.id);
-
+export default function TenantDashboard() {
   const stats = [
     {
-      title: "Total Properties",
-      value: properties.length,
+      title: "Total Bookings",
+      value: "12",
       badge: "+2 this month",
-      badgeColor: "text-emerald-600 font-medium",
+      badgeColor: "text-emerald-700",
+      icon: <FiHome className="text-emerald-700 text-lg" />,
+      iconBg: "bg-[#CCECE3]",
     },
     {
-      title: "Monthly Revenue",
-      value: "$24,500",
-      badge: "↑ 8.4%",
-      badgeColor: "text-emerald-600 font-medium",
-    },
-    {
-      title: "Occupancy Rate",
-      value: "92%",
-      badge: "Stable",
-      badgeColor: "text-amber-600 font-medium",
+      title: "Favorites",
+      value: "28",
+      badge: "Saved Items",
+      badgeColor: "text-foreground/70",
+      icon: <FiHeart className="text-amber-700 text-lg fill-amber-700" />,
+      iconBg: "bg-[#FDEEDC]",
     },
   ];
 
   return (
-    <div className="min-h-screen bg-background p-8 font-sans antialiased text-foreground">
-      {/* Header Section */}
+    <div className="min-h-screen bg-background p-6 md:p-8 font-sans antialiased text-foreground">
+      {/* Welcome & Header Action Section */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            My Bookings
+          <h1 className="text-3xl font-black tracking-tight text-foreground">
+            Welcome back, Alex!
           </h1>
-          <p className="text-foreground/70 mt-1">
-            Manage and track your upcoming and past property stays.
+          <p className="text-foreground/70 text-sm mt-1">
+            Your next adventure is just around the corner. Here&apos;s a look at
+            your stay details.
           </p>
         </div>
-        <Link
-          href={`/properties`}
-          className="flex items-center gap-2 bg-[#00523A] hover:bg-[#00402e] text-white px-5 py-2.5 rounded-xl font-medium transition-colors shadow-sm"
-        >
-          <FiPlus className="text-lg" />
+        <button className="flex items-center gap-2 bg-[#00523A] hover:bg-[#00402e] text-foreground px-5 py-3 rounded-xl font-bold text-sm transition-colors shadow-sm self-stretch sm:self-auto justify-center">
+          <FiPlus className="text-base" />
           New Booking
-        </Link>
+        </button>
       </div>
 
-      <DashboardSummary />
+      {/* Grid containing Stats and Next Stay Snapshot */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        {/* Left Side: Stats column wrapper (Spans 2 columns) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:col-span-2">
+          {stats.map((stat, idx) => (
+            <Card
+              key={idx}
+              className="border border-emerald-100 dark:border-emerald-900/30 bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm flex flex-col justify-between"
+            >
+              <Card.Header className="p-0  flex  justify-between items-start pb-6">
+                <div className="w-full flex justify-between">
+                  <span className={`p-2.5 rounded-xl ${stat.iconBg}`}>
+                    {stat.icon}
+                  </span>
+                  <span className={`text-[11px] font-bold ${stat.badgeColor}`}>
+                    {stat.badge}
+                  </span>
+                </div>
+              </Card.Header>
+              <Card.Content className="p-0">
+                <Card.Description className="text-xs font-bold uppercase tracking-wider text-foreground/70">
+                  {stat.title}
+                </Card.Description>
+                <Card.Title className="text-3xl font-black text-foreground mt-1">
+                  {stat.value}
+                </Card.Title>
+              </Card.Content>
+            </Card>
+          ))}
+        </div>
 
-      {/* Main Table Card container */}
-      <Card className="border mt-4 border-foreground/20 bg-background shadow-sm rounded-2xl overflow-hidden">
-        {/* Table Top Filters Header */}
-        <Card.Header className="p-6 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 border-b border-foreground/20 bg-background">
-          <div className="relative flex-1 max-w-md">
-            <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-foreground/60 text-lg" />
-            <Input
-              aria-label="Search properties"
-              placeholder="Search by title or location..."
-              className="w-full pl-10 pr-4 py-2.5 bg-background border-foreground/40 focus:border-none border rounded-xl focus:bg-background focus:ring-2 focus:ring-[#00523A]/20 transition-all text-sm outline-none placeholder:text-foreground/60"
-            />
-          </div>
+        {/* Right Side: Next Stay Highlight Micro-Card (Spans 1 column) */}
+        <Card className="bg-[#00523A] text-foreground rounded-2xl p-6 shadow-sm flex flex-col justify-between min-h-45">
+          <Card.Header className="p-0 flex space-y-2 justify-between items-start">
+            <span className="p-2.5 bg-background/10 rounded-xl">
+              <FiCalendar className="text-foreground text-lg" />
+            </span>
+            <span className="text-[10px] font-bold bg-background/10 text-foreground px-2.5 py-0.5 rounded-full">
+              In 4 Days
+            </span>
+          </Card.Header>
+          <Card.Content className="p-0 mt-6">
+            <Card.Description className="text-[10px] font-bold uppercase tracking-widest text-foreground/60">
+              Next Stay
+            </Card.Description>
+            <Card.Title className="text-xl font-bold mt-0.5 leading-tight text-foreground">
+              Ocean Breeze Villa
+            </Card.Title>
+          </Card.Content>
+          <Card.Footer className="p-0 mt-1 text-xs text-foreground/80 font-medium">
+            Dec 12 - Dec 18, 2024
+          </Card.Footer>
+        </Card>
+      </div>
 
-          <div className="flex items-center gap-3">
-            <button className="flex items-center gap-2 border border-foreground/20 hover:bg-slate-50 px-4 py-2.5 rounded-xl text-sm font-medium text-foreground/70 transition-all">
-              <FiSliders className="text-foreground/70" />
-              Filters
-            </button>
-            <button className="flex items-center gap-2 border border-foreground/20 hover:bg-slate-50 px-4 py-2.5 rounded-xl text-sm font-medium text-foreground/70 transition-all">
-              <FiDownload className="text-foreground/70" />
-              Export
-            </button>
-          </div>
-        </Card.Header>
+      {/* Upcoming Stays Detailed Item Card */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-bold text-foreground">Upcoming Stays</h3>
+          <Link
+            href={`/dashboard/tenant/bookings`}
+            className="text-xs font-bold text-[#00523A] hover:underline"
+          >
+            View All Bookings
+          </Link>
+        </div>
 
-        {/* Properties Content Area */}
-        <Card.Content className="p-0 overflow-x-auto">
-          <table className="w-full min-w-200 text-left border-collapse">
-            <thead>
-              <tr className="border-b border-foreground/20 bg-background text-[11px] font-bold uppercase tracking-wider text-foreground/60">
-                <th className="py-4 px-6">Property</th>
-                <th className="py-4 px-6">Booking Date</th>
-                <th className="py-4 px-6">Amount Paid</th>
+        <div className="flex flex-col gap-2">
+          <Card className="border border-foreground/30 bg-background rounded-2xl p-4 shadow-sm">
+            <Card.Content className="p-0 flex flex-col md:flex-row gap-5 items-stretch">
+              {/* Aspect Ratio Controlled Image */}
+              <div className="relative w-full md:w-72 h-44 rounded-xl overflow-hidden shrink-0">
+                <Image
+                  height={600}
+                  width={600}
+                  src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=500&auto=format&fit=crop&q=80"
+                  alt="Ocean Breeze Villa & Spa"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute top-3 left-3 bg-[#00523A] text-foreground text-[9px] font-bold px-2.5 py-1 rounded-md shadow-sm">
+                  Confirmed
+                </div>
+              </div>
 
-                <th className="py-4 px-6"> Booking Status</th>
-                <th className="py-4 px-6"> Payment Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-foreground/20 text-sm">
-              {properties.slice(0, 3).map((property) => (
-                <tr key={property._id} className=" transition-colors">
-                  {/* Property Details */}
-                  <td className="py-4 px-6">
-                    <div className="flex items-center gap-4">
-                      <Image
-                        height={600}
-                        width={600}
-                        src={ValidImgUrl(property?.coverImage)}
-                        alt={property?.propertyTitle}
-                        className="w-12 h-12 object-cover rounded-xl border border-foreground/20"
-                      />
-                      <div>
-                        <h4 className="font-bold text-foreground text-[15px] leading-tight">
-                          {property?.propertyTitle}
-                        </h4>
-                        {/* <span className="text-xs text-foreground/60 font-medium ">
-                          {property?.propertyType} . {property?.location}
-                        </span> */}
-                        <p className="text-xs text-foreground/60 font-medium  truncate max-w-50">
-                          {property?.propertyType} · {property?.location}
-                        </p>
-                      </div>
+              {/* Content Details side */}
+              <div className="flex-1 flex flex-col justify-between py-1">
+                <div>
+                  <div className="flex items-center gap-1 text-xs font-bold text-teal-600 uppercase tracking-wider">
+                    <FiMapPin />
+                    <span>Malibu, California</span>
+                  </div>
+                  <h4 className="text-lg font-extrabold text-foreground mt-1">
+                    Ocean Breeze Villa & Spa
+                  </h4>
+                  <p className="text-xs text-foreground/70 font-medium mt-1.5">
+                    📅 Dec 12 - 18, 2024 &nbsp;•&nbsp; 👥 2 Guests
+                  </p>
+                </div>
+
+                {/* Amenities Tags & Row Actions */}
+                <div className="flex flex-wrap items-center justify-between gap-4 mt-4 pt-4 border-t border-foreground/30">
+                  <div className="flex items-center gap-2 text-foreground/70">
+                    <div className="p-1.5 bg-slate-50 border border-foreground/30 rounded-lg">
+                      <FiWifi size={14} />
                     </div>
-                  </td>
-
-                  {/* Location */}
-                  <td className="py-4 px-6 text-foreground/70 font-medium">
-                    <div className="max-w-50">
-                      <span>
-                        {new Date(property?.createdAt).toLocaleDateString(
-                          "en-US",
-                          {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          },
-                        )}
-                      </span>
+                    <div className="p-1.5 bg-slate-50 border border-foreground/30 rounded-lg">
+                      <FiTv size={14} />
                     </div>
-                  </td>
-
-                  {/* Rent Price */}
-                  <td className="py-4 px-6">
-                    <span className="font-bold text-foreground">
-                      {property?.rentPrice}$
+                    <span className="text-[11px] font-bold text-foreground/70 bg-slate-50 border border-foreground/30 px-2 py-0.5 rounded-lg">
+                      +4
                     </span>
-                  </td>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button className="text-xs font-bold border border-slate-200 hover:bg-secondary text-foreground/70 px-4 py-2 rounded-xl transition-colors">
+                      Manage
+                    </button>
+                    <button className="text-xs font-bold bg-slate-100 hover:bg-slate-200 text-black px-4 py-2 rounded-xl transition-colors">
+                      Get Directions
+                    </button>
+                  </div>
+                </div>
+              </div>
 
-                  {/* Status Indicator */}
-                  <td className="py-4 px-6">
-                    <span
-                      className={`text-[11px] px-2.5 py-1 rounded-full font-semibold capitalize ${
-                        property?.status === "approved"
-                          ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400"
-                          : property?.status === "pending"
-                            ? "bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400"
-                            : property?.status === "rejected"
-                              ? "bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400"
-                              : "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-300"
-                      }`}
-                    >
-                      {property?.status}
+              {/* Absolute Pricing Side Area */}
+              <div className="text-right flex flex-col justify-start md:justify-center items-end md:border-l md:border-foreground/30 md:pl-6 min-w-30">
+                <span className="text-xl font-black text-foreground">
+                  $1,450.00
+                </span>
+                <span className="text-[10px] font-bold text-foreground/70 mt-0.5">
+                  Paid in Full
+                </span>
+              </div>
+            </Card.Content>
+          </Card>
+          <Card className="border border-foreground/30 bg-background rounded-2xl p-4 shadow-sm">
+            <Card.Content className="p-0 flex flex-col md:flex-row gap-5 items-stretch">
+              {/* Aspect Ratio Controlled Image */}
+              <div className="relative w-full md:w-72 h-44 rounded-xl overflow-hidden shrink-0">
+                <Image
+                  height={600}
+                  width={600}
+                  src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=500&auto=format&fit=crop&q=80"
+                  alt="Ocean Breeze Villa & Spa"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute top-3 left-3 bg-[#00523A] text-foreground text-[9px] font-bold px-2.5 py-1 rounded-md shadow-sm">
+                  Confirmed
+                </div>
+              </div>
+
+              {/* Content Details side */}
+              <div className="flex-1 flex flex-col justify-between py-1">
+                <div>
+                  <div className="flex items-center gap-1 text-xs font-bold text-teal-600 uppercase tracking-wider">
+                    <FiMapPin />
+                    <span>Malibu, California</span>
+                  </div>
+                  <h4 className="text-lg font-extrabold text-foreground mt-1">
+                    Ocean Breeze Villa & Spa
+                  </h4>
+                  <p className="text-xs text-foreground/70 font-medium mt-1.5">
+                    📅 Dec 12 - 18, 2024 &nbsp;•&nbsp; 👥 2 Guests
+                  </p>
+                </div>
+
+                {/* Amenities Tags & Row Actions */}
+                <div className="flex flex-wrap items-center justify-between gap-4 mt-4 pt-4 border-t border-foreground/30">
+                  <div className="flex items-center gap-2 text-foreground/70">
+                    <div className="p-1.5 bg-slate-50 border border-foreground/30 rounded-lg">
+                      <FiWifi size={14} />
+                    </div>
+                    <div className="p-1.5 bg-slate-50 border border-foreground/30 rounded-lg">
+                      <FiTv size={14} />
+                    </div>
+                    <span className="text-[11px] font-bold text-foreground/70 bg-slate-50 border border-foreground/30 px-2 py-0.5 rounded-lg">
+                      +4
                     </span>
-                  </td>
-                  {/* payment status */}
-                  <td className="py-4 px-6">
-                    <div className="flex items-center gap-2">
-                      {/* Dot */}
-                      <span
-                        className={`w-2 h-2 rounded-full ${
-                          property?.status === "paid"
-                            ? "bg-emerald-500"
-                            : property?.status === "unpaid"
-                              ? "bg-red-500"
-                              : "bg-slate-400"
-                        }`}
-                      />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button className="text-xs font-bold border border-slate-200 hover:bg-secondary text-foreground/70 px-4 py-2 rounded-xl transition-colors">
+                      Manage
+                    </button>
+                    <button className="text-xs font-bold bg-slate-100 hover:bg-slate-200 text-black px-4 py-2 rounded-xl transition-colors">
+                      Get Directions
+                    </button>
+                  </div>
+                </div>
+              </div>
 
-                      {/* Text */}
-                      <span
-                        className={`text-xs font-semibold capitalize ${
-                          property?.status === "paid"
-                            ? "text-emerald-600 dark:text-emerald-400"
-                            : property?.status === "unpaid"
-                              ? "text-red-600 dark:text-red-400"
-                              : "text-slate-500 dark:text-slate-400"
-                        }`}
-                      >
-                        {property?.status}
-                      </span>
-                    </div>
-                  </td>
+              {/* Absolute Pricing Side Area */}
+              <div className="text-right flex flex-col justify-start md:justify-center items-end md:border-l md:border-foreground/30 md:pl-6 min-w-30">
+                <span className="text-xl font-black text-foreground">
+                  $1,450.00
+                </span>
+                <span className="text-[10px] font-bold text-foreground/70 mt-0.5">
+                  Paid in Full
+                </span>
+              </div>
+            </Card.Content>
+          </Card>
+        </div>
+      </div>
 
-                  {/* Placeholder for actions */}
-
-                  {/* <td className="py-4 px-6">
-                    <div className="flex items-center gap-2">
-                      <button
-                        title="Edit Property"
-                        className="p-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors"
-                      >
-                        <BiEdit size={16} />
-                      </button>
-
-                      <AlertDialog>
-                        <Button
-                          variant="outline"
-                          title="Delete Property"
-                          className="p-2 outline-none border-none rounded-lg text-red-500 hover:bg-red-50 transition-colors"
-                        >
-                          <FiTrash2 size={16} />
-                        </Button>
-                        <AlertDialog.Backdrop>
-                          <AlertDialog.Container>
-                            <AlertDialog.Dialog className="sm:max-w-100">
-                              <AlertDialog.CloseTrigger />
-                              <AlertDialog.Header>
-                                <AlertDialog.Icon status="danger" />
-                                <AlertDialog.Heading>
-                                  Delete project permanently?
-                                </AlertDialog.Heading>
-                              </AlertDialog.Header>
-                              <AlertDialog.Body>
-                                <div className="space-y-3">
-                                  <p className="text-sm text-foreground/80 leading-relaxed">
-                                    Are you sure you want to delete this
-                                    property listing?
-                                  </p>
-
-                                  <div className="rounded-xl border border-red-200 bg-red-50 p-3">
-                                    <p className="text-sm">
-                                      Property:{" "}
-                                      <strong className="font-semibold text-red-700">
-                                        {property.propertyTitle}
-                                      </strong>
-                                    </p>
-                                  </div>
-
-                                  <p className="text-sm text-foreground/60">
-                                    This action will permanently remove the
-                                    property listing, photos, amenities, house
-                                    rules, and all associated information from
-                                    RentBari. This action cannot be undone.
-                                  </p>
-                                </div>
-                              </AlertDialog.Body>
-
-                              <AlertDialog.Footer>
-                                <Button slot="close" variant="tertiary">
-                                  Keep Property
-                                </Button>
-
-                                <DeletePropertyBtn propertyId={property._id} />
-                              </AlertDialog.Footer>
-                            </AlertDialog.Dialog>
-                          </AlertDialog.Container>
-                        </AlertDialog.Backdrop>
-                      </AlertDialog>
-                    </div>
-                  </td> */}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Card.Content>
-
-        {/* Pagination Footer */}
-        <Card.Footer className="p-4 flex flex-col sm:flex-row justify-between items-center gap-4 border-t border-foreground/20 bg-background">
-          <span className="text-xs font-medium text-foreground/60">
-            Showing{" "}
-            <strong className="text-foreground/70 font-semibold">1-3</strong> of{" "}
-            <strong className="text-foreground/70 font-semibold">12</strong>{" "}
-            properties
-          </span>
-
-          <div className="flex items-center gap-1">
-            <button className="p-2 border border-foreground/20 text-foreground/60 rounded-lg hover:bg-secondary transition-colors">
-              <FiChevronLeft size={16} />
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center bg-secondary text-white rounded-lg text-xs font-semibold shadow-sm">
-              1
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center border border-foreground/20 text-foreground/70 hover:bg-secondary rounded-lg text-xs font-medium transition-colors">
-              2
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center border border-foreground/20 text-foreground/70 hover:bg-secondary rounded-lg text-xs font-medium transition-colors">
-              3
-            </button>
-            <button className="p-2 border border-foreground/20 text-foreground/60 rounded-lg hover:bg-secondary transition-colors">
-              <FiChevronRight size={16} />
-            </button>
+      {/* Bottom Promotional / Customer Help Row */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Refer a Friend Banner Card */}
+        <Card className="bg-[#6A3B2A] text-white rounded-2xl p-6 shadow-sm relative overflow-hidden flex flex-col justify-between min-h-40">
+          <div>
+            <Card.Title className="text-lg text-white font-bold">
+              Refer a Friend
+            </Card.Title>
+            <Card.Description className="text-xs text-slate-200 mt-1.5 max-w-xs leading-relaxed">
+              Share RentBari with your network and earn $50 in credits for every
+              successful booking.
+            </Card.Description>
           </div>
-        </Card.Footer>
-      </Card>
+          <Card.Footer className="p-0 mt-4">
+            <button className="text-xs font-bold bg-secondary  text-white px-5 py-2.5 rounded-xl transition-transform hover:scale-[1.02]">
+              Invite Now
+            </button>
+          </Card.Footer>
+          {/* Subtle Background Icon decoration watermark */}
+          <FiGift className="absolute -bottom-2.5 -right-2.5 text-foreground/10 w-24 h-24 pointer-events-none" />
+        </Card>
+
+        {/* 24/7 Concierge Support Card */}
+        <Card className="bg-[#E6EAE7] border border-transparent rounded-2xl p-6 shadow-sm flex flex-col justify-between min-h-40">
+          <div className="flex justify-between items-start gap-4">
+            <div>
+              <Card.Title className="text-lg  font-bold text-[#181c1b]">
+                Need Help?
+              </Card.Title>
+              <Card.Description className="text-xs text-[#181c1b] mt-1.5 max-w-xs leading-relaxed">
+                Our 24/7 concierge is ready to assist you with any questions.
+              </Card.Description>
+            </div>
+
+            {/* Circular Help Agent Avatar badge replacement */}
+            <div className="w-12 h-12 rounded-full bg-white text-[#00523A] flex items-center justify-center shrink-0">
+              <FiPhone size={20} className="scale-x-[-1]" />
+            </div>
+          </div>
+
+          <Card.Footer className="p-0 mt-4 flex items-center gap-2">
+            <button className="w-9 h-9 flex items-center justify-center rounded-full bg-white text-[#00523A] hover:bg-slate-50 shadow-sm border border-foreground/30 transition-colors">
+              <FiPhone size={14} />
+            </button>
+            <button className="w-9 h-9 flex items-center justify-center rounded-full bg-white text-[#00523A] hover:bg-slate-50 shadow-sm border border-foreground/30 transition-colors">
+              <FiMessageSquare size={14} />
+            </button>
+            <button className="w-9 h-9 flex items-center justify-center rounded-full bg-white text-[#00523A] hover:bg-slate-50 shadow-sm border border-foreground/30 transition-colors">
+              <FiHelpCircle size={14} />
+            </button>
+          </Card.Footer>
+        </Card>
+      </div>
     </div>
   );
 }

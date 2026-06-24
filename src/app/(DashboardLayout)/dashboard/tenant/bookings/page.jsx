@@ -1,46 +1,22 @@
-import React from "react";
-import { Card, Input, Button, AlertDialog } from "@heroui/react";
+import DashboardSummary from "@/Components/DashBoard/DashboardSummary";
+import { ValidImgUrl } from "@/Utils/ValidImgUrl";
+import { getPropertiesByUserId } from "@/app/lib/api/properties";
+import { getUserSession } from "@/app/lib/core/session";
+import { Card, Input } from "@heroui/react";
+import Image from "next/image";
+import Link from "next/link";
 import {
+  FiChevronLeft,
+  FiChevronRight,
+  FiDownload,
   FiPlus,
   FiSearch,
   FiSliders,
-  FiDownload,
-  FiMapPin,
-  FiChevronLeft,
-  FiChevronRight,
-  FiTrash2,
 } from "react-icons/fi";
-import Image from "next/image";
-import { ValidImgUrl } from "@/Utils/ValidImgUrl";
-import { getUserSession } from "@/app/lib/core/session";
-import { getPropertiesByUserId } from "@/app/lib/api/properties";
-import { BiEdit } from "react-icons/bi";
-import DeletePropertyBtn from "@/Utils/DeletePropertyBtn";
 
-export default async function MyBookings() {
+export default async function TenantBookings() {
   const user = await getUserSession();
   const properties = await getPropertiesByUserId(user?.id);
-
-  const stats = [
-    {
-      title: "Total Properties",
-      value: properties.length,
-      badge: "+2 this month",
-      badgeColor: "text-emerald-600 font-medium",
-    },
-    {
-      title: "Monthly Revenue",
-      value: "$24,500",
-      badge: "↑ 8.4%",
-      badgeColor: "text-emerald-600 font-medium",
-    },
-    {
-      title: "Occupancy Rate",
-      value: "92%",
-      badge: "Stable",
-      badgeColor: "text-amber-600 font-medium",
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-background p-8 font-sans antialiased text-foreground">
@@ -48,42 +24,25 @@ export default async function MyBookings() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            My Properties
+            My Bookings
           </h1>
           <p className="text-foreground/70 mt-1">
-            Manage your real estate portfolio and track application statuses.
+            Manage and track your upcoming and past property stays.
           </p>
         </div>
-        <button className="flex items-center gap-2 bg-[#00523A] hover:bg-[#00402e] text-white px-5 py-2.5 rounded-xl font-medium transition-colors shadow-sm">
+        <Link
+          href={`/properties`}
+          className="flex items-center gap-2 bg-[#00523A] hover:bg-[#00402e] text-white px-5 py-2.5 rounded-xl font-medium transition-colors shadow-sm"
+        >
           <FiPlus className="text-lg" />
-          Add New Property
-        </button>
+          New Booking
+        </Link>
       </div>
 
-      {/* Metrics Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        {stats.map((stat, idx) => (
-          <Card
-            key={idx}
-            className="border border-foreground/20 bg-background shadow-sm rounded-2xl p-6"
-          >
-            <Card.Header className="p-0 pb-2">
-              <Card.Description className="text-xs font-semibold uppercase tracking-wider text-foreground/60">
-                {stat.title}
-              </Card.Description>
-            </Card.Header>
-            <Card.Content className="p-0 flex items-baseline gap-2">
-              <span className="text-3xl font-bold text-foreground">
-                {stat.value}
-              </span>
-              <span className={`text-xs ${stat.badgeColor}`}>{stat.badge}</span>
-            </Card.Content>
-          </Card>
-        ))}
-      </div>
+      <DashboardSummary />
 
       {/* Main Table Card container */}
-      <Card className="border border-foreground/20 bg-background shadow-sm rounded-2xl overflow-hidden">
+      <Card className="border mt-4 border-foreground/20 bg-background shadow-sm rounded-2xl overflow-hidden">
         {/* Table Top Filters Header */}
         <Card.Header className="p-6 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 border-b border-foreground/20 bg-background">
           <div className="relative flex-1 max-w-md">
@@ -113,19 +72,16 @@ export default async function MyBookings() {
             <thead>
               <tr className="border-b border-foreground/20 bg-background text-[11px] font-bold uppercase tracking-wider text-foreground/60">
                 <th className="py-4 px-6">Property</th>
-                <th className="py-4 px-6">Location</th>
-                <th className="py-4 px-6">Rent Price</th>
+                <th className="py-4 px-6">Booking Date</th>
+                <th className="py-4 px-6">Amount Paid</th>
 
-                <th className="py-4 px-6">Status</th>
-                <th className="py-4 px-6">Actions</th>
+                <th className="py-4 px-6"> Booking Status</th>
+                <th className="py-4 px-6"> Payment Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 text-sm">
+            <tbody className="divide-y divide-foreground/20 text-sm">
               {properties.slice(0, 3).map((property) => (
-                <tr
-                  key={property._id}
-                  className="hover:bg-slate-50/40 transition-colors"
-                >
+                <tr key={property._id} className=" transition-colors">
                   {/* Property Details */}
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-4">
@@ -140,18 +96,29 @@ export default async function MyBookings() {
                         <h4 className="font-bold text-foreground text-[15px] leading-tight">
                           {property?.propertyTitle}
                         </h4>
-                        <span className="text-xs text-foreground/60 font-medium">
-                          {property?.propertyType}
-                        </span>
+                        {/* <span className="text-xs text-foreground/60 font-medium ">
+                          {property?.propertyType} . {property?.location}
+                        </span> */}
+                        <p className="text-xs text-foreground/60 font-medium  truncate max-w-50">
+                          {property?.propertyType} · {property?.location}
+                        </p>
                       </div>
                     </div>
                   </td>
 
                   {/* Location */}
                   <td className="py-4 px-6 text-foreground/70 font-medium">
-                    <div className="flex items-start gap-1.5 max-w-50">
-                      <FiMapPin className="text-foreground/60 mt-0.5 shrink-0" />
-                      <span>{property?.location}</span>
+                    <div className="max-w-50">
+                      <span>
+                        {new Date(property?.createdAt).toLocaleDateString(
+                          "en-US",
+                          {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          },
+                        )}
+                      </span>
                     </div>
                   </td>
 
@@ -160,17 +127,48 @@ export default async function MyBookings() {
                     <span className="font-bold text-foreground">
                       {property?.rentPrice}$
                     </span>
-                    <span className="text-xs text-foreground/60 font-medium">
-                      {" "}
-                      /{property?.rentType}
-                    </span>
                   </td>
 
                   {/* Status Indicator */}
                   <td className="py-4 px-6">
+                    <span
+                      className={`text-[11px] px-2.5 py-1 rounded-full font-semibold capitalize ${
+                        property?.status === "approved"
+                          ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400"
+                          : property?.status === "pending"
+                            ? "bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400"
+                            : property?.status === "rejected"
+                              ? "bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400"
+                              : "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-300"
+                      }`}
+                    >
+                      {property?.status}
+                    </span>
+                  </td>
+                  {/* payment status */}
+                  <td className="py-4 px-6">
                     <div className="flex items-center gap-2">
-                      <span className={`w-2 h-2 rounded-full `} />
-                      <span className={`font-bold text-xs `}>
+                      {/* Dot */}
+                      <span
+                        className={`w-2 h-2 rounded-full ${
+                          property?.status === "paid"
+                            ? "bg-emerald-500"
+                            : property?.status === "unpaid"
+                              ? "bg-red-500"
+                              : "bg-slate-400"
+                        }`}
+                      />
+
+                      {/* Text */}
+                      <span
+                        className={`text-xs font-semibold capitalize ${
+                          property?.status === "paid"
+                            ? "text-emerald-600 dark:text-emerald-400"
+                            : property?.status === "unpaid"
+                              ? "text-red-600 dark:text-red-400"
+                              : "text-slate-500 dark:text-slate-400"
+                        }`}
+                      >
                         {property?.status}
                       </span>
                     </div>
@@ -178,7 +176,7 @@ export default async function MyBookings() {
 
                   {/* Placeholder for actions */}
 
-                  <td className="py-4 px-6">
+                  {/* <td className="py-4 px-6">
                     <div className="flex items-center gap-2">
                       <button
                         title="Edit Property"
@@ -242,7 +240,7 @@ export default async function MyBookings() {
                         </AlertDialog.Backdrop>
                       </AlertDialog>
                     </div>
-                  </td>
+                  </td> */}
                 </tr>
               ))}
             </tbody>

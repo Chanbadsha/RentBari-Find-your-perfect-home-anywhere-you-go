@@ -1,24 +1,53 @@
 export const serverMutation = async (path, data) => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/${path}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/${path}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
 
-  return response.json();
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result?.message || "Request failed");
+    }
+
+    return result;
+  } catch (error) {
+    console.error("serverMutation Error:", error);
+
+    return {
+      success: false,
+      message: error.message || "Something went wrong",
+    };
+  }
 };
 
-export const serverFetch = async (path, query = {}) => {
-  const queryString = new URLSearchParams(query).toString();
+export const serverFetch = async (path, query = {}, options = {}) => {
+  try {
+    const queryString = new URLSearchParams(query).toString();
 
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/${path}?${queryString}`,
-    {
-      cache: "no-store",
-    },
-  );
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/${path}?${queryString}`,
+      options,
+    );
 
-  return response.json();
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result?.message || "Failed to fetch data");
+    }
+
+    return result;
+  } catch (error) {
+    console.error("serverFetch Error:", error);
+
+    return {
+      success: false,
+      message: error.message || "Something went wrong",
+      data: null,
+    };
+  }
 };

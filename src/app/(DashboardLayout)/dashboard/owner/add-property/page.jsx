@@ -14,6 +14,7 @@ import { TextField } from "@heroui/react";
 import Image from "next/image";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { CgGym } from "react-icons/cg";
 import { FaCat, FaWifi } from "react-icons/fa";
 import { FaKitchenSet, FaSquareParking } from "react-icons/fa6";
@@ -33,7 +34,49 @@ export default function ListPropertyPage() {
   const [instantBooking, setInstantBooking] = useState(true);
   const [securityDeposit, setSecurityDeposit] = useState(false);
   const [ruleError, setRuleError] = useState("");
+  const [preview, setPreview] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [addPropertyLoading, setAddPropertyLoading] = useState(false);
 
+  const handleFileChange = async (e) => {
+    try {
+      setUploading(true);
+
+      const file = e.target.files?.[0];
+
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append("image", file);
+
+      const response = await fetch(
+        `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API_KEY}`,
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error("Image upload failed");
+      }
+
+      const uploadedImageUrl = data.data.url;
+
+      setImageUrl(uploadedImageUrl);
+      setPreview(uploadedImageUrl);
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast("Failed to upload image. Please try again.", {
+        icon: "❌",
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
   const addExtraFeature = () => {
     const value = featureInput.trim();
 
@@ -80,7 +123,9 @@ export default function ListPropertyPage() {
   });
   const { data } = authClient.useSession();
   const user = data?.user;
-
+  const toggleAmenity = (key) => {
+    setAmenities((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
   const {
     register,
     handleSubmit,
@@ -89,32 +134,50 @@ export default function ListPropertyPage() {
   } = useForm();
 
   const onSubmit = async (data) => {
-    if (extraFeatures.length === 0) {
-      setFeatureError("Please add at least one extra feature");
-      return;
-    }
-    if (houseRules.length === 0) {
-      setRuleError("Please add at least one house rule");
-      return;
-    }
-    const property = {
-      ...data,
-      amenities: amenities,
-      bedrooms,
-      bathrooms,
-      securityDeposit,
-      instantBooking,
-      isFurnished,
-      extraFeatures,
-      houseRules,
-      userId: user?.id,
-    };
+    try {
+      setAddPropertyLoading(true);
+      if (extraFeatures.length === 0) {
+        setFeatureError("Please add at least one extra feature");
+        return;
+      }
 
-    await AddProperty(property);
-  };
+      if (houseRules.length === 0) {
+        setRuleError("Please add at least one house rule");
+        return;
+      }
 
-  const toggleAmenity = (key) => {
-    setAmenities((prev) => ({ ...prev, [key]: !prev[key] }));
+      const property = {
+        ...data,
+        amenities,
+        bedrooms,
+        bathrooms,
+        securityDeposit,
+        instantBooking,
+        isFurnished,
+        extraFeatures,
+        houseRules,
+        coverImage: imageUrl,
+        userId: user?.id,
+      };
+
+      const result = await AddProperty(property);
+
+      if (!result?.success) {
+        throw new Error(result?.message || "Failed to add property");
+      }
+
+      toast("Property added successfully.", {
+        icon: "✅",
+      });
+    } catch (error) {
+      console.error("Add Property Error:", error);
+
+      toast(error.message || "Failed to add property. Please try again.", {
+        icon: "❌",
+      });
+    } finally {
+      setAddPropertyLoading(false);
+    }
   };
 
   return (
@@ -671,30 +734,71 @@ export default function ListPropertyPage() {
                 </div>
 
                 {/* Master Upload Zone Box */}
-                <div className="border border-dashed border-gray-300 bg-background/50 rounded-xl p-6 text-center cursor-pointer hover:bg-background transition-colors group">
-                  <div className="w-10 h-10 rounded-full bg-background flex items-center justify-center mx-auto shadow-xs border border-gray-100 group-hover:scale-105 transition-transform">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth="2.5"
-                      stroke="#0a5246"
-                      className="w-5 h-5"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5h10.5a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0017.25 4.5H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25z"
-                      />
-                    </svg>
+
+                {uploading ? (
+                  <div className="border border-dashed border-gray-300 bg-background/50 rounded-xl p-6 flex flex-col items-center justify-center h-48">
+                    <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+
+                    <p className="mt-4 text-sm font-semibold text-foreground">
+                      Uploading Image...
+                    </p>
+
+                    <p className="text-xs text-foreground/60 mt-1">
+                      Please wait a moment
+                    </p>
                   </div>
-                  <span className="block text-xs font-bold text-gray-700 mt-3">
-                    Upload Cover Photo
-                  </span>
-                  <span className="block text-[10px] font-medium text-gray-400 mt-1">
-                    PNG, JPG up to 10MB
-                  </span>
-                </div>
+                ) : preview ? (
+                  <div className="relative h-48 rounded-xl overflow-hidden border">
+                    <Image
+                      src={preview}
+                      alt="Preview"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                ) : (
+                  <label className="border border-dashed border-gray-300 bg-background/50 rounded-xl p-6 text-center cursor-pointer hover:bg-background transition-colors group block">
+                    <div className="w-10 h-10 rounded-full bg-background flex items-center justify-center mx-auto shadow-xs border border-gray-100 group-hover:scale-105 transition-transform">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth="2.5"
+                        stroke="#0a5246"
+                        className="w-5 h-5"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5h10.5a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0017.25 4.5H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25z"
+                        />
+                      </svg>
+                    </div>
+
+                    <span className="block text-xs font-bold text-gray-700 mt-3">
+                      Upload Cover Photo
+                    </span>
+
+                    <span className="block text-[10px] font-medium text-gray-400 mt-1">
+                      PNG, JPG up to 10MB
+                    </span>
+
+                    <input
+                      {...register("coverImage", {
+                        required: "Cover image is required",
+                      })}
+                      type="file"
+                      accept="image/png,image/jpeg,image/jpg"
+                      className="hidden"
+                      onChange={handleFileChange}
+                    />
+                    {errors.coverImage && (
+                      <p role="alert" className="text-red-500 text-xs mt-1">
+                        {errors.coverImage.message}
+                      </p>
+                    )}
+                  </label>
+                )}
 
                 {/* Upload Previews Carousel Array Grid */}
                 <div className="grid grid-cols-3 gap-2.5 pt-1">
@@ -816,10 +920,28 @@ export default function ListPropertyPage() {
                 </p>
                 <button
                   type="submit"
-                  className="w-full py-3.5 bg-[#0a5246] hover:bg-[#073c33] text-white text-sm font-bold rounded-xl shadow-md transition-all active:scale-[0.99] flex items-center justify-center gap-2"
+                  disabled={addPropertyLoading}
+                  className="
+    w-full py-3.5
+    bg-[#0a5246] hover:bg-[#073c33]
+    disabled:opacity-70 disabled:cursor-not-allowed
+    text-white text-sm font-bold
+    rounded-xl shadow-md
+    transition-all active:scale-[0.99]
+    flex items-center justify-center gap-2
+  "
                 >
-                  <span>List Property</span>
-                  <ArrowUpRightFromSquare className="w-3.5 h-3.5" />
+                  {addPropertyLoading ? (
+                    <>
+                      <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span>Listing Property...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>List Property</span>
+                      <ArrowUpRightFromSquare className="w-3.5 h-3.5" />
+                    </>
+                  )}
                 </button>
                 <button
                   type="button"

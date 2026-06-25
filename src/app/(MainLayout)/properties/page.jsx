@@ -2,8 +2,10 @@ import { getProperties } from "@/app/lib/api/properties";
 import PropertyCard from "@/Components/Shared/PropertyCard";
 import PropertySearchBar from "@/Utils/PropertySearchBar";
 
-const PropertiesPage = async () => {
-  const properties = await getProperties();
+const PropertiesPage = async ({ searchParams }) => {
+  const query = await searchParams;
+
+  const properties = await getProperties(query);
 
   return (
     <div className="container mx-auto px-4 py-8">

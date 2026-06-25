@@ -49,7 +49,7 @@ export default function TenantDashboard() {
             your stay details.
           </p>
         </div>
-        <button className="flex items-center gap-2 bg-[#00523A] hover:bg-[#00402e] text-foreground px-5 py-3 rounded-xl font-bold text-sm transition-colors shadow-sm self-stretch sm:self-auto justify-center">
+        <button className="flex items-center gap-2 bg-[#00523A] hover:bg-[#00402e] text-white px-5 py-3 rounded-xl font-bold text-sm transition-colors shadow-sm self-stretch sm:self-auto justify-center">
           <FiPlus className="text-base" />
           New Booking
         </button>
@@ -87,24 +87,24 @@ export default function TenantDashboard() {
         </div>
 
         {/* Right Side: Next Stay Highlight Micro-Card (Spans 1 column) */}
-        <Card className="bg-[#00523A] text-foreground rounded-2xl p-6 shadow-sm flex flex-col justify-between min-h-45">
+        <Card className="bg-[#00523A] text-white rounded-2xl p-6 shadow-sm flex flex-col justify-between min-h-45">
           <Card.Header className="p-0 flex space-y-2 justify-between items-start">
             <span className="p-2.5 bg-background/10 rounded-xl">
-              <FiCalendar className="text-foreground text-lg" />
+              <FiCalendar className="text-white text-lg" />
             </span>
-            <span className="text-[10px] font-bold bg-background/10 text-foreground px-2.5 py-0.5 rounded-full">
+            <span className="text-[10px] font-bold bg-background/10 text-white px-2.5 py-0.5 rounded-full">
               In 4 Days
             </span>
           </Card.Header>
           <Card.Content className="p-0 mt-6">
-            <Card.Description className="text-[10px] font-bold uppercase tracking-widest text-foreground/60">
+            <Card.Description className="text-[10px] font-bold uppercase tracking-widest text-white">
               Next Stay
             </Card.Description>
-            <Card.Title className="text-xl font-bold mt-0.5 leading-tight text-foreground">
+            <Card.Title className="text-xl font-bold mt-0.5 leading-tight text-white">
               Ocean Breeze Villa
             </Card.Title>
           </Card.Content>
-          <Card.Footer className="p-0 mt-1 text-xs text-foreground/80 font-medium">
+          <Card.Footer className="p-0 mt-1 text-xs text-white/80 font-medium">
             Dec 12 - Dec 18, 2024
           </Card.Footer>
         </Card>
@@ -116,7 +116,7 @@ export default function TenantDashboard() {
           <h3 className="text-lg font-bold text-foreground">Upcoming Stays</h3>
           <Link
             href={`/dashboard/tenant/bookings`}
-            className="text-xs font-bold text-[#00523A] hover:underline"
+            className="text-xs font-bold text-[#00523A] hover:text-green-400 hover:underline"
           >
             View All Bookings
           </Link>
@@ -134,7 +134,7 @@ export default function TenantDashboard() {
                   alt="Ocean Breeze Villa & Spa"
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute top-3 left-3 bg-[#00523A] text-foreground text-[9px] font-bold px-2.5 py-1 rounded-md shadow-sm">
+                <div className="absolute top-3 left-3 bg-[#00523A] text-white text-[9px] font-bold px-2.5 py-1 rounded-md shadow-sm">
                   Confirmed
                 </div>
               </div>
@@ -200,7 +200,7 @@ export default function TenantDashboard() {
                   alt="Ocean Breeze Villa & Spa"
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute top-3 left-3 bg-[#00523A] text-foreground text-[9px] font-bold px-2.5 py-1 rounded-md shadow-sm">
+                <div className="absolute top-3 left-3 bg-[#00523A] text-white text-[9px] font-bold px-2.5 py-1 rounded-md shadow-sm">
                   Confirmed
                 </div>
               </div>

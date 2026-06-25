@@ -121,7 +121,7 @@ export default async function MyProperties() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-sm">
-              {properties.slice(0, 3).map((property) => (
+              {properties?.slice(0, 3).map((property) => (
                 <tr
                   key={property._id}
                   className="hover:bg-slate-50/40 transition-colors"

@@ -4,12 +4,16 @@ import HomePageHero from "@/Components/Homepage/HomePageHero";
 import PopularLocations from "@/Components/Homepage/PopularLocations";
 import RecentlyAdded from "@/Components/Homepage/RecentlyAdded";
 import WhyChooseUs from "@/Components/Homepage/WhyChooseUs";
+import FeaturedSectionSkeleton from "@/Components/Shared/FeaturedSectionSkeleton";
+import { Suspense } from "react";
 
 const HomePage = async () => {
   return (
     <div>
       <HomePageHero />
-      <FeaturedSection />
+      <Suspense fallback={<FeaturedSectionSkeleton />}>
+        <FeaturedSection />
+      </Suspense>
       <PopularLocations />
       <RecentlyAdded />
       <WhyChooseUs />

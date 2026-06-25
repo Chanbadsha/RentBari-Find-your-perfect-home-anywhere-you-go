@@ -1,5 +1,5 @@
 export const serverMutation = async (path, data) => {
-  const response = await fetch(`http://localhost:5000/${path}`, {
+  const response = await fetch(`process.env.NEXT_PUBLIC_API_URL/${path}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -15,7 +15,9 @@ export const serverMutation = async (path, data) => {
 export const serverFetch = async (path, query = {}) => {
   const queryString = new URLSearchParams(query).toString();
 
-  const response = await fetch(`http://localhost:5000/${path}?${queryString}`);
+  const response = await fetch(
+    `process.env.NEXT_PUBLIC_API_URL/${path}?${queryString}`,
+  );
   const result = await response.json();
 
   return result;

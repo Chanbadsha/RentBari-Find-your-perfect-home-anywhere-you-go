@@ -7,7 +7,7 @@ const FeaturedSection = async () => {
   let error = null;
 
   try {
-    properties = await getFeaturedProperties();
+    properties = await getFeaturedProperties({ limit: 8 });
   } catch (err) {
     error = err;
   }
@@ -45,14 +45,13 @@ const FeaturedSection = async () => {
         </div>
       ) : !properties?.length ? (
         /* Empty State */
-        <div className="mt-8 rounded-2xl border border-dashed border-foreground/20 p-10 text-center">
-          <div className="text-5xl mb-3">🏠</div>
-          <h3 className="text-lg font-semibold text-foreground">
-            No Properties Found
-          </h3>
-          <p className="text-sm text-foreground/60 mt-2">
-            There are currently no featured properties available.
-          </p>
+        <div className="mt-6  grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <div
+              key={index}
+              className="h-72 w-full animate-pulse bg-gray-200 rounded-2xl"
+            />
+          ))}
         </div>
       ) : (
         /* Grid */

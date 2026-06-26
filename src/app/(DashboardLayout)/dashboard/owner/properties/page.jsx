@@ -19,7 +19,7 @@ import DeletePropertyBtn from "@/Utils/DeletePropertyBtn";
 
 export default async function MyProperties() {
   const user = await getUserSession();
-  const properties = await getPropertiesByUserId(user?.id);
+  const properties = (await getPropertiesByUserId(user?.id)) || [];
 
   const stats = [
     {

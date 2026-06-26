@@ -13,7 +13,7 @@ import { getProperties } from "@/app/lib/api/properties";
 import Link from "next/link";
 
 export default async function DashboardOverview() {
-  const properties = await getProperties();
+  const properties = (await getProperties()) || [];
   const topStats = [
     {
       title: "Total Earnings",

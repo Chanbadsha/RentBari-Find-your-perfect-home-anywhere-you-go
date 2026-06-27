@@ -125,7 +125,7 @@ export default function PropertyFeaturedCard({ property }) {
             {property?.propertyTitle}
           </h3>
           <span className="text-lg font-extrabold text-primary shrink-0">
-            {property?.rentPrice}
+            ৳ {property?.rentPrice}
             <span className="text-xs font-medium text-foreground/70">/mo</span>
           </span>
         </div>

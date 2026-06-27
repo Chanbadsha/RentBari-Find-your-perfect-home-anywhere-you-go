@@ -1,4 +1,5 @@
 import { getPropertiesById } from "@/app/lib/api/properties";
+import { getUserSession } from "@/app/lib/core/session";
 import ReviewsSection from "@/Components/Shared/ReviewsSection";
 import { ValidImgUrl } from "@/Utils/ValidImgUrl";
 import { Car, ShieldCheck, Snowflake } from "@gravity-ui/icons";
@@ -8,6 +9,7 @@ import Link from "next/link";
 import { FaCheckCircle, FaSwimmingPool } from "react-icons/fa";
 import { FaWifi } from "react-icons/fa6";
 import { RiSofaFill } from "react-icons/ri";
+import { SaveBtn } from "./SaveBtn";
 
 const PropertyDetailPage = async ({ params }) => {
   const { id } = await params;
@@ -17,7 +19,6 @@ const PropertyDetailPage = async ({ params }) => {
   const securityDepositRequired = false;
   const securityDepositAmount = 500;
 
-  const isFavorite = false;
   const amenityList = [
     {
       label: "High-speed Wi-Fi",
@@ -46,6 +47,9 @@ const PropertyDetailPage = async ({ params }) => {
       ),
     },
   ];
+  const user = await getUserSession();
+
+  const isFavorite = user?.favorites?.includes(property?._id);
 
   return (
     <div className="container mx-auto">
@@ -318,7 +322,7 @@ const PropertyDetailPage = async ({ params }) => {
 
                 <div className="text-right">
                   <div className="text-3xl font-bold text-[#1a7361]">
-                    ${property?.rentPrice}
+                    ৳{property?.rentPrice}
                   </div>
 
                   <div className="text-sm text-foreground/60">
@@ -354,39 +358,26 @@ const PropertyDetailPage = async ({ params }) => {
                   <p className="font-bold text-lg">{property?.flatSize} sqft</p>
                 </div>
               </div>
-              <form action="/api/checkout_sessions" method="POST">
-                <section>
-                  <input
-                    type="hidden"
-                    name="propertyId"
-                    value={property?._id}
-                  />
-                  <button
-                    className="w-full h-12 rounded-2xl bg-[#1a7361] hover:bg-[#145b4d] text-white font-semibold transition"
-                    type="submit"
-                    role="link"
-                  >
-                    Checkout
-                  </button>
-                </section>
-              </form>
-              {/* <button className="w-full h-12 rounded-2xl bg-[#1a7361] hover:bg-[#145b4d] text-white font-semibold transition">
-                Book Property
-              </button> */}
-
-              <button
-                className={`w-full h-12 rounded-2xl border flex items-center justify-center gap-2 transition ${
-                  isFavorite
-                    ? "bg-red-50 border-red-200 text-red-600"
-                    : "border-gray-200 hover:bg-gray-50"
-                }`}
-              >
-                <Heart
-                  className="w-4 h-4"
-                  fill={isFavorite ? "currentColor" : "none"}
-                />
-                Save Property
-              </button>
+              {user?.userRole === "tenant" && (
+                <form action="/api/checkout_sessions" method="POST">
+                  <section>
+                    <input
+                      type="hidden"
+                      name="propertyId"
+                      value={property?._id}
+                    />
+                    <button
+                      className="w-full h-12 rounded-2xl bg-[#1a7361] hover:bg-[#145b4d] text-white font-semibold transition"
+                      type="submit"
+                      role="link"
+                    >
+                      Checkout
+                    </button>
+                  </section>
+                </form>
+              )}
+              {/* Save Button */}
+              <SaveBtn propertyId={property?._id} isFavorite={isFavorite} />
             </div>
 
             {/* Agent Card */}

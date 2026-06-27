@@ -1,4 +1,5 @@
 import { getProperties } from "@/app/lib/api/properties";
+import { getUserSession } from "@/app/lib/core/session";
 import NoDataUi from "@/Components/Shared/NoDataUi";
 import PropertyCard from "@/Components/Shared/PropertyCard";
 import PropertySearchBar from "@/Utils/PropertySearchBar";
@@ -7,7 +8,8 @@ const PropertiesPage = async ({ searchParams }) => {
   const query = await searchParams;
 
   const properties = await getProperties(query);
-
+  const user = await getUserSession();
+  const favorites = user?.favorites || [];
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
@@ -28,7 +30,7 @@ const PropertiesPage = async ({ searchParams }) => {
       {properties?.length > 0 ? (
         <div className="grid justify-items-center grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {properties.map((property, ind) => (
-            <PropertyCard key={ind} property={property} />
+            <PropertyCard key={ind} property={property} favorites={favorites} />
           ))}
         </div>
       ) : (

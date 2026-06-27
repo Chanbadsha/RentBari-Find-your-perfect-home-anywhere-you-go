@@ -1,15 +1,24 @@
 "use client";
+import { handleFavorite } from "@/Utils/handleFavorite";
 import { ValidImgUrl } from "@/Utils/ValidImgUrl";
 import { Heart, MapPin } from "@gravity-ui/icons";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-export default function PropertyFeaturedCard({ property }) {
-  const [liked, setLiked] = useState(false);
+export default function PropertyFeaturedCard({ property, favorites }) {
+  const isFavorite = favorites?.includes(property._id);
+  const [liked, setLiked] = useState(isFavorite || false);
+  const router = useRouter();
 
   if (!property) {
     return <div className="h-72 animate-pulse bg-gray-200 rounded-2xl" />;
   }
+  const handleFavorites = async () => {
+    await handleFavorite(property._id);
+    setLiked(!liked);
+    router.refresh();
+  };
 
   return (
     <div className="group w-full max-w-sm rounded-2xl overflow-hidden bg-background border border-foreground/10 shadow-lg hover:shadow-2xl transition-all duration-300">
@@ -26,7 +35,7 @@ export default function PropertyFeaturedCard({ property }) {
         <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent" />
 
         <button
-          onClick={() => setLiked(!liked)}
+          onClick={handleFavorites}
           className={`
             ${liked ? "bg-red-500/80 " : ""}
             absolute top-3 right-3

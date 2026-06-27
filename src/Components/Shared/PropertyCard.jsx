@@ -5,6 +5,8 @@ import Image from "next/image";
 import { Heart, MapPin, LayoutCellsLarge, ArrowRight } from "@gravity-ui/icons";
 import Link from "next/link";
 import { ValidImgUrl } from "@/Utils/ValidImgUrl";
+import { handleFavorite } from "@/Utils/handleFavorite";
+import { useRouter } from "next/navigation";
 
 // Inline custom mini SVG components for metrics to match layout style seamlessly
 const BedIcon = () => (
@@ -56,8 +58,10 @@ const VerifiedIcon = () => (
   </svg>
 );
 
-export default function PropertyFeaturedCard({ property }) {
-  const [liked, setLiked] = useState(false);
+export default function PropertyCard({ property, favorites }) {
+  const isFavorite = favorites.includes(property._id);
+  const [liked, setLiked] = useState(isFavorite || false);
+  const router = useRouter();
 
   // Fallback data mapping matching your precise Dark card UI requirements
   const data = {
@@ -70,6 +74,12 @@ export default function PropertyFeaturedCard({ property }) {
     // Premium residential placeholder image asset
     image:
       "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=600&h=400&q=80",
+  };
+
+  const handleFavorites = async () => {
+    await handleFavorite(property._id);
+    setLiked(!liked);
+    router.refresh();
   };
 
   return (
@@ -99,7 +109,8 @@ export default function PropertyFeaturedCard({ property }) {
 
         {/* Favorite/Like Target Interaction */}
         <button
-          onClick={() => setLiked(!liked)}
+          onClick={handleFavorites}
+          // onClick={() => setLiked(!liked)}
           className={`
             ${liked ? "bg-red-500/90 text-white" : "bg-slate-900/40 backdrop-blur-md text-white hover:bg-red-500/80"}
             absolute top-3 right-3

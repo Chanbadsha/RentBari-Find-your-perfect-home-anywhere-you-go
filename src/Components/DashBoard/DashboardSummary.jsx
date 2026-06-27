@@ -2,7 +2,15 @@
 
 import { CheckCircle2, Clock } from "lucide-react";
 
-export default function DashboardSummary() {
+export default function DashboardSummary({ bookings }) {
+  const bookingCount = bookings?.length || 0;
+
+  const approvedCount =
+    bookings?.filter((booking) => booking?.bookingStatus === "approved")
+      .length || 0;
+  const pendingCount =
+    bookings?.filter((booking) => booking?.bookingStatus === "pending")
+      .length || 0;
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* LEFT STATS */}
@@ -17,7 +25,7 @@ export default function DashboardSummary() {
           </div>
 
           <h2 className="text-2xl font-bold text-slate-900 dark:text-white mt-3">
-            12
+            {approvedCount}
           </h2>
         </div>
 
@@ -31,7 +39,7 @@ export default function DashboardSummary() {
           </div>
 
           <h2 className="text-2xl font-bold text-slate-900 dark:text-white mt-3">
-            03
+            {pendingCount}
           </h2>
         </div>
       </div>
@@ -52,7 +60,7 @@ export default function DashboardSummary() {
             <h2 className="text-2xl font-bold mt-1">Skyline Penthouse</h2>
 
             <p className="text-sm text-emerald-100 mt-2">
-              October 12th, 2023 • 3 Nights
+              October 12th, 2026 • 3 Nights
             </p>
 
             {/* optional progress bar style accent */}

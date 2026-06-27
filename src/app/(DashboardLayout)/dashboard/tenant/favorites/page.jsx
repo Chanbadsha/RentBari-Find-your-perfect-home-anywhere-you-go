@@ -1,128 +1,96 @@
-import { getPropertiesByUserId } from "@/app/lib/api/properties";
 import { getUserSession } from "@/app/lib/core/session";
-import { ValidImgUrl } from "@/Utils/ValidImgUrl";
-import { MapPin, Star, TrashBin } from "@gravity-ui/icons";
-import Image from "next/image";
+import FavoriteCard from "@/Components/Shared/FavoriteCard";
 import Link from "next/link";
-import { FiPlus } from "react-icons/fi";
+import { FiHeart, FiPlus } from "react-icons/fi";
 
-export default async function TenantDashBoard() {
+export default async function TenantFavorites() {
   const user = await getUserSession();
-  const properties = await getPropertiesByUserId(user?.id);
+
+  const favorites = user?.favorites || [];
 
   return (
-    <div className="min-h-screen bg-background p-8 font-sans antialiased text-foreground">
-      {/* Header Section */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+    <div className="min-h-screen bg-background p-6 md:p-8 font-sans antialiased">
+      {/* Header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            Favorites
+          <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 mb-3">
+            <FiHeart className="text-primary" />
+            <span className="text-xs font-semibold text-primary uppercase tracking-wider">
+              Wishlist
+            </span>
+          </div>
+
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
+            Favorite Properties
           </h1>
-          <p className="text-foreground/70 mt-1">
-            Manage your saved properties and find your next home.
+
+          <p className="text-foreground/60 mt-2 max-w-2xl">
+            Keep track of the properties you love and quickly access them
+            whenever you&apos;re ready to book.
           </p>
         </div>
+
         <Link
-          href={`/properties`}
-          className="flex items-center gap-2 bg-[#00523A] hover:bg-[#00402e] text-white px-5 py-2.5 rounded-xl font-medium transition-colors shadow-sm"
+          href="/properties"
+          className="inline-flex items-center gap-2 bg-[#00523A] hover:bg-[#00402e] text-white px-5 py-3 rounded-2xl font-medium transition-all duration-200 shadow-sm hover:shadow-md"
         >
           <FiPlus className="text-lg" />
-          New Booking
+          Explore Properties
         </Link>
       </div>
 
-      {/* Main Table Card container */}
-
-      <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5 items-stretch">
-        {properties.map((property, index) => (
-          <div
-            key={index}
-            className="bg-background rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-foreground/30/80 overflow-hidden font-sans hover:shadow-[0_6px_26px_rgba(0,0,0,0.08)] transition-shadow duration-300 flex flex-col h-full"
-          >
-            {/* Image */}
-            <div className="relative h-65 w-full group">
-              <Image
-                height={600}
-                width={600}
-                src={ValidImgUrl(property?.coverImage)}
-                alt="Property"
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-              />
-
-              <button className="absolute top-4 right-4 bg-background/90 backdrop-blur-sm p-2.5 rounded-full shadow-sm text-red-500 hover:text-red-600 hover:bg-background transition-colors duration-200">
-                <TrashBin size={18} strokeWidth={2.5} />
-              </button>
-
-              <div className="absolute bottom-4 left-4 bg-[#0a5243] text-white text-[13px] font-semibold px-3 py-1.5 rounded-lg tracking-wide shadow-sm">
-                {property?.instantBooking ? "Instant Book" : "Not Instant Book"}
-              </div>
+      {/* Stats */}
+      {favorites.length > 0 && (
+        <div className="mb-8">
+          <div className="inline-flex items-center gap-3 rounded-2xl border border-foreground/10 bg-card px-5 py-4 shadow-sm">
+            <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
+              <FiHeart className="text-primary text-lg" />
             </div>
-
-            {/* Content */}
-            <div className="p-5 flex flex-col h-full">
-              {/* Title + Rating */}
-              <div className="flex justify-between items-start gap-2 mb-2">
-                <h2 className="text-[22px] font-bold text-foreground tracking-tight leading-tight line-clamp-2">
-                  {property?.propertyTitle}
-                </h2>
-
-                <div className="flex items-center gap-1 mt-1 text-[#b48325] shrink-0">
-                  <Star size={16} fill="currentColor" stroke="none" />
-                  <span className="text-[15px] font-bold text-foreground/90">
-                    4.9
-                  </span>
-                </div>
-              </div>
-
-              {/* Location */}
-              <div className="flex items-center gap-1 text-foreground/70 mb-4">
-                <MapPin size={16} className="text-foreground/70" />
-                <span className="text-[15px] font-medium tracking-wide">
-                  Downtown Manhattan, NY
-                </span>
-              </div>
-
-              {/* THIS pushes HR to same level across cards */}
-              <div className="flex-1" />
-
-              {/* Fixed separator position */}
-              <hr className="border-foreground/30 mb-4" />
-
-              {/* Pricing + Date */}
-              <div className="flex justify-between items-baseline mb-5">
-                <div>
-                  <p className="text-[12px] font-bold text-foreground/70 uppercase mb-1">
-                    PRICE
-                  </p>
-                  <p className="text-[20px] font-bold text-[#0c6956]">
-                    $4,500
-                    <span className="text-[15px] font-medium text-foreground/70">
-                      /mo
-                    </span>
-                  </p>
-                </div>
-
-                <div className="text-right">
-                  <p className="text-[12px] font-bold text-foreground/70 uppercase mb-1">
-                    Added Date
-                  </p>
-                  <p className="text-[17px] font-semibold text-foreground/90">
-                    Oct 12, 2023
-                  </p>
-                </div>
-              </div>
-
-              {/* Button */}
-              <Link
-                href={`/properties/${property._id}`}
-                className="w-full py-2.5 rounded-xl bg-foreground  flex justify-center items-center text-background font-semibold text-[14px] hover:opacity-90 transition-opacity duration-200"
-              >
-                View Details
-              </Link>
+            <div>
+              <p className="text-xs text-foreground/60 uppercase tracking-wider">
+                Saved Properties
+              </p>
+              <p className="text-2xl font-bold text-foreground">
+                {favorites.length}
+              </p>
             </div>
           </div>
-        ))}
-      </div>
+        </div>
+      )}
+
+      {/* Empty State */}
+      {favorites.length === 0 ? (
+        <div className="flex items-center justify-center py-20">
+          <div className="max-w-md w-full rounded-3xl border border-foreground/10 bg-card p-10 text-center shadow-sm">
+            <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
+              <FiHeart className="text-3xl text-primary" />
+            </div>
+
+            <h2 className="text-2xl font-bold text-foreground mb-3">
+              No Favorite Properties Yet
+            </h2>
+
+            <p className="text-foreground/60 mb-8 leading-relaxed">
+              Start exploring properties and save the ones you love. Your
+              favorite properties will appear here for quick access.
+            </p>
+
+            <Link
+              href="/properties"
+              className="inline-flex items-center gap-2 rounded-2xl bg-[#00523A] px-6 py-3 font-medium text-white transition hover:bg-[#00402e]"
+            >
+              <FiPlus />
+              Browse Properties
+            </Link>
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 items-stretch">
+          {favorites.map((propertyId, index) => (
+            <FavoriteCard key={index} propertyId={propertyId} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -19,7 +19,7 @@ export async function POST(request) {
       payment_method_types: ["card"],
       billing_address_collection: "required",
       metadata: {
-        tenantId: user.id,
+        userId: user.id,
         propertyId: id,
         rentType: property?.rentType,
       },

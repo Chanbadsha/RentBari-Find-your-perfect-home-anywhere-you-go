@@ -15,12 +15,17 @@ import {
 } from "react-icons/fi";
 import Image from "next/image";
 import Link from "next/link";
+import { getUserSession } from "@/app/lib/core/session";
+import { getBookingsByUserId } from "@/app/lib/api/bookings";
 
-export default function TenantDashboard() {
+export default async function TenantDashboard() {
+  const user = await getUserSession();
+  const bookings = await getBookingsByUserId(user?.id);
+
   const stats = [
     {
       title: "Total Bookings",
-      value: "12",
+      value: bookings?.length || 0,
       badge: "+2 this month",
       badgeColor: "text-emerald-700",
       icon: <FiHome className="text-emerald-700 text-lg" />,
@@ -28,13 +33,18 @@ export default function TenantDashboard() {
     },
     {
       title: "Favorites",
-      value: "28",
+      value: user?.favorites?.length || 0,
       badge: "Saved Items",
       badgeColor: "text-foreground/70",
       icon: <FiHeart className="text-amber-700 text-lg fill-amber-700" />,
       iconBg: "bg-[#FDEEDC]",
     },
   ];
+  const statusStyles = {
+    pending: "bg-red-100 text-red-700 border border-red-200",
+    success: "bg-emerald-100 text-emerald-700 border border-emerald-200",
+    refund: "bg-gray-100 text-gray-700 border border-gray-200",
+  };
 
   return (
     <div className="min-h-screen bg-background p-6 md:p-8 font-sans antialiased text-foreground">
@@ -42,17 +52,20 @@ export default function TenantDashboard() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-black tracking-tight text-foreground">
-            Welcome back, Alex!
+            Welcome back, {user?.name}!
           </h1>
           <p className="text-foreground/70 text-sm mt-1">
             Your next adventure is just around the corner. Here&apos;s a look at
             your stay details.
           </p>
         </div>
-        <button className="flex items-center gap-2 bg-[#00523A] hover:bg-[#00402e] text-white px-5 py-3 rounded-xl font-bold text-sm transition-colors shadow-sm self-stretch sm:self-auto justify-center">
+        <Link
+          href={`/properties`}
+          className="flex items-center gap-2 bg-[#00523A] hover:bg-[#00402e] text-white px-5 py-3 rounded-xl font-bold text-sm transition-colors shadow-sm self-stretch sm:self-auto justify-center"
+        >
           <FiPlus className="text-base" />
           New Booking
-        </button>
+        </Link>
       </div>
 
       {/* Grid containing Stats and Next Stay Snapshot */}
@@ -87,6 +100,7 @@ export default function TenantDashboard() {
         </div>
 
         {/* Right Side: Next Stay Highlight Micro-Card (Spans 1 column) */}
+
         <Card className="bg-[#00523A] text-white rounded-2xl p-6 shadow-sm flex flex-col justify-between min-h-45">
           <Card.Header className="p-0 flex space-y-2 justify-between items-start">
             <span className="p-2.5 bg-background/10 rounded-xl">
@@ -123,138 +137,85 @@ export default function TenantDashboard() {
         </div>
 
         <div className="flex flex-col gap-2">
-          <Card className="border border-foreground/30 bg-background rounded-2xl p-4 shadow-sm">
-            <Card.Content className="p-0 flex flex-col md:flex-row gap-5 items-stretch">
-              {/* Aspect Ratio Controlled Image */}
-              <div className="relative w-full md:w-72 h-44 rounded-xl overflow-hidden shrink-0">
-                <Image
-                  height={600}
-                  width={600}
-                  src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=500&auto=format&fit=crop&q=80"
-                  alt="Ocean Breeze Villa & Spa"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute top-3 left-3 bg-[#00523A] text-white text-[9px] font-bold px-2.5 py-1 rounded-md shadow-sm">
-                  Confirmed
-                </div>
-              </div>
-
-              {/* Content Details side */}
-              <div className="flex-1 flex flex-col justify-between py-1">
-                <div>
-                  <div className="flex items-center gap-1 text-xs font-bold text-teal-600 uppercase tracking-wider">
-                    <FiMapPin />
-                    <span>Malibu, California</span>
+          {bookings?.slice(0, 3)?.map((booking, index) => (
+            <Card
+              key={index}
+              className="border border-foreground/30 bg-background rounded-2xl p-4 shadow-sm"
+            >
+              <Card.Content className="p-0 flex flex-col md:flex-row gap-5 items-stretch">
+                {/* Aspect Ratio Controlled Image */}
+                <div className="relative w-full md:w-72 h-44 rounded-xl overflow-hidden shrink-0">
+                  <Image
+                    height={600}
+                    width={600}
+                    src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=500&auto=format&fit=crop&q=80"
+                    alt="Ocean Breeze Villa & Spa"
+                    className="w-full h-full object-cover"
+                  />
+                  <div
+                    className={`absolute top-3 left-3 px-3 py-1 rounded-full text-[10px] font-semibold shadow-sm backdrop-blur-sm ${
+                      statusStyles[booking?.bookingStatus] ||
+                      "bg-gray-100 text-gray-700 border border-gray-200"
+                    }`}
+                  >
+                    {booking?.bookingStatus?.toUpperCase()}
                   </div>
-                  <h4 className="text-lg font-extrabold text-foreground mt-1">
-                    Ocean Breeze Villa & Spa
-                  </h4>
-                  <p className="text-xs text-foreground/70 font-medium mt-1.5">
-                    📅 Dec 12 - 18, 2024 &nbsp;•&nbsp; 👥 2 Guests
-                  </p>
                 </div>
 
-                {/* Amenities Tags & Row Actions */}
-                <div className="flex flex-wrap items-center justify-between gap-4 mt-4 pt-4 border-t border-foreground/30">
-                  <div className="flex items-center gap-2 text-foreground/70">
-                    <div className="p-1.5 bg-slate-50 border border-foreground/30 rounded-lg">
-                      <FiWifi size={14} />
+                {/* Content Details side */}
+                <div className="flex-1 flex flex-col justify-between py-1">
+                  <div>
+                    <div className="flex items-center gap-1 text-xs font-bold text-teal-600 uppercase tracking-wider">
+                      <FiMapPin />
+                      <span> {booking?.property?.location}</span>
                     </div>
-                    <div className="p-1.5 bg-slate-50 border border-foreground/30 rounded-lg">
-                      <FiTv size={14} />
+                    <h4 className="text-lg font-extrabold text-foreground mt-1">
+                      {booking?.property?.propertyTitle}
+                    </h4>
+                    <p className="text-xs text-foreground/70 font-medium mt-1.5">
+                      Next Week 👥 2 Guests
+                    </p>
+                  </div>
+
+                  {/* Amenities Tags & Row Actions */}
+                  <div className="flex flex-wrap items-center justify-between gap-4 mt-4 pt-4 border-t border-foreground/30">
+                    <div className="flex items-center gap-2 text-foreground/70">
+                      <div className="p-1.5 bg-secondary text-white border border-foreground/30 rounded-lg">
+                        <FiWifi size={14} />
+                      </div>
+                      <div className="p-1.5 bg-secondary text-white border border-foreground/30 rounded-lg">
+                        <FiTv size={14} />
+                      </div>
+                      <span className="text-[11px] font-bold text-white bg-secondary border border-foreground/30 px-2 py-0.5 rounded-lg">
+                        +4
+                      </span>
                     </div>
-                    <span className="text-[11px] font-bold text-foreground/70 bg-slate-50 border border-foreground/30 px-2 py-0.5 rounded-lg">
-                      +4
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button className="text-xs font-bold border border-slate-200 hover:bg-secondary text-foreground/70 px-4 py-2 rounded-xl transition-colors">
-                      Manage
-                    </button>
-                    <button className="text-xs font-bold bg-slate-100 hover:bg-slate-200 text-black px-4 py-2 rounded-xl transition-colors">
-                      Get Directions
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Absolute Pricing Side Area */}
-              <div className="text-right flex flex-col justify-start md:justify-center items-end md:border-l md:border-foreground/30 md:pl-6 min-w-30">
-                <span className="text-xl font-black text-foreground">
-                  $1,450.00
-                </span>
-                <span className="text-[10px] font-bold text-foreground/70 mt-0.5">
-                  Paid in Full
-                </span>
-              </div>
-            </Card.Content>
-          </Card>
-          <Card className="border border-foreground/30 bg-background rounded-2xl p-4 shadow-sm">
-            <Card.Content className="p-0 flex flex-col md:flex-row gap-5 items-stretch">
-              {/* Aspect Ratio Controlled Image */}
-              <div className="relative w-full md:w-72 h-44 rounded-xl overflow-hidden shrink-0">
-                <Image
-                  height={600}
-                  width={600}
-                  src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=500&auto=format&fit=crop&q=80"
-                  alt="Ocean Breeze Villa & Spa"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute top-3 left-3 bg-[#00523A] text-white text-[9px] font-bold px-2.5 py-1 rounded-md shadow-sm">
-                  Confirmed
-                </div>
-              </div>
-
-              {/* Content Details side */}
-              <div className="flex-1 flex flex-col justify-between py-1">
-                <div>
-                  <div className="flex items-center gap-1 text-xs font-bold text-teal-600 uppercase tracking-wider">
-                    <FiMapPin />
-                    <span>Malibu, California</span>
-                  </div>
-                  <h4 className="text-lg font-extrabold text-foreground mt-1">
-                    Ocean Breeze Villa & Spa
-                  </h4>
-                  <p className="text-xs text-foreground/70 font-medium mt-1.5">
-                    📅 Dec 12 - 18, 2024 &nbsp;•&nbsp; 👥 2 Guests
-                  </p>
-                </div>
-
-                {/* Amenities Tags & Row Actions */}
-                <div className="flex flex-wrap items-center justify-between gap-4 mt-4 pt-4 border-t border-foreground/30">
-                  <div className="flex items-center gap-2 text-foreground/70">
-                    <div className="p-1.5 bg-slate-50 border border-foreground/30 rounded-lg">
-                      <FiWifi size={14} />
+                    <div className="flex items-center gap-2">
+                      <Link
+                        href={`/dashboard/tenant/bookings`}
+                        className="text-xs font-bold border border-slate-200 hover:bg-secondary text-foreground/70 px-4 py-2 rounded-xl transition-colors"
+                      >
+                        Manage
+                      </Link>
+                      <button className="text-xs font-bold bg-slate-100 hover:bg-slate-200 text-black px-4 py-2 rounded-xl transition-colors">
+                        Get Directions
+                      </button>
                     </div>
-                    <div className="p-1.5 bg-slate-50 border border-foreground/30 rounded-lg">
-                      <FiTv size={14} />
-                    </div>
-                    <span className="text-[11px] font-bold text-foreground/70 bg-slate-50 border border-foreground/30 px-2 py-0.5 rounded-lg">
-                      +4
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button className="text-xs font-bold border border-slate-200 hover:bg-secondary text-foreground/70 px-4 py-2 rounded-xl transition-colors">
-                      Manage
-                    </button>
-                    <button className="text-xs font-bold bg-slate-100 hover:bg-slate-200 text-black px-4 py-2 rounded-xl transition-colors">
-                      Get Directions
-                    </button>
                   </div>
                 </div>
-              </div>
 
-              {/* Absolute Pricing Side Area */}
-              <div className="text-right flex flex-col justify-start md:justify-center items-end md:border-l md:border-foreground/30 md:pl-6 min-w-30">
-                <span className="text-xl font-black text-foreground">
-                  $1,450.00
-                </span>
-                <span className="text-[10px] font-bold text-foreground/70 mt-0.5">
-                  Paid in Full
-                </span>
-              </div>
-            </Card.Content>
-          </Card>
+                {/* Absolute Pricing Side Area */}
+                <div className="text-right flex flex-col justify-start md:justify-center items-end md:border-l md:border-foreground/30 md:pl-6 min-w-30">
+                  <span className="text-xl font-black text-foreground">
+                    ৳{booking?.amount}
+                  </span>
+                  <span className="text-[10px] font-bold text-foreground/70 mt-0.5">
+                    {booking?.paymentStatus}
+                  </span>
+                </div>
+              </Card.Content>
+            </Card>
+          ))}
         </div>
       </div>
 
@@ -299,13 +260,13 @@ export default function TenantDashboard() {
           </div>
 
           <Card.Footer className="p-0 mt-4 flex items-center gap-2">
-            <button className="w-9 h-9 flex items-center justify-center rounded-full bg-white text-[#00523A] hover:bg-slate-50 shadow-sm border border-foreground/30 transition-colors">
+            <button className="w-9 h-9 flex items-center justify-center rounded-full bg-white text-[#00523A] hover:bg-secondary shadow-sm border border-foreground/30 transition-colors">
               <FiPhone size={14} />
             </button>
-            <button className="w-9 h-9 flex items-center justify-center rounded-full bg-white text-[#00523A] hover:bg-slate-50 shadow-sm border border-foreground/30 transition-colors">
+            <button className="w-9 h-9 flex items-center justify-center rounded-full bg-white text-[#00523A] hover:bg-secondary shadow-sm border border-foreground/30 transition-colors">
               <FiMessageSquare size={14} />
             </button>
-            <button className="w-9 h-9 flex items-center justify-center rounded-full bg-white text-[#00523A] hover:bg-slate-50 shadow-sm border border-foreground/30 transition-colors">
+            <button className="w-9 h-9 flex items-center justify-center rounded-full bg-white text-[#00523A] hover:bg-secondary shadow-sm border border-foreground/30 transition-colors">
               <FiHelpCircle size={14} />
             </button>
           </Card.Footer>

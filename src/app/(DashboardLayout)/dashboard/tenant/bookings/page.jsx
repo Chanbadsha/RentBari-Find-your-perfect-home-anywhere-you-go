@@ -1,5 +1,6 @@
 import DashboardSummary from "@/Components/DashBoard/DashboardSummary";
 import { ValidImgUrl } from "@/Utils/ValidImgUrl";
+import { getBookingsByUserId } from "@/app/lib/api/bookings";
 import { getPropertiesByUserId } from "@/app/lib/api/properties";
 import { getUserSession } from "@/app/lib/core/session";
 import { Card, Input } from "@heroui/react";
@@ -14,10 +15,20 @@ import {
   FiSliders,
 } from "react-icons/fi";
 
-export default async function TenantBookings() {
+export default async function TenantBookings({ searchParams }) {
   const user = await getUserSession();
-  const properties = await getPropertiesByUserId(user?.id);
 
+  const bookings = await getBookingsByUserId(user?.id);
+
+  const page = Number(searchParams?.page || 1);
+  const limit = 5;
+
+  const start = (page - 1) * limit;
+  const end = start + limit;
+
+  const paginatedBookings = bookings.slice(start, end);
+
+  const totalPages = Math.ceil(bookings.length / limit);
   return (
     <div className="min-h-screen bg-background p-8 font-sans antialiased text-foreground">
       {/* Header Section */}
@@ -39,7 +50,7 @@ export default async function TenantBookings() {
         </Link>
       </div>
 
-      <DashboardSummary />
+      <DashboardSummary bookings={bookings} />
 
       {/* Main Table Card container */}
       <Card className="border mt-4 border-foreground/20 bg-background shadow-sm rounded-2xl overflow-hidden">
@@ -80,27 +91,28 @@ export default async function TenantBookings() {
               </tr>
             </thead>
             <tbody className="divide-y divide-foreground/20 text-sm">
-              {properties.slice(0, 3).map((property) => (
-                <tr key={property._id} className=" transition-colors">
+              {paginatedBookings.map((booking) => (
+                <tr key={booking?.property._id} className=" transition-colors">
                   {/* Property Details */}
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-4">
                       <Image
                         height={600}
                         width={600}
-                        src={ValidImgUrl(property?.coverImage)}
-                        alt={property?.propertyTitle}
+                        src={ValidImgUrl(booking?.property?.coverImage)}
+                        alt={booking?.property?.propertyTitle}
                         className="w-12 h-12 object-cover rounded-xl border border-foreground/20"
                       />
                       <div>
                         <h4 className="font-bold text-foreground text-[15px] leading-tight">
-                          {property?.propertyTitle}
+                          {booking?.property?.propertyTitle}
                         </h4>
                         {/* <span className="text-xs text-foreground/60 font-medium ">
                           {property?.propertyType} . {property?.location}
                         </span> */}
                         <p className="text-xs text-foreground/60 font-medium  truncate max-w-50">
-                          {property?.propertyType} · {property?.location}
+                          {booking?.property?.propertyType} ·{" "}
+                          {booking?.property?.location}
                         </p>
                       </div>
                     </div>
@@ -110,7 +122,7 @@ export default async function TenantBookings() {
                   <td className="py-4 px-6 text-foreground/70 font-medium">
                     <div className="max-w-50">
                       <span>
-                        {new Date(property?.createdAt).toLocaleDateString(
+                        {new Date(booking?.createdAt).toLocaleDateString(
                           "en-US",
                           {
                             year: "numeric",
@@ -125,7 +137,7 @@ export default async function TenantBookings() {
                   {/* Rent Price */}
                   <td className="py-4 px-6">
                     <span className="font-bold text-foreground">
-                      {property?.rentPrice}$
+                      {booking?.property?.rentPrice}$
                     </span>
                   </td>
 
@@ -133,16 +145,16 @@ export default async function TenantBookings() {
                   <td className="py-4 px-6">
                     <span
                       className={`text-[11px] px-2.5 py-1 rounded-full font-semibold capitalize ${
-                        property?.status === "approved"
+                        booking?.bookingStatus === "approved"
                           ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400"
-                          : property?.status === "pending"
+                          : booking?.bookingStatus === "pending"
                             ? "bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400"
-                            : property?.status === "rejected"
+                            : booking?.bookingStatus === "rejected"
                               ? "bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400"
                               : "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-300"
                       }`}
                     >
-                      {property?.status}
+                      {booking?.bookingStatus}
                     </span>
                   </td>
                   {/* payment status */}
@@ -151,9 +163,9 @@ export default async function TenantBookings() {
                       {/* Dot */}
                       <span
                         className={`w-2 h-2 rounded-full ${
-                          property?.status === "paid"
+                          booking?.paymentStatus === "paid"
                             ? "bg-emerald-500"
-                            : property?.status === "unpaid"
+                            : booking?.paymentStatus === "unpaid"
                               ? "bg-red-500"
                               : "bg-slate-400"
                         }`}
@@ -162,85 +174,17 @@ export default async function TenantBookings() {
                       {/* Text */}
                       <span
                         className={`text-xs font-semibold capitalize ${
-                          property?.status === "paid"
+                          booking?.paymentStatus === "paid"
                             ? "text-emerald-600 dark:text-emerald-400"
-                            : property?.status === "unpaid"
+                            : booking?.paymentStatus === "unpaid"
                               ? "text-red-600 dark:text-red-400"
                               : "text-slate-500 dark:text-slate-400"
                         }`}
                       >
-                        {property?.status}
+                        {booking?.paymentStatus}
                       </span>
                     </div>
                   </td>
-
-                  {/* Placeholder for actions */}
-
-                  {/* <td className="py-4 px-6">
-                    <div className="flex items-center gap-2">
-                      <button
-                        title="Edit Property"
-                        className="p-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors"
-                      >
-                        <BiEdit size={16} />
-                      </button>
-
-                      <AlertDialog>
-                        <Button
-                          variant="outline"
-                          title="Delete Property"
-                          className="p-2 outline-none border-none rounded-lg text-red-500 hover:bg-red-50 transition-colors"
-                        >
-                          <FiTrash2 size={16} />
-                        </Button>
-                        <AlertDialog.Backdrop>
-                          <AlertDialog.Container>
-                            <AlertDialog.Dialog className="sm:max-w-100">
-                              <AlertDialog.CloseTrigger />
-                              <AlertDialog.Header>
-                                <AlertDialog.Icon status="danger" />
-                                <AlertDialog.Heading>
-                                  Delete project permanently?
-                                </AlertDialog.Heading>
-                              </AlertDialog.Header>
-                              <AlertDialog.Body>
-                                <div className="space-y-3">
-                                  <p className="text-sm text-foreground/80 leading-relaxed">
-                                    Are you sure you want to delete this
-                                    property listing?
-                                  </p>
-
-                                  <div className="rounded-xl border border-red-200 bg-red-50 p-3">
-                                    <p className="text-sm">
-                                      Property:{" "}
-                                      <strong className="font-semibold text-red-700">
-                                        {property.propertyTitle}
-                                      </strong>
-                                    </p>
-                                  </div>
-
-                                  <p className="text-sm text-foreground/60">
-                                    This action will permanently remove the
-                                    property listing, photos, amenities, house
-                                    rules, and all associated information from
-                                    RentBari. This action cannot be undone.
-                                  </p>
-                                </div>
-                              </AlertDialog.Body>
-
-                              <AlertDialog.Footer>
-                                <Button slot="close" variant="tertiary">
-                                  Keep Property
-                                </Button>
-
-                                <DeletePropertyBtn propertyId={property._id} />
-                              </AlertDialog.Footer>
-                            </AlertDialog.Dialog>
-                          </AlertDialog.Container>
-                        </AlertDialog.Backdrop>
-                      </AlertDialog>
-                    </div>
-                  </td> */}
                 </tr>
               ))}
             </tbody>
@@ -250,28 +194,55 @@ export default async function TenantBookings() {
         {/* Pagination Footer */}
         <Card.Footer className="p-4 flex flex-col sm:flex-row justify-between items-center gap-4 border-t border-foreground/20 bg-background">
           <span className="text-xs font-medium text-foreground/60">
-            Showing{" "}
-            <strong className="text-foreground/70 font-semibold">1-3</strong> of{" "}
-            <strong className="text-foreground/70 font-semibold">12</strong>{" "}
-            properties
+            Showing
+            <strong>
+              {Math.min(start + 1, bookings.length)}-
+              {Math.min(end, bookings.length)}
+            </strong>
+            of
+            <strong> {bookings.length}</strong>
+            bookings
           </span>
 
           <div className="flex items-center gap-1">
-            <button className="p-2 border border-foreground/20 text-foreground/60 rounded-lg hover:bg-secondary transition-colors">
+            {/* Previous */}
+            <Link
+              href={`?page=${Math.max(page - 1, 1)}`}
+              className={`p-2 border border-foreground/20 rounded-lg ${
+                page === 1
+                  ? "opacity-50 pointer-events-none"
+                  : "hover:bg-secondary"
+              }`}
+            >
               <FiChevronLeft size={16} />
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center bg-secondary text-white rounded-lg text-xs font-semibold shadow-sm">
-              1
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center border border-foreground/20 text-foreground/70 hover:bg-secondary rounded-lg text-xs font-medium transition-colors">
-              2
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center border border-foreground/20 text-foreground/70 hover:bg-secondary rounded-lg text-xs font-medium transition-colors">
-              3
-            </button>
-            <button className="p-2 border border-foreground/20 text-foreground/60 rounded-lg hover:bg-secondary transition-colors">
+            </Link>
+
+            {/* Page numbers */}
+            {Array.from({ length: totalPages }, (_, i) => (
+              <Link
+                key={i}
+                href={`?page=${i + 1}`}
+                className={`w-8 h-8 flex items-center justify-center rounded-lg text-xs font-medium ${
+                  page === i + 1
+                    ? "bg-secondary text-white"
+                    : "border border-foreground/20 hover:bg-secondary"
+                }`}
+              >
+                {i + 1}
+              </Link>
+            ))}
+
+            {/* Next */}
+            <Link
+              href={`?page=${Math.min(page + 1, totalPages)}`}
+              className={`p-2 border border-foreground/20 rounded-lg ${
+                page === totalPages
+                  ? "opacity-50 pointer-events-none"
+                  : "hover:bg-secondary"
+              }`}
+            >
               <FiChevronRight size={16} />
-            </button>
+            </Link>
           </div>
         </Card.Footer>
       </Card>

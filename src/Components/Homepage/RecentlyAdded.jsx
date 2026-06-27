@@ -1,7 +1,10 @@
 import { getProperties } from "@/app/lib/api/properties";
 import PropertyFeaturedCard from "../Shared/PropertyFeaturedCard";
+import { getUserSession } from "@/app/lib/core/session";
 
 const RecentlyAdded = async () => {
+  const user = await getUserSession();
+  const favorites = user?.favorites || [];
   const properties =
     (await getProperties({
       limit: 4,
@@ -25,7 +28,11 @@ const RecentlyAdded = async () => {
         {properties && properties.length > 0 ? (
           <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {properties.map((property, ind) => (
-              <PropertyFeaturedCard key={ind} property={property} />
+              <PropertyFeaturedCard
+                key={ind}
+                property={property}
+                favorites={favorites}
+              />
             ))}
           </div>
         ) : (

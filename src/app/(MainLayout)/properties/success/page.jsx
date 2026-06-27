@@ -25,7 +25,7 @@ export default async function Success({ searchParams }) {
 
   const booking = {
     propertyId: session.metadata.propertyId,
-    tenantId: session.metadata.tenantId,
+    userId: session.metadata.userId,
     rentType: session.metadata.rentType,
     amount: session.amount_total / 100,
     transactionId: session.payment_intent.latest_charge,

@@ -1,7 +1,6 @@
 import { serverFetch } from "../core/server";
 
 export const getProperties = (query = {}) => {
-  console.log(query, "from getProperties");
   return serverFetch("properties", query) || [];
 };
 export const getFeaturedProperties = () => {

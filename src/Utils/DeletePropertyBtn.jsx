@@ -2,9 +2,7 @@
 import { Button } from "@heroui/react";
 
 const DeletePropertyBtn = (propertyId) => {
-  const handleDelete = () => {
-    console.log(propertyId);
-  };
+  const handleDelete = () => {};
   return (
     <Button slot="close" variant="danger" onClick={handleDelete}>
       Delete Property

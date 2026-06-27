@@ -33,8 +33,7 @@ export default async function Success({ searchParams }) {
     paymentStatus: session.payment_status,
   };
   const bookingResult = await AddBooking(booking);
-  // console.log(session?.payment_intent);
-  console.log(bookingResult);
+
   return (
     <main className="min-h-screen bg-background flex items-center justify-center px-4">
       <div className="w-full max-w-xl rounded-3xl border border-foreground/10 bg-background shadow-xl p-10 text-center">

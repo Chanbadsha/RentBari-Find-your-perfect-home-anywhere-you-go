@@ -7,7 +7,7 @@ const PropertiesPage = async ({ searchParams }) => {
   const query = await searchParams;
 
   const properties = await getProperties(query);
-
+  console.log(properties);
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Header */}

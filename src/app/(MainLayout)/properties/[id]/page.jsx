@@ -354,10 +354,25 @@ const PropertyDetailPage = async ({ params }) => {
                   <p className="font-bold text-lg">{property?.flatSize} sqft</p>
                 </div>
               </div>
-
-              <button className="w-full h-12 rounded-2xl bg-[#1a7361] hover:bg-[#145b4d] text-white font-semibold transition">
+              <form action="/api/checkout_sessions" method="POST">
+                <section>
+                  <input
+                    type="hidden"
+                    name="propertyId"
+                    value={property?._id}
+                  />
+                  <button
+                    className="w-full h-12 rounded-2xl bg-[#1a7361] hover:bg-[#145b4d] text-white font-semibold transition"
+                    type="submit"
+                    role="link"
+                  >
+                    Checkout
+                  </button>
+                </section>
+              </form>
+              {/* <button className="w-full h-12 rounded-2xl bg-[#1a7361] hover:bg-[#145b4d] text-white font-semibold transition">
                 Book Property
-              </button>
+              </button> */}
 
               <button
                 className={`w-full h-12 rounded-2xl border flex items-center justify-center gap-2 transition ${

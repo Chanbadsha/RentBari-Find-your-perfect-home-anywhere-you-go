@@ -29,6 +29,7 @@ export default async function TenantBookings({ searchParams }) {
   const paginatedBookings = bookings.slice(start, end);
 
   const totalPages = Math.ceil(bookings.length / limit);
+  console.log(paginatedBookings);
   return (
     <div className="min-h-screen bg-background p-8 font-sans antialiased text-foreground">
       {/* Header Section */}

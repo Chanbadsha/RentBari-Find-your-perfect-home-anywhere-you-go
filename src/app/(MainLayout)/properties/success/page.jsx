@@ -27,6 +27,7 @@ export default async function Success({ searchParams }) {
     propertyId: session.metadata.propertyId,
     userId: session.metadata.userId,
     rentType: session.metadata.rentType,
+    propertyOwnerId: session.metadata.propertyOwnerId,
     amount: session.amount_total / 100,
     transactionId: session.payment_intent.latest_charge,
     paymentIntentId: session.payment_intent.id,

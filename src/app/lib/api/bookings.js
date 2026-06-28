@@ -7,6 +7,9 @@ const getBookings = async (query = {}) => {
 const getBookingsById = async (bookingId) => {
   return await serverFetch(`bookings/${bookingId}`);
 };
+const getBookingsByOwnerId = async (propertyOwnerId, bookingStatus = "") => {
+  return await serverFetch(`bookings`, { propertyOwnerId, bookingStatus });
+};
 
 const getBookingsByPropertyId = async (propertyId) => {
   return await serverFetch(`bookings`, { propertyId });
@@ -21,4 +24,5 @@ export {
   getBookingsById,
   getBookingsByPropertyId,
   getBookingsByUserId,
+  getBookingsByOwnerId,
 };

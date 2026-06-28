@@ -21,6 +21,7 @@ export async function POST(request) {
       metadata: {
         userId: user.id,
         propertyId: id,
+        propertyOwnerId: property?.userId,
         rentType: property?.rentType,
       },
       line_items: [

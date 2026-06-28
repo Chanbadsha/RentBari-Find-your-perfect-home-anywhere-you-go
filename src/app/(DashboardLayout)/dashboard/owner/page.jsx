@@ -1,4 +1,3 @@
-import React from "react";
 import { Card } from "@heroui/react";
 import {
   FiDollarSign,
@@ -9,11 +8,20 @@ import {
   FiArrowRight,
 } from "react-icons/fi";
 import Image from "next/image";
-import { getProperties } from "@/app/lib/api/properties";
+
 import Link from "next/link";
+import { getPropertiesByUserId } from "@/app/lib/api/properties";
+import { getUserSession } from "@/app/lib/core/session";
+import { getBookingsByOwnerId } from "@/app/lib/api/bookings";
+import { ValidImgUrl } from "@/Utils/ValidImgUrl";
+import BookingAccept from "@/Utils/BookingAccept";
 
 export default async function DashboardOverview() {
-  const properties = (await getProperties()) || [];
+  const user = await getUserSession();
+  const properties = (await getPropertiesByUserId(user?.id)) || [];
+  const bookingRequests =
+    (await getBookingsByOwnerId(user?.id, "pending")) || [];
+
   const topStats = [
     {
       title: "Total Earnings",
@@ -26,7 +34,7 @@ export default async function DashboardOverview() {
     },
     {
       title: "Total Properties",
-      value: properties.length + " Units",
+      value: properties.length || 0 + " Units",
       badge: "Active",
       badgeIcon: null,
       badgeClass: "text-blue-600 bg-blue-50",
@@ -35,33 +43,12 @@ export default async function DashboardOverview() {
     },
     {
       title: "Total Bookings",
-      value: "184",
+      value: bookingRequests.length || 0 + "",
       badge: "-2.1%",
       badgeIcon: <FiArrowDownRight className="inline ml-0.5" />,
       badgeClass: "text-rose-600 bg-rose-50",
       icon: <FiCalendar className="text-white text-lg" />,
       iconBg: "bg-[#FCE4E4]",
-    },
-  ];
-
-  const bookingRequests = [
-    {
-      name: "Alexander Pierce",
-      action: "requested",
-      property: "Cozy Garden Loft",
-      dates: "Aug 12 - Aug 15",
-      guests: "2 Guests",
-      avatar:
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
-    },
-    {
-      name: "Sarah Jenkins",
-      action: "requested",
-      property: "Modern Skyline Studio",
-      dates: "Sep 01 - Sep 05",
-      guests: "1 Guest",
-      avatar:
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&auto=format&fit=crop&q=80",
     },
   ];
 
@@ -201,33 +188,34 @@ export default async function DashboardOverview() {
                     <Image
                       height={600}
                       width={600}
-                      src={req.avatar}
-                      alt={req.name}
+                      src={ValidImgUrl(req?.property?.coverImage)}
+                      alt={req?.property?.propertyTitle}
                       className="w-10 h-10 rounded-full object-cover bg-slate-100"
                     />
                     <div>
                       <p className="text-sm font-medium text-foreground/80">
                         <span className="font-bold text-foreground">
-                          {req.name}
+                          {req?.user?.name}
                         </span>{" "}
-                        {req.action}{" "}
+                        requested{" "}
                         <span className="font-bold text-[#00523A]">
-                          {req.property}
+                          {req?.property?.propertyTitle}
                         </span>
                       </p>
-                      <p className="text-xs text-foreground/60 mt-1">
-                        {req.dates} • {req.guests}
-                      </p>
+                      {/* <p className="text-xs text-foreground/60 mt-1">
+                        {req?.dates} • {req?.guests}
+                      </p> */}
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 self-end sm:self-auto">
+                  <BookingAccept booking={req} />
+                  {/* <div className="flex items-center gap-2 self-end sm:self-auto">
                     <button className="text-xs font-bold text-rose-600 border border-rose-200 hover:bg-rose-50 px-4 py-2 rounded-xl transition-colors">
                       Decline
                     </button>
                     <button className="text-xs font-bold bg-[#00523A] hover:bg-[#00402e] text-white px-4 py-2 rounded-xl transition-colors shadow-sm">
                       Accept
                     </button>
-                  </div>
+                  </div> */}
                 </div>
               ))}
             </Card.Content>

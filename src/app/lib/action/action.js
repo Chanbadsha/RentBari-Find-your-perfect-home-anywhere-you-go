@@ -17,3 +17,10 @@ export const UpdateUserSession = async (userData) => {
 
   return result;
 };
+
+export const UpdateBooking = async (bookingData) => {
+  // console.log(bookingData);
+  const result = await serverPatch(`bookings/${bookingData.id}`, bookingData);
+
+  return result;
+};

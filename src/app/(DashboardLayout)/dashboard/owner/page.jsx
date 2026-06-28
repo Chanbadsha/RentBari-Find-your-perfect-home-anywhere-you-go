@@ -21,6 +21,7 @@ export default async function DashboardOverview() {
   const properties = (await getPropertiesByUserId(user?.id)) || [];
   const bookingRequests =
     (await getBookingsByOwnerId(user?.id, "pending")) || [];
+  const totalBookings = (await getBookingsByOwnerId(user?.id)) || [];
 
   const topStats = [
     {
@@ -43,7 +44,7 @@ export default async function DashboardOverview() {
     },
     {
       title: "Total Bookings",
-      value: bookingRequests.length || 0 + "",
+      value: totalBookings.length || 0 + "",
       badge: "-2.1%",
       badgeIcon: <FiArrowDownRight className="inline ml-0.5" />,
       badgeClass: "text-rose-600 bg-rose-50",
@@ -179,45 +180,65 @@ export default async function DashboardOverview() {
             </Card.Header>
 
             <Card.Content className="p-0 divide-y divide-foreground/20">
-              {bookingRequests.map((req, idx) => (
-                <div
-                  key={idx}
-                  className="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-                >
-                  <div className="flex items-center gap-3">
-                    <Image
-                      height={600}
-                      width={600}
-                      src={ValidImgUrl(req?.property?.coverImage)}
-                      alt={req?.property?.propertyTitle}
-                      className="w-10 h-10 rounded-full object-cover bg-slate-100"
-                    />
-                    <div>
-                      <p className="text-sm font-medium text-foreground/80">
-                        <span className="font-bold text-foreground">
-                          {req?.user?.name}
-                        </span>{" "}
-                        requested{" "}
-                        <span className="font-bold text-[#00523A]">
-                          {req?.property?.propertyTitle}
-                        </span>
-                      </p>
-                      {/* <p className="text-xs text-foreground/60 mt-1">
-                        {req?.dates} • {req?.guests}
-                      </p> */}
+              {bookingRequests.length > 0 ? (
+                bookingRequests.map((req, idx) => (
+                  <div
+                    key={idx}
+                    className="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Image
+                        height={600}
+                        width={600}
+                        src={ValidImgUrl(req?.property?.coverImage)}
+                        alt={req?.property?.propertyTitle}
+                        className="w-10 h-10 rounded-full object-cover bg-slate-100"
+                      />
+
+                      <div>
+                        <p className="text-sm font-medium text-foreground/80">
+                          <span className="font-bold text-foreground">
+                            {req?.user?.name}
+                          </span>{" "}
+                          requested{" "}
+                          <span className="font-bold text-[#00523A]">
+                            {req?.property?.propertyTitle}
+                          </span>
+                        </p>
+                      </div>
                     </div>
+
+                    <BookingAccept booking={req} />
                   </div>
-                  <BookingAccept booking={req} />
-                  {/* <div className="flex items-center gap-2 self-end sm:self-auto">
-                    <button className="text-xs font-bold text-rose-600 border border-rose-200 hover:bg-rose-50 px-4 py-2 rounded-xl transition-colors">
-                      Decline
-                    </button>
-                    <button className="text-xs font-bold bg-[#00523A] hover:bg-[#00402e] text-white px-4 py-2 rounded-xl transition-colors shadow-sm">
-                      Accept
-                    </button>
-                  </div> */}
+                ))
+              ) : (
+                <div className="flex flex-col items-center justify-center py-14 px-6 text-center">
+                  <div className="w-16 h-16 rounded-full bg-[#00523A]/10 flex items-center justify-center mb-4">
+                    <svg
+                      className="w-8 h-8 text-[#00523A]"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 10h.01M12 10h.01M16 10h.01M9 16h6M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.323-3.969A7.624 7.624 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                      />
+                    </svg>
+                  </div>
+
+                  <h3 className="text-lg font-semibold text-foreground">
+                    No Booking Requests
+                  </h3>
+
+                  <p className="mt-2 text-sm text-foreground/60 max-w-sm">
+                    You don&apos;t have any pending booking requests at the
+                    moment. New booking requests from tenants will appear here.
+                  </p>
                 </div>
-              ))}
+              )}
             </Card.Content>
           </div>
         </Card>

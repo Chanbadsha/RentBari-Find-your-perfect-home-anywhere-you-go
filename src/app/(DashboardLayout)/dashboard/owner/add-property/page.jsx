@@ -12,6 +12,7 @@ import {
 } from "@gravity-ui/icons";
 import { TextField } from "@heroui/react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -38,7 +39,7 @@ export default function ListPropertyPage() {
   const [imageUrl, setImageUrl] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [addPropertyLoading, setAddPropertyLoading] = useState(false);
-
+  const router = useRouter();
   const handleFileChange = async (e) => {
     try {
       setUploading(true);
@@ -169,6 +170,7 @@ export default function ListPropertyPage() {
       toast("Property added successfully.", {
         icon: "✅",
       });
+      router.push("/dashboard/owner/properties");
     } catch (error) {
       console.error("Add Property Error:", error);
 

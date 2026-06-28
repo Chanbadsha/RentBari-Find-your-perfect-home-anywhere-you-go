@@ -2,7 +2,7 @@ import DashBoardNavBar from "@/Components/DashBoard/DashBoardNavBar";
 import RequiredRole from "@/MiddleWare/RequiredRole";
 
 const DashBoardLayout = async ({ children }) => {
-  // await RequiredRole("tenant");
+  await RequiredRole("");
   return (
     <main className="bg-mainBackground">
       <div className=" container mx-auto min-h-screen flex bg-background">

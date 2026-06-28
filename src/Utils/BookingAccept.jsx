@@ -21,9 +21,27 @@ const BookingAccept = ({ booking }) => {
       toast(updatedBooking.message);
     }
   };
+
+  const rejectBooking = async () => {
+    const bookingId = booking?._id;
+
+    const updatedBooking = await UpdateBooking({
+      id: bookingId,
+      status: "reject",
+    });
+    if (updatedBooking.success) {
+      toast.success("Booking rejected successfully!");
+      router.refresh();
+    } else {
+      toast(updatedBooking.message);
+    }
+  };
   return (
     <div className="flex items-center gap-2 self-end sm:self-auto">
-      <button className="text-xs font-bold text-rose-600 border border-rose-200 hover:bg-rose-50 px-4 py-2 rounded-xl transition-colors">
+      <button
+        onClick={rejectBooking}
+        className="text-xs font-bold text-rose-600 border border-rose-200 hover:bg-rose-50 px-4 py-2 rounded-xl transition-colors"
+      >
         Decline
       </button>
       <button

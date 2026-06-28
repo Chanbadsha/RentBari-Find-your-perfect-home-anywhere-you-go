@@ -16,10 +16,26 @@ import { getUserSession } from "@/app/lib/core/session";
 import { getPropertiesByUserId } from "@/app/lib/api/properties";
 import { BiEdit } from "react-icons/bi";
 import DeletePropertyBtn from "@/Utils/DeletePropertyBtn";
+import Link from "next/link";
 
-export default async function MyProperties() {
+export default async function MyProperties({ searchParams }) {
   const user = await getUserSession();
   const properties = (await getPropertiesByUserId(user?.id)) || [];
+
+  // Pagination
+  const { page = "1" } = await searchParams;
+  const currentPage = Number(page);
+  const limit = 4;
+
+  const start = (currentPage - 1) * limit;
+  const end = start + limit;
+
+  const paginatedProperties = properties.slice(start, end);
+
+  const totalPages = Math.max(1, Math.ceil(properties.length / limit));
+
+  // const user = await getUserSession();
+  // const properties = (await getPropertiesByUserId(user?.id)) || [];
 
   const stats = [
     {
@@ -121,7 +137,7 @@ export default async function MyProperties() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-sm">
-              {properties?.slice(0, 3).map((property) => (
+              {paginatedProperties.map((property) => (
                 <tr
                   key={property._id}
                   className="hover:bg-slate-50/40 transition-colors"
@@ -253,27 +269,56 @@ export default async function MyProperties() {
         <Card.Footer className="p-4 flex flex-col sm:flex-row justify-between items-center gap-4 border-t border-foreground/20 bg-background">
           <span className="text-xs font-medium text-foreground/60">
             Showing{" "}
-            <strong className="text-foreground/70 font-semibold">1-3</strong> of{" "}
-            <strong className="text-foreground/70 font-semibold">12</strong>{" "}
+            <strong className="text-foreground/70 font-semibold">
+              {properties.length === 0 ? 0 : start + 1}-
+              {Math.min(end, properties.length)}
+            </strong>{" "}
+            of{" "}
+            <strong className="text-foreground/70 font-semibold">
+              {properties.length}
+            </strong>{" "}
             properties
           </span>
 
           <div className="flex items-center gap-1">
-            <button className="p-2 border border-foreground/20 text-foreground/60 rounded-lg hover:bg-secondary transition-colors">
+            {/* Previous */}
+            <Link
+              href={`?page=${Math.max(1, currentPage - 1)}`}
+              className={`p-2 border border-foreground/20 text-foreground/60 rounded-lg transition-colors ${
+                currentPage === 1
+                  ? "opacity-50 pointer-events-none"
+                  : "hover:bg-secondary"
+              }`}
+            >
               <FiChevronLeft size={16} />
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center bg-secondary text-white rounded-lg text-xs font-semibold shadow-sm">
-              1
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center border border-foreground/20 text-foreground/70 hover:bg-secondary rounded-lg text-xs font-medium transition-colors">
-              2
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center border border-foreground/20 text-foreground/70 hover:bg-secondary rounded-lg text-xs font-medium transition-colors">
-              3
-            </button>
-            <button className="p-2 border border-foreground/20 text-foreground/60 rounded-lg hover:bg-secondary transition-colors">
+            </Link>
+
+            {/* Page Numbers */}
+            {Array.from({ length: totalPages }, (_, i) => (
+              <Link
+                key={i}
+                href={`?page=${i + 1}`}
+                className={`w-8 h-8 flex items-center justify-center rounded-lg text-xs font-medium transition-colors ${
+                  currentPage === i + 1
+                    ? "bg-secondary text-white shadow-sm"
+                    : "border border-foreground/20 text-foreground/70 hover:bg-secondary"
+                }`}
+              >
+                {i + 1}
+              </Link>
+            ))}
+
+            {/* Next */}
+            <Link
+              href={`?page=${Math.min(totalPages, currentPage + 1)}`}
+              className={`p-2 border border-foreground/20 text-foreground/60 rounded-lg transition-colors ${
+                currentPage === totalPages
+                  ? "opacity-50 pointer-events-none"
+                  : "hover:bg-secondary"
+              }`}
+            >
               <FiChevronRight size={16} />
-            </button>
+            </Link>
           </div>
         </Card.Footer>
       </Card>

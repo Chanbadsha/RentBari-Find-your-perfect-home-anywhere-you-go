@@ -19,17 +19,18 @@ export default async function TenantBookings({ searchParams }) {
   const user = await getUserSession();
 
   const bookings = await getBookingsByUserId(user?.id);
+  const { page = 1 } = await searchParams;
 
-  const page = Number(searchParams?.page || 1);
-  const limit = 5;
+  console.log(page);
+  const limit = 3;
 
   const start = (page - 1) * limit;
   const end = start + limit;
-
+  console.log(start);
   const paginatedBookings = bookings.slice(start, end);
 
   const totalPages = Math.ceil(bookings.length / limit);
-  console.log(paginatedBookings);
+
   return (
     <div className="min-h-screen bg-background p-8 font-sans antialiased text-foreground">
       {/* Header Section */}
@@ -206,7 +207,6 @@ export default async function TenantBookings({ searchParams }) {
           </span>
 
           <div className="flex items-center gap-1">
-            {/* Previous */}
             <Link
               href={`?page=${Math.max(page - 1, 1)}`}
               className={`p-2 border border-foreground/20 rounded-lg ${
@@ -218,7 +218,6 @@ export default async function TenantBookings({ searchParams }) {
               <FiChevronLeft size={16} />
             </Link>
 
-            {/* Page numbers */}
             {Array.from({ length: totalPages }, (_, i) => (
               <Link
                 key={i}
@@ -233,7 +232,6 @@ export default async function TenantBookings({ searchParams }) {
               </Link>
             ))}
 
-            {/* Next */}
             <Link
               href={`?page=${Math.min(page + 1, totalPages)}`}
               className={`p-2 border border-foreground/20 rounded-lg ${

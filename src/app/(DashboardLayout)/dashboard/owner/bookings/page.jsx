@@ -1,26 +1,56 @@
-import React from "react";
+import { getBookingsByOwnerId } from "@/app/lib/api/bookings";
+import { getProperties } from "@/app/lib/api/properties";
+import { getUserSession } from "@/app/lib/core/session";
+import BookingAccept from "@/Utils/BookingAccept";
 import { Card, Input } from "@heroui/react";
+import Image from "next/image";
+import Link from "next/link";
 import {
-  FiSearch,
-  FiSliders,
-  FiMapPin,
   FiCheck,
-  FiX,
-  FiEye,
-  FiDownload,
   FiChevronLeft,
   FiChevronRight,
-  FiFileText,
   FiDollarSign,
+  FiDownload,
+  FiEye,
+  FiFileText,
+  FiMapPin,
   FiPieChart,
+  FiSearch,
+  FiSliders,
+  FiX,
 } from "react-icons/fi";
-import Image from "next/image";
 
-export default function BookingRequests() {
+export default async function BookingRequests({ searchParams }) {
+  const user = await getUserSession();
+  const properties = await getProperties();
+  const bookings = await getBookingsByOwnerId(user?.id);
+  const bookingRequest = await getBookingsByOwnerId(user?.id, "pending");
+  console.log(bookingRequest);
+  // Pagination
+  const { page = "1" } = await searchParams;
+  const currentPage = Number(page);
+  const limit = 4;
+
+  const start = (currentPage - 1) * limit;
+  const end = start + limit;
+
+  const paginatedProperties = bookings.slice(start, end);
+
+  const totalPages = Math.max(1, Math.ceil(bookings.length / limit));
+  const startDate = new Date();
+
+  const endDate = new Date();
+  endDate.setDate(endDate.getDate() + 7);
+  const bookingStatusStyles = {
+    approved: "bg-emerald-100 text-emerald-700 border border-emerald-200",
+    pending: "bg-amber-100 text-amber-700 border border-amber-200",
+    refund: "bg-rose-100 text-rose-700 border border-rose-200",
+  };
+
   const stats = [
     {
       title: "Pending Requests",
-      value: "12",
+      value: bookingRequest?.length || 0,
       bgClass: "bg-secondary",
       textColor: "text-white",
       icon: <FiFileText className="text-foreground/80 text-lg" />,
@@ -38,72 +68,6 @@ export default function BookingRequests() {
       bgClass: "bg-secondary",
       textColor: "text-foreground",
       icon: <FiPieChart className="text-foreground/80 text-lg" />,
-    },
-  ];
-
-  const requests = [
-    {
-      name: "Marcus Thompson",
-      email: "marcus.t@email.com",
-      avatar:
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
-      initials: "",
-      property: "The Emerald Penthouse",
-      location: "Downtown District",
-      amount: "$2,450.00",
-      paymentStatus: "Security Deposit Paid",
-      amountColor: "text-[#00523A]",
-      dates: "Oct 12 - Oct 28",
-      nights: "16 Nights",
-      status: "PENDING",
-      statusBg: "bg-[#FDF2E2] text-[#855B14]",
-    },
-    {
-      name: "Sarah Jenkins",
-      email: "sarah.j@webmail.com",
-      avatar:
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&auto=format&fit=crop&q=80",
-      initials: "",
-      property: "Coastal Breeze Villa",
-      location: "North Shore",
-      amount: "$5,120.00",
-      paymentStatus: "Full Payment Pending",
-      amountColor: "text-[#00523A]",
-      dates: "Nov 01 - Nov 15",
-      nights: "14 Nights",
-      status: "PENDING",
-      statusBg: "bg-[#FDF2E2] text-[#855B14]",
-    },
-    {
-      name: "David Alpert",
-      email: "d.alpert@outlook.com",
-      avatar: "",
-      initials: "DA",
-      property: "Sunset Loft Apartment",
-      location: "Westside Meadows",
-      amount: "$1,800.00",
-      paymentStatus: "Paid in Full",
-      amountColor: "text-[#00523A]",
-      dates: "Oct 05 - Oct 12",
-      nights: "7 Nights",
-      status: "APPROVED",
-      statusBg: "bg-[#E6F4F0] text-[#00523A]",
-    },
-    {
-      name: "Elena Rodriguez",
-      email: "elena.r@business.com",
-      avatar:
-        "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&auto=format&fit=crop&q=80",
-      initials: "",
-      property: "Skyline Executive Suite",
-      location: "Financial District",
-      amount: "$3,300.00",
-      paymentStatus: "Security Deposit Paid",
-      amountColor: "text-[#00523A]",
-      dates: "Dec 20 - Jan 05",
-      nights: "16 Nights",
-      status: "PENDING",
-      statusBg: "bg-[#FDF2E2] text-[#855B14]",
     },
   ];
 
@@ -173,7 +137,7 @@ export default function BookingRequests() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-sm">
-              {requests.map((row, index) => (
+              {paginatedProperties.map((property, index) => (
                 <tr
                   key={index}
                   className="hover:bg-slate-50/50 transition-colors"
@@ -181,25 +145,25 @@ export default function BookingRequests() {
                   {/* Tenant Info */}
                   <td className="py-5 px-6">
                     <div className="flex items-center gap-3">
-                      {row.avatar ? (
+                      {property?.user?.image ? (
                         <Image
                           height={600}
                           width={600}
-                          src={row.avatar}
-                          alt={row.name}
+                          src={property?.user?.image}
+                          alt={property?.user?.name}
                           className="w-10 h-10 object-cover rounded-full bg-slate-100"
                         />
                       ) : (
                         <div className="w-10 h-10 rounded-full bg-[#D1EBE3] text-[#00523A] font-bold text-xs flex items-center justify-center">
-                          {row.initials}
+                          {/* {row.initials} */}
                         </div>
                       )}
                       <div>
                         <h4 className="font-bold text-foreground text-sm leading-tight">
-                          {row.name}
+                          {property?.user?.name}
                         </h4>
                         <span className="text-xs text-foreground/60">
-                          {row.email}
+                          {property?.user?.email}
                         </span>
                       </div>
                     </div>
@@ -209,11 +173,11 @@ export default function BookingRequests() {
                   <td className="py-5 px-6">
                     <div>
                       <h4 className="font-semibold text-foreground/80 text-sm leading-tight">
-                        {row.property}
+                        {property?.property?.propertyTitle}
                       </h4>
                       <div className="flex items-center gap-1 text-xs text-foreground/60 mt-1">
                         <FiMapPin className="shrink-0" />
-                        <span>{row.location}</span>
+                        <span>{property?.property?.location}</span>
                       </div>
                     </div>
                   </td>
@@ -221,23 +185,25 @@ export default function BookingRequests() {
                   {/* Amount */}
                   <td className="py-5 px-6">
                     <div>
-                      <span className={`font-bold ${row.amountColor}`}>
-                        {row.amount}
+                      <span className={`font-bold `}>
+                        {" "}
+                        ৳ {property?.amount}
                       </span>
                       <p className="text-[11px] text-foreground/60 mt-0.5 font-medium">
-                        {row.paymentStatus}
+                        {property?.paymentStatus}
                       </p>
                     </div>
                   </td>
 
                   {/* Date Range */}
+
                   <td className="py-5 px-6">
                     <div>
                       <span className="font-semibold text-foreground/80">
-                        {row.dates}
+                        {startDate.toLocaleDateString()}
                       </span>
                       <p className="text-[11px] text-foreground/60 mt-0.5">
-                        {row.nights}
+                        Until {endDate.toLocaleDateString()}
                       </p>
                     </div>
                   </td>
@@ -245,23 +211,21 @@ export default function BookingRequests() {
                   {/* Status */}
                   <td className="py-5 px-6 text-center">
                     <span
-                      className={`inline-block px-2.5 py-1 rounded-md text-[10px] font-bold tracking-wider ${row.statusBg}`}
+                      className={`inline-block capitalize px-3 py-1 rounded-md text-[10px] font-bold tracking-wider ${
+                        bookingStatusStyles[property?.bookingStatus] ||
+                        "bg-gray-100 text-gray-700 border border-gray-200"
+                      }`}
                     >
-                      {row.status}
+                      {property?.bookingStatus}
                     </span>
                   </td>
 
                   {/* Actions column conditional layout */}
                   <td className="py-5 px-6">
                     <div className="flex items-center justify-center gap-3">
-                      {row.status === "PENDING" ? (
+                      {property?.bookingStatus === "pending" ? (
                         <>
-                          <button className="flex items-center gap-1.5 bg-[#00523A] hover:bg-[#00402e] text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shadow-sm">
-                            <FiCheck /> Approve
-                          </button>
-                          <button className="text-rose-500 hover:text-rose-700 transition-colors p-1">
-                            <FiX size={16} />
-                          </button>
+                          <BookingAccept booking={property} />
                         </>
                       ) : (
                         <>
@@ -285,27 +249,56 @@ export default function BookingRequests() {
         <Card.Footer className="p-4 flex flex-col sm:flex-row justify-between items-center gap-4 border-t border-foreground/20 bg-background">
           <span className="text-xs font-medium text-foreground/60">
             Showing{" "}
-            <strong className="text-foreground/70 font-semibold">1 to 4</strong>{" "}
-            of <strong className="text-foreground/70 font-semibold">12</strong>{" "}
-            requests
+            <strong className="text-foreground/70 font-semibold">
+              {properties.length === 0 ? 0 : start + 1}-
+              {Math.min(end, properties.length)}
+            </strong>{" "}
+            of{" "}
+            <strong className="text-foreground/70 font-semibold">
+              {properties.length}
+            </strong>{" "}
+            properties
           </span>
 
           <div className="flex items-center gap-1">
-            <button className="p-2 border border-foreground/20 text-foreground/60 rounded-lg hover:bg-secondary transition-colors">
-              <FiChevronLeft size={14} />
-            </button>
-            <button className="w-7 h-7 flex items-center justify-center bg-secondary text-white rounded-lg text-xs font-semibold shadow-sm">
-              1
-            </button>
-            <button className="w-7 h-7 flex items-center justify-center border border-foreground/20 text-foreground/70 hover:bg-secondary rounded-lg text-xs font-medium transition-colors">
-              2
-            </button>
-            <button className="w-7 h-7 flex items-center justify-center border border-foreground/20 text-foreground/70 hover:bg-secondary rounded-lg text-xs font-medium transition-colors">
-              3
-            </button>
-            <button className="p-2 border border-foreground/20 text-foreground/60 rounded-lg hover:bg-secondary transition-colors">
-              <FiChevronRight size={14} />
-            </button>
+            {/* Previous */}
+            <Link
+              href={`?page=${Math.max(1, currentPage - 1)}`}
+              className={`p-2 border border-foreground/20 text-foreground/60 rounded-lg transition-colors ${
+                currentPage === 1
+                  ? "opacity-50 pointer-events-none"
+                  : "hover:bg-secondary"
+              }`}
+            >
+              <FiChevronLeft size={16} />
+            </Link>
+
+            {/* Page Numbers */}
+            {Array.from({ length: totalPages }, (_, i) => (
+              <Link
+                key={i}
+                href={`?page=${i + 1}`}
+                className={`w-8 h-8 flex items-center justify-center rounded-lg text-xs font-medium transition-colors ${
+                  currentPage === i + 1
+                    ? "bg-secondary text-white shadow-sm"
+                    : "border border-foreground/20 text-foreground/70 hover:bg-secondary"
+                }`}
+              >
+                {i + 1}
+              </Link>
+            ))}
+
+            {/* Next */}
+            <Link
+              href={`?page=${Math.min(totalPages, currentPage + 1)}`}
+              className={`p-2 border border-foreground/20 text-foreground/60 rounded-lg transition-colors ${
+                currentPage === totalPages
+                  ? "opacity-50 pointer-events-none"
+                  : "hover:bg-secondary"
+              }`}
+            >
+              <FiChevronRight size={16} />
+            </Link>
           </div>
         </Card.Footer>
       </Card>

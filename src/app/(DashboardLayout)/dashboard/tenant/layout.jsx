@@ -1,8 +1,8 @@
 import RequiredRole from "@/MiddleWare/RequiredRole";
 
-const OwnerLayout = async ({ children }) => {
-  await RequiredRole("owner");
+const TenantLayout = async ({ children }) => {
+  await RequiredRole("tenant");
   return <div className="w-full border">{children}</div>;
 };
 
-export default OwnerLayout;
+export default TenantLayout;

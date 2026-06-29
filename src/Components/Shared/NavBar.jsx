@@ -12,6 +12,7 @@ export default function NavBar() {
   const [open, setOpen] = useState(false);
   const { data: session, isPending } = authClient.useSession();
   const user = session?.user;
+
   const navItems = [
     {
       path: "/",
@@ -109,7 +110,10 @@ export default function NavBar() {
                     <Avatar className="ring-2 ring-border hover:ring-primary/30 transition-all">
                       <Avatar.Image
                         alt="Profile"
-                        src="https://img.heroui.chat/image/avatar?w=400&h=400&u=3"
+                        src={
+                          user?.image ||
+                          "https://img.heroui.chat/image/avatar?w=400&h=400&u=3"
+                        }
                       />
                       <Avatar.Fallback>SR</Avatar.Fallback>
                     </Avatar>
@@ -119,7 +123,7 @@ export default function NavBar() {
                     <ul className="absolute right-0 top-12 z-50 w-52 overflow-hidden rounded-2xl border border-border bg-background/95 backdrop-blur-xl shadow-xl animate-in fade-in zoom-in-95 duration-200">
                       <li>
                         <Link
-                          href="/dashboard"
+                          href={`/dashboard/${user?.userRole}`}
                           className="flex bg-background no-underline w-full items-center gap-3 px-4 py-3 text-sm font-medium transition-colors hover:bg-foreground/30  duration-300 ease-out"
                           onClick={() => {
                             setValue("userRole", "job-seeker");

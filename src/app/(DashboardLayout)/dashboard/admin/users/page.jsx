@@ -65,15 +65,18 @@ export default async function AllUsers({ searchParams }) {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            User Directory
+            All Users
           </h1>
+
           <p className="text-foreground/70 mt-1">
-            Manage all 1,248 registered users across the BashaNest ecosystem.
+            Manage user accounts, roles, permissions, and account statuses
+            across the RentBari platform.
           </p>
         </div>
+
         <button className="flex items-center gap-2 bg-[#00523A] hover:bg-[#00402e] text-white px-5 py-2.5 rounded-xl font-medium transition-colors shadow-sm">
-          <FiPlus className="text-lg" />
-          Add New Property
+          <FiDownload className="text-lg" />
+          Export Users
         </button>
       </div>
 

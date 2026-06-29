@@ -11,7 +11,5 @@ export const updateUserSession = async (data) => {
     await authClient.updateUser({
       ...data,
     });
-  } catch (error) {
-    console.error(error);
-  }
+  } catch (error) {}
 };

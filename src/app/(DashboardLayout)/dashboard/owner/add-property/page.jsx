@@ -70,7 +70,6 @@ export default function ListPropertyPage() {
       setImageUrl(uploadedImageUrl);
       setPreview(uploadedImageUrl);
     } catch (error) {
-      console.error("Upload error:", error);
       toast("Failed to upload image. Please try again.", {
         icon: "❌",
       });
@@ -172,8 +171,6 @@ export default function ListPropertyPage() {
       });
       router.push("/dashboard/owner/properties");
     } catch (error) {
-      console.error("Add Property Error:", error);
-
       toast(error.message || "Failed to add property. Please try again.", {
         icon: "❌",
       });

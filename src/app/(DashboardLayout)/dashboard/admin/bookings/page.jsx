@@ -67,15 +67,18 @@ export default async function Bookings({ searchParams }) {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            User Directory
+            All Bookings
           </h1>
+
           <p className="text-foreground/70 mt-1">
-            Manage all 1,248 registered users across the BashaNest ecosystem.
+            Manage and monitor all property reservations, payment statuses, and
+            booking activities across the RentBari platform.
           </p>
         </div>
+
         <button className="flex items-center gap-2 bg-[#00523A] hover:bg-[#00402e] text-white px-5 py-2.5 rounded-xl font-medium transition-colors shadow-sm">
           <FiPlus className="text-lg" />
-          Add New Property
+          Export Bookings
         </button>
       </div>
 

@@ -71,16 +71,18 @@ export default async function AllProperties({ searchParams }) {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            Property Moderation
+            All Properties
           </h1>
+
           <p className="text-foreground/70 mt-1">
-            Manage and review pending property listings across the global
-            network.{" "}
+            Review, moderate, and manage all property listings submitted by
+            property owners across the RentBari platform.
           </p>
         </div>
+
         <button className="flex items-center gap-2 bg-[#00523A] hover:bg-[#00402e] text-white px-5 py-2.5 rounded-xl font-medium transition-colors shadow-sm">
-          <FiPlus className="text-lg" />
-          Add New Property
+          <FiDownload className="text-lg" />
+          Export Properties
         </button>
       </div>
 

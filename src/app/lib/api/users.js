@@ -6,7 +6,5 @@ export const getUsers = async () => {
     const users = await serverFetch("users");
 
     return users || [];
-  } catch (error) {
-    console.error(error);
-  }
+  } catch (error) {}
 };

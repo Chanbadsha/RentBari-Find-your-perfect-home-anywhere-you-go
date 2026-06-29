@@ -25,7 +25,7 @@ export const handleFavorite = async (propertyId) => {
 
     return favorites;
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     return [];
   }
 };

@@ -53,7 +53,7 @@ export default function ProfileSettings({ user }) {
       setImageUrl(uploadedImageUrl);
       setPreview(uploadedImageUrl);
     } catch (error) {
-      console.error("Upload error:", error);
+      // console.error("Upload error:", error);
       toast("Failed to upload image. Please try again.", {
         icon: "❌",
       });
@@ -78,7 +78,7 @@ export default function ProfileSettings({ user }) {
 
       router.refresh();
     } catch (error) {
-      console.error("Update User Error:", error);
+      // console.error("Update User Error:", error);
 
       toast.error(
         error.message || "Failed to update profile. Please try again.",

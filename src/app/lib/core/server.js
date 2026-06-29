@@ -16,8 +16,6 @@ export const serverMutation = async (path, data) => {
 
     return result;
   } catch (error) {
-    console.error("serverMutation Error:", error);
-
     return {
       success: false,
       message: error.message || "Something went wrong",
@@ -42,8 +40,6 @@ export const serverFetch = async (path, query = {}, options = {}) => {
 
     return result;
   } catch (error) {
-    console.error("serverFetch Error:", error);
-
     return [];
   }
 };
@@ -66,7 +62,7 @@ export const serverPatch = async (path, data) => {
 
     return result;
   } catch (error) {
-    console.error("serverPatch Error:", error);
+    // console.error("serverPatch Error:", error);
 
     return [];
   }
@@ -89,7 +85,7 @@ export const serverDelete = async (path, data) => {
 
     return result;
   } catch (error) {
-    console.error("serverDelete Error:", error);
+    // console.error("serverDelete Error:", error);
 
     return [];
   }

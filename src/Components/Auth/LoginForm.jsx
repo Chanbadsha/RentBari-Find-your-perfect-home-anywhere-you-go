@@ -25,7 +25,7 @@ const LoginForm = () => {
   const searchParams = useSearchParams();
 
   const callbackUrl = searchParams.get("next") || "/";
-  console.log(callbackUrl);
+
   const {
     register,
     handleSubmit,

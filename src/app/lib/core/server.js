@@ -44,11 +44,7 @@ export const serverFetch = async (path, query = {}, options = {}) => {
   } catch (error) {
     console.error("serverFetch Error:", error);
 
-    return {
-      success: false,
-      message: error.message || "Something went wrong",
-      data: null,
-    };
+    return [];
   }
 };
 
@@ -72,9 +68,29 @@ export const serverPatch = async (path, data) => {
   } catch (error) {
     console.error("serverPatch Error:", error);
 
-    return {
-      success: false,
-      message: error.message || "Something went wrong",
-    };
+    return [];
+  }
+};
+export const serverDelete = async (path, data) => {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/${path}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result?.message || "Request failed");
+    }
+
+    return result;
+  } catch (error) {
+    console.error("serverDelete Error:", error);
+
+    return [];
   }
 };

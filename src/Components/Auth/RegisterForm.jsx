@@ -14,9 +14,11 @@ import {
 } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { MoveRight, User } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
+import toast from "react-hot-toast";
 
 const RegisterForm = () => {
   const [isSelected, setIsSelected] = useState(false);
@@ -25,7 +27,82 @@ const RegisterForm = () => {
 
   const [authError, setAuthError] = useState("");
   const [user, setUser] = useState(null);
+
+  const [uploading, setUploading] = useState(false);
+  const [preview, setPreview] = useState(null);
+  const [imageUrl, setImageUrl] = useState("");
+  const [imgError, setImgError] = useState(false);
+
   const router = useRouter();
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    // Preview immediately
+    setPreview(URL.createObjectURL(file));
+
+    // Validate type
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+
+    if (!allowedTypes.includes(file.type)) {
+      toast("Only JPG, PNG and WEBP images are allowed.", {
+        icon: "❌",
+      });
+      return;
+    }
+
+    // Validate size (10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      toast("Image size must be less than 10MB.", {
+        icon: "❌",
+      });
+      return;
+    }
+
+    try {
+      setUploading(true);
+
+      const formData = new FormData();
+      formData.append("image", file);
+
+      const response = await fetch(
+        `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API_KEY}`,
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error?.message || "Image upload failed");
+      }
+
+      const uploadedImageUrl = data.data.display_url || data.data.url;
+
+      setImageUrl(uploadedImageUrl);
+      setPreview(uploadedImageUrl);
+
+      toast("Image uploaded successfully.", {
+        icon: "✅",
+      });
+      setImgError(false);
+    } catch (error) {
+      console.error(error);
+
+      setPreview(null);
+
+      toast("Failed to upload image. Please try again.", {
+        icon: "❌",
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const {
     register,
     handleSubmit,
@@ -45,8 +122,13 @@ const RegisterForm = () => {
       setLoading(true);
       setAuthError(null);
       setUser(null);
-
-      const { data: user, error } = await signUp.email(data);
+      // Validate profile image
+      if (!imageUrl) {
+        setImgError(true);
+        return;
+      }
+      const userData = { ...data, image: imageUrl };
+      const { data: user, error } = await signUp.email(userData);
 
       if (error) {
         setAuthError(error || "Failed to create account.");
@@ -150,6 +232,77 @@ const RegisterForm = () => {
               </RadioGroup>
             )}
           />
+        </div>
+
+        {/* PROFILE PHOTO */}
+
+        <div className="flex flex-col gap-3">
+          <Label className="text-sm font-medium">Profile Photo</Label>
+
+          {uploading ? (
+            <div className="border border-dashed border-border rounded-2xl p-8 flex flex-col items-center justify-center">
+              <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+
+              <p className="mt-4 text-sm font-semibold">Uploading Image...</p>
+
+              <p className="text-xs text-muted-foreground mt-1">
+                Please wait a moment
+              </p>
+            </div>
+          ) : preview ? (
+            <div className="flex flex-col items-center gap-4">
+              <div className="relative">
+                <Image
+                  src={preview}
+                  alt="Profile Preview"
+                  width={120}
+                  height={120}
+                  className="w-28 h-28 rounded-full object-cover border-4 border-background shadow-lg"
+                />
+
+                <label className="absolute -bottom-1 -right-1 w-9 h-9 bg-primary rounded-full flex items-center justify-center cursor-pointer text-white shadow-lg">
+                  ✎
+                  <input
+                    type="file"
+                    accept="image/png,image/jpeg,image/jpg"
+                    className="hidden"
+                    onChange={handleFileChange}
+                  />
+                </label>
+              </div>
+
+              <p className="text-xs text-muted-foreground">
+                Click the edit icon to change photo
+              </p>
+            </div>
+          ) : (
+            <label className="cursor-pointer">
+              <div className="border-2 border-dashed border-border hover:border-primary transition-all rounded-2xl p-8 flex flex-col items-center justify-center">
+                <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
+                  <User className="w-10 h-10 text-primary" />
+                </div>
+
+                <h4 className="mt-4 font-semibold">Upload Profile Photo</h4>
+
+                <p className="text-xs text-muted-foreground mt-1">
+                  PNG, JPG up to 10MB
+                </p>
+
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/jpg"
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
+              </div>
+            </label>
+          )}
+
+          {imgError && (
+            <p className="text-red-500 text-xs mt-2">
+              Upload your profile picture
+            </p>
+          )}
         </div>
 
         {/* NAME */}

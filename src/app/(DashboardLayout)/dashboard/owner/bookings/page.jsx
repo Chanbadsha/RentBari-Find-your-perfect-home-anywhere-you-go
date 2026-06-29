@@ -6,6 +6,7 @@ import { Card, Input } from "@heroui/react";
 import Image from "next/image";
 import Link from "next/link";
 import {
+  FiCalendar,
   FiCheck,
   FiChevronLeft,
   FiChevronRight,
@@ -25,7 +26,7 @@ export default async function BookingRequests({ searchParams }) {
   const properties = await getProperties();
   const bookings = await getBookingsByOwnerId(user?.id);
   const bookingRequest = await getBookingsByOwnerId(user?.id, "pending");
-  console.log(bookingRequest);
+
   // Pagination
   const { page = "1" } = await searchParams;
   const currentPage = Number(page);
@@ -87,8 +88,8 @@ export default async function BookingRequests({ searchParams }) {
           <div className="relative flex-1 md:w-64">
             <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground/60" />
             <Input
-              aria-label="Search tenants"
-              placeholder="Search tenants..."
+              aria-label="Search bookings"
+              placeholder="Search bookings..."
               className="w-full pl-9 pr-4 py-2 border border-foreground/20 bg-background rounded-xl text-sm focus:outline-none"
             />
           </div>
@@ -137,110 +138,143 @@ export default async function BookingRequests({ searchParams }) {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-sm">
-              {paginatedProperties.map((property, index) => (
-                <tr
-                  key={index}
-                  className="hover:bg-slate-50/50 transition-colors"
-                >
-                  {/* Tenant Info */}
-                  <td className="py-5 px-6">
-                    <div className="flex items-center gap-3">
-                      {property?.user?.image ? (
-                        <Image
-                          height={600}
-                          width={600}
-                          src={property?.user?.image}
-                          alt={property?.user?.name}
-                          className="w-10 h-10 object-cover rounded-full bg-slate-100"
-                        />
-                      ) : (
-                        <div className="w-10 h-10 rounded-full bg-[#D1EBE3] text-[#00523A] font-bold text-xs flex items-center justify-center">
-                          {/* {row.initials} */}
+              {paginatedProperties.length > 0 ? (
+                paginatedProperties.map((property, index) => (
+                  <tr
+                    key={index}
+                    className="hover:bg-slate-50/50 transition-colors"
+                  >
+                    {/* Tenant Info */}
+                    <td className="py-5 px-6">
+                      <div className="flex items-center gap-3">
+                        {property?.user?.image ? (
+                          <Image
+                            height={600}
+                            width={600}
+                            src={property?.user?.image}
+                            alt={property?.user?.name}
+                            className="w-10 h-10 object-cover rounded-full bg-slate-100"
+                          />
+                        ) : (
+                          <div className="w-10 h-10 rounded-full bg-[#D1EBE3] text-[#00523A] font-bold text-xs flex items-center justify-center">
+                            {/* {row.initials} */}
+                          </div>
+                        )}
+                        <div>
+                          <h4 className="font-bold text-foreground text-sm leading-tight">
+                            {property?.user?.name}
+                          </h4>
+                          <span className="text-xs text-foreground/60">
+                            {property?.user?.email}
+                          </span>
                         </div>
-                      )}
+                      </div>
+                    </td>
+
+                    {/* Property Name */}
+                    <td className="py-5 px-6">
                       <div>
-                        <h4 className="font-bold text-foreground text-sm leading-tight">
-                          {property?.user?.name}
+                        <h4 className="font-semibold text-foreground/80 text-sm leading-tight">
+                          {property?.property?.propertyTitle}
                         </h4>
-                        <span className="text-xs text-foreground/60">
-                          {property?.user?.email}
+                        <div className="flex items-center gap-1 text-xs text-foreground/60 mt-1">
+                          <FiMapPin className="shrink-0" />
+                          <span>{property?.property?.location}</span>
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* Amount */}
+                    <td className="py-5 px-6">
+                      <div>
+                        <span className={`font-bold `}>
+                          {" "}
+                          ৳ {property?.amount}
                         </span>
+                        <p className="text-[11px] text-foreground/60 mt-0.5 font-medium">
+                          {property?.paymentStatus}
+                        </p>
                       </div>
-                    </div>
-                  </td>
+                    </td>
 
-                  {/* Property Name */}
-                  <td className="py-5 px-6">
-                    <div>
-                      <h4 className="font-semibold text-foreground/80 text-sm leading-tight">
-                        {property?.property?.propertyTitle}
-                      </h4>
-                      <div className="flex items-center gap-1 text-xs text-foreground/60 mt-1">
-                        <FiMapPin className="shrink-0" />
-                        <span>{property?.property?.location}</span>
+                    {/* Date Range */}
+
+                    <td className="py-5 px-6">
+                      <div>
+                        <span className="font-semibold text-foreground/80">
+                          {startDate.toLocaleDateString()}
+                        </span>
+                        <p className="text-[11px] text-foreground/60 mt-0.5">
+                          Until {endDate.toLocaleDateString()}
+                        </p>
                       </div>
-                    </div>
-                  </td>
+                    </td>
 
-                  {/* Amount */}
-                  <td className="py-5 px-6">
-                    <div>
-                      <span className={`font-bold `}>
-                        {" "}
-                        ৳ {property?.amount}
+                    {/* Status */}
+                    <td className="py-5 px-6 text-center">
+                      <span
+                        className={`inline-block capitalize px-3 py-1 rounded-md text-[10px] font-bold tracking-wider ${
+                          bookingStatusStyles[property?.bookingStatus] ||
+                          "bg-gray-100 text-gray-700 border border-gray-200"
+                        }`}
+                      >
+                        {property?.bookingStatus}
                       </span>
-                      <p className="text-[11px] text-foreground/60 mt-0.5 font-medium">
-                        {property?.paymentStatus}
+                    </td>
+
+                    {/* Actions column conditional layout */}
+                    <td className="py-5 px-6">
+                      <div className="flex items-center justify-center gap-3">
+                        {property?.bookingStatus === "pending" ? (
+                          <>
+                            <BookingAccept booking={property} />
+                          </>
+                        ) : (
+                          <>
+                            <button className="text-foreground/60 hover:text-foreground/70 transition-colors p-1">
+                              <FiEye size={16} />
+                            </button>
+                            <button className="text-foreground/60 hover:text-foreground/70 transition-colors p-1">
+                              <FiDownload size={16} />
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className="py-20">
+                    <div className="flex flex-col items-center justify-center text-center">
+                      {/* Icon */}
+                      <div className="w-16 h-16 rounded-full bg-[#D1EBE3] flex items-center justify-center mb-4">
+                        <FiCalendar className="w-8 h-8 text-[#00523A]" />
+                      </div>
+
+                      {/* Title */}
+                      <h3 className="text-lg font-bold text-foreground">
+                        No Booking History
+                      </h3>
+
+                      {/* Description */}
+                      <p className="mt-2 text-sm text-foreground/60 max-w-md">
+                        There are no booking records available at the moment.
+                        Once tenants make reservations, they will appear here.
                       </p>
-                    </div>
-                  </td>
 
-                  {/* Date Range */}
-
-                  <td className="py-5 px-6">
-                    <div>
-                      <span className="font-semibold text-foreground/80">
-                        {startDate.toLocaleDateString()}
-                      </span>
-                      <p className="text-[11px] text-foreground/60 mt-0.5">
-                        Until {endDate.toLocaleDateString()}
-                      </p>
-                    </div>
-                  </td>
-
-                  {/* Status */}
-                  <td className="py-5 px-6 text-center">
-                    <span
-                      className={`inline-block capitalize px-3 py-1 rounded-md text-[10px] font-bold tracking-wider ${
-                        bookingStatusStyles[property?.bookingStatus] ||
-                        "bg-gray-100 text-gray-700 border border-gray-200"
-                      }`}
-                    >
-                      {property?.bookingStatus}
-                    </span>
-                  </td>
-
-                  {/* Actions column conditional layout */}
-                  <td className="py-5 px-6">
-                    <div className="flex items-center justify-center gap-3">
-                      {property?.bookingStatus === "pending" ? (
-                        <>
-                          <BookingAccept booking={property} />
-                        </>
-                      ) : (
-                        <>
-                          <button className="text-foreground/60 hover:text-foreground/70 transition-colors p-1">
-                            <FiEye size={16} />
-                          </button>
-                          <button className="text-foreground/60 hover:text-foreground/70 transition-colors p-1">
-                            <FiDownload size={16} />
-                          </button>
-                        </>
-                      )}
+                      {/* Optional Action */}
+                      <Link
+                        href="/properties"
+                        className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#00523A] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#00402e] transition-colors"
+                      >
+                        <FiSearch />
+                        Browse Properties
+                      </Link>
                     </div>
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </Card.Content>

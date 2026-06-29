@@ -9,6 +9,7 @@ import {
   FiChevronLeft,
   FiChevronRight,
   FiTrash2,
+  FiHome,
 } from "react-icons/fi";
 import Image from "next/image";
 import { ValidImgUrl } from "@/Utils/ValidImgUrl";
@@ -30,9 +31,9 @@ export default async function MyProperties({ searchParams }) {
   const start = (currentPage - 1) * limit;
   const end = start + limit;
 
-  const paginatedProperties = properties.slice(start, end);
+  const paginatedProperties = properties?.slice(start, end);
 
-  const totalPages = Math.max(1, Math.ceil(properties.length / limit));
+  const totalPages = Math.max(1, Math.ceil(properties?.length / limit));
 
   // const user = await getUserSession();
   // const properties = (await getPropertiesByUserId(user?.id)) || [];
@@ -136,131 +137,163 @@ export default async function MyProperties({ searchParams }) {
                 <th className="py-4 px-6">Actions</th>
               </tr>
             </thead>
+
             <tbody className="divide-y divide-slate-100 text-sm">
-              {paginatedProperties.map((property) => (
-                <tr
-                  key={property._id}
-                  className="hover:bg-slate-50/40 transition-colors"
-                >
-                  {/* Property Details */}
-                  <td className="py-4 px-6">
-                    <div className="flex items-center gap-4">
-                      <Image
-                        height={600}
-                        width={600}
-                        src={ValidImgUrl(property?.coverImage)}
-                        alt={property?.propertyTitle}
-                        className="w-12 h-12 object-cover rounded-xl border border-foreground/20"
-                      />
-                      <div>
-                        <h4 className="font-bold text-foreground text-[15px] leading-tight">
-                          {property?.propertyTitle}
-                        </h4>
-                        <span className="text-xs text-foreground/60 font-medium">
-                          {property?.propertyType}
+              {paginatedProperties.length > 0 ? (
+                paginatedProperties.map((property) => (
+                  <tr
+                    key={property._id}
+                    className="hover:bg-slate-50/40 transition-colors"
+                  >
+                    {/* Property Details */}
+                    <td className="py-4 px-6">
+                      <div className="flex items-center gap-4">
+                        <Image
+                          height={600}
+                          width={600}
+                          src={ValidImgUrl(property?.coverImage)}
+                          alt={property?.propertyTitle}
+                          className="w-12 h-12 object-cover rounded-xl border border-foreground/20"
+                        />
+                        <div>
+                          <h4 className="font-bold text-foreground text-[15px] leading-tight">
+                            {property?.propertyTitle}
+                          </h4>
+                          <span className="text-xs text-foreground/60 font-medium">
+                            {property?.propertyType}
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* Location */}
+                    <td className="py-4 px-6 text-foreground/70 font-medium">
+                      <div className="flex items-start gap-1.5 max-w-50">
+                        <FiMapPin className="text-foreground/60 mt-0.5 shrink-0" />
+                        <span>{property?.location}</span>
+                      </div>
+                    </td>
+
+                    {/* Rent Price */}
+                    <td className="py-4 px-6">
+                      <span className="font-bold text-foreground">
+                        {property?.rentPrice} ৳
+                      </span>
+                      <span className="text-xs text-foreground/60 font-medium">
+                        {" "}
+                        /{property?.rentType}
+                      </span>
+                    </td>
+
+                    {/* Status Indicator */}
+                    <td className="py-4 px-6">
+                      <div className="flex items-center gap-2">
+                        <span className={`w-2 h-2 rounded-full `} />
+                        <span className={`font-bold text-xs `}>
+                          {property?.status}
                         </span>
                       </div>
-                    </div>
-                  </td>
+                    </td>
 
-                  {/* Location */}
-                  <td className="py-4 px-6 text-foreground/70 font-medium">
-                    <div className="flex items-start gap-1.5 max-w-50">
-                      <FiMapPin className="text-foreground/60 mt-0.5 shrink-0" />
-                      <span>{property?.location}</span>
-                    </div>
-                  </td>
+                    {/* Placeholder for actions */}
 
-                  {/* Rent Price */}
-                  <td className="py-4 px-6">
-                    <span className="font-bold text-foreground">
-                      {property?.rentPrice}$
-                    </span>
-                    <span className="text-xs text-foreground/60 font-medium">
-                      {" "}
-                      /{property?.rentType}
-                    </span>
-                  </td>
-
-                  {/* Status Indicator */}
-                  <td className="py-4 px-6">
-                    <div className="flex items-center gap-2">
-                      <span className={`w-2 h-2 rounded-full `} />
-                      <span className={`font-bold text-xs `}>
-                        {property?.status}
-                      </span>
-                    </div>
-                  </td>
-
-                  {/* Placeholder for actions */}
-
-                  <td className="py-4 px-6">
-                    <div className="flex items-center gap-2">
-                      <button
-                        title="Edit Property"
-                        className="p-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors"
-                      >
-                        <BiEdit size={16} />
-                      </button>
-
-                      <AlertDialog>
-                        <Button
-                          variant="outline"
-                          title="Delete Property"
-                          className="p-2 outline-none border-none rounded-lg text-red-500 hover:bg-red-50 transition-colors"
+                    <td className="py-4 px-6">
+                      <div className="flex items-center gap-2">
+                        <button
+                          title="Edit Property"
+                          className="p-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors"
                         >
-                          <FiTrash2 size={16} />
-                        </Button>
-                        <AlertDialog.Backdrop>
-                          <AlertDialog.Container>
-                            <AlertDialog.Dialog className="sm:max-w-100">
-                              <AlertDialog.CloseTrigger />
-                              <AlertDialog.Header>
-                                <AlertDialog.Icon status="danger" />
-                                <AlertDialog.Heading>
-                                  Delete project permanently?
-                                </AlertDialog.Heading>
-                              </AlertDialog.Header>
-                              <AlertDialog.Body>
-                                <div className="space-y-3">
-                                  <p className="text-sm text-foreground/80 leading-relaxed">
-                                    Are you sure you want to delete this
-                                    property listing?
-                                  </p>
+                          <BiEdit size={16} />
+                        </button>
 
-                                  <div className="rounded-xl border border-red-200 bg-red-50 p-3">
-                                    <p className="text-sm">
-                                      Property:{" "}
-                                      <strong className="font-semibold text-red-700">
-                                        {property.propertyTitle}
-                                      </strong>
+                        <AlertDialog>
+                          <Button
+                            variant="outline"
+                            title="Delete Property"
+                            className="p-2 outline-none border-none rounded-lg text-red-500 hover:bg-red-50 transition-colors"
+                          >
+                            <FiTrash2 size={16} />
+                          </Button>
+                          <AlertDialog.Backdrop>
+                            <AlertDialog.Container>
+                              <AlertDialog.Dialog className="sm:max-w-100">
+                                <AlertDialog.CloseTrigger />
+                                <AlertDialog.Header>
+                                  <AlertDialog.Icon status="danger" />
+                                  <AlertDialog.Heading>
+                                    Delete project permanently?
+                                  </AlertDialog.Heading>
+                                </AlertDialog.Header>
+                                <AlertDialog.Body>
+                                  <div className="space-y-3">
+                                    <p className="text-sm text-foreground/80 leading-relaxed">
+                                      Are you sure you want to delete this
+                                      property listing?
+                                    </p>
+
+                                    <div className="rounded-xl border border-red-200 bg-red-50 p-3">
+                                      <p className="text-sm">
+                                        Property:{" "}
+                                        <strong className="font-semibold text-red-700">
+                                          {property.propertyTitle}
+                                        </strong>
+                                      </p>
+                                    </div>
+
+                                    <p className="text-sm text-foreground/60">
+                                      This action will permanently remove the
+                                      property listing, photos, amenities, house
+                                      rules, and all associated information from
+                                      RentBari. This action cannot be undone.
                                     </p>
                                   </div>
+                                </AlertDialog.Body>
 
-                                  <p className="text-sm text-foreground/60">
-                                    This action will permanently remove the
-                                    property listing, photos, amenities, house
-                                    rules, and all associated information from
-                                    RentBari. This action cannot be undone.
-                                  </p>
-                                </div>
-                              </AlertDialog.Body>
+                                <AlertDialog.Footer>
+                                  <Button slot="close" variant="tertiary">
+                                    Keep Property
+                                  </Button>
 
-                              <AlertDialog.Footer>
-                                <Button slot="close" variant="tertiary">
-                                  Keep Property
-                                </Button>
+                                  <DeletePropertyBtn
+                                    propertyId={property._id}
+                                  />
+                                </AlertDialog.Footer>
+                              </AlertDialog.Dialog>
+                            </AlertDialog.Container>
+                          </AlertDialog.Backdrop>
+                        </AlertDialog>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5} className="py-20">
+                    <div className="flex flex-col items-center justify-center text-center">
+                      <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mb-4">
+                        <FiHome className="w-8 h-8 text-slate-400" />
+                      </div>
 
-                                <DeletePropertyBtn propertyId={property._id} />
-                              </AlertDialog.Footer>
-                            </AlertDialog.Dialog>
-                          </AlertDialog.Container>
-                        </AlertDialog.Backdrop>
-                      </AlertDialog>
+                      <h3 className="text-lg font-semibold text-foreground">
+                        No Properties Found
+                      </h3>
+
+                      <p className="mt-2 text-sm text-foreground/60 max-w-sm">
+                        You haven&apos;t added any properties yet. Create your
+                        first property listing to start receiving bookings.
+                      </p>
+
+                      <Link
+                        href="/dashboard/owner/add-property"
+                        className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#00523A] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#00402e] transition-colors"
+                      >
+                        <FiPlus />
+                        Add Property
+                      </Link>
                     </div>
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </Card.Content>

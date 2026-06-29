@@ -174,9 +174,12 @@ export default async function DashboardOverview() {
               <Card.Title className="text-base font-bold text-foreground">
                 Recent Booking Requests
               </Card.Title>
-              <button className="text-xs font-bold text-[#00523A] hover:underline">
+              <Link
+                href="/dashboard/owner/bookings"
+                className="text-xs font-bold text-[#00523A] hover:underline"
+              >
                 View All
-              </button>
+              </Link>
             </Card.Header>
 
             <Card.Content className="p-0 divide-y divide-foreground/20">

@@ -21,12 +21,11 @@ export default async function TenantBookings({ searchParams }) {
   const bookings = await getBookingsByUserId(user?.id);
   const { page = 1 } = await searchParams;
 
-  console.log(page);
   const limit = 3;
 
   const start = (page - 1) * limit;
   const end = start + limit;
-  console.log(start);
+
   const paginatedBookings = bookings.slice(start, end);
 
   const totalPages = Math.ceil(bookings.length / limit);
@@ -93,102 +92,149 @@ export default async function TenantBookings({ searchParams }) {
               </tr>
             </thead>
             <tbody className="divide-y divide-foreground/20 text-sm">
-              {paginatedBookings.map((booking) => (
-                <tr key={booking?.property._id} className=" transition-colors">
-                  {/* Property Details */}
-                  <td className="py-4 px-6">
-                    <div className="flex items-center gap-4">
-                      <Image
-                        height={600}
-                        width={600}
-                        src={ValidImgUrl(booking?.property?.coverImage)}
-                        alt={booking?.property?.propertyTitle}
-                        className="w-12 h-12 object-cover rounded-xl border border-foreground/20"
-                      />
-                      <div>
-                        <h4 className="font-bold text-foreground text-[15px] leading-tight">
-                          {booking?.property?.propertyTitle}
-                        </h4>
-                        {/* <span className="text-xs text-foreground/60 font-medium ">
+              {paginatedBookings?.length > 0 ? (
+                paginatedBookings.map((booking) => (
+                  <tr
+                    key={booking?.property._id}
+                    className=" transition-colors"
+                  >
+                    {/* Property Details */}
+                    <td className="py-4 px-6">
+                      <div className="flex items-center gap-4">
+                        <Image
+                          height={600}
+                          width={600}
+                          src={ValidImgUrl(booking?.property?.coverImage)}
+                          alt={booking?.property?.propertyTitle}
+                          className="w-12 h-12 object-cover rounded-xl border border-foreground/20"
+                        />
+                        <div>
+                          <h4 className="font-bold text-foreground text-[15px] leading-tight">
+                            {booking?.property?.propertyTitle}
+                          </h4>
+                          {/* <span className="text-xs text-foreground/60 font-medium ">
                           {property?.propertyType} . {property?.location}
                         </span> */}
-                        <p className="text-xs text-foreground/60 font-medium  truncate max-w-50">
-                          {booking?.property?.propertyType} ·{" "}
-                          {booking?.property?.location}
-                        </p>
+                          <p className="text-xs text-foreground/60 font-medium  truncate max-w-50">
+                            {booking?.property?.propertyType} ·{" "}
+                            {booking?.property?.location}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  </td>
+                    </td>
 
-                  {/* Location */}
-                  <td className="py-4 px-6 text-foreground/70 font-medium">
-                    <div className="max-w-50">
-                      <span>
-                        {new Date(booking?.createdAt).toLocaleDateString(
-                          "en-US",
-                          {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          },
-                        )}
+                    {/* Location */}
+                    <td className="py-4 px-6 text-foreground/70 font-medium">
+                      <div className="max-w-50">
+                        <span>
+                          {new Date(booking?.createdAt).toLocaleDateString(
+                            "en-US",
+                            {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            },
+                          )}
+                        </span>
+                      </div>
+                    </td>
+
+                    {/* Rent Price */}
+                    <td className="py-4 px-6">
+                      <span className="font-bold text-foreground">
+                        {booking?.property?.rentPrice}$
                       </span>
-                    </div>
-                  </td>
+                    </td>
 
-                  {/* Rent Price */}
-                  <td className="py-4 px-6">
-                    <span className="font-bold text-foreground">
-                      {booking?.property?.rentPrice}$
-                    </span>
-                  </td>
-
-                  {/* Status Indicator */}
-                  <td className="py-4 px-6">
-                    <span
-                      className={`text-[11px] px-2.5 py-1 rounded-full font-semibold capitalize ${
-                        booking?.bookingStatus === "approved"
-                          ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400"
-                          : booking?.bookingStatus === "pending"
-                            ? "bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400"
-                            : booking?.bookingStatus === "rejected"
-                              ? "bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400"
-                              : "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-300"
-                      }`}
-                    >
-                      {booking?.bookingStatus}
-                    </span>
-                  </td>
-                  {/* payment status */}
-                  <td className="py-4 px-6">
-                    <div className="flex items-center gap-2">
-                      {/* Dot */}
+                    {/* Status Indicator */}
+                    <td className="py-4 px-6">
                       <span
-                        className={`w-2 h-2 rounded-full ${
-                          booking?.paymentStatus === "paid"
-                            ? "bg-emerald-500"
-                            : booking?.paymentStatus === "unpaid"
-                              ? "bg-red-500"
-                              : "bg-slate-400"
-                        }`}
-                      />
-
-                      {/* Text */}
-                      <span
-                        className={`text-xs font-semibold capitalize ${
-                          booking?.paymentStatus === "paid"
-                            ? "text-emerald-600 dark:text-emerald-400"
-                            : booking?.paymentStatus === "unpaid"
-                              ? "text-red-600 dark:text-red-400"
-                              : "text-slate-500 dark:text-slate-400"
+                        className={`text-[11px] px-2.5 py-1 rounded-full font-semibold capitalize ${
+                          booking?.bookingStatus === "approved"
+                            ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400"
+                            : booking?.bookingStatus === "pending"
+                              ? "bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400"
+                              : booking?.bookingStatus === "rejected"
+                                ? "bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400"
+                                : "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-300"
                         }`}
                       >
-                        {booking?.paymentStatus}
+                        {booking?.bookingStatus}
                       </span>
+                    </td>
+                    {/* payment status */}
+                    <td className="py-4 px-6">
+                      <div className="flex items-center gap-2">
+                        {/* Dot */}
+                        <span
+                          className={`w-2 h-2 rounded-full ${
+                            booking?.paymentStatus === "paid"
+                              ? "bg-emerald-500"
+                              : booking?.paymentStatus === "unpaid"
+                                ? "bg-red-500"
+                                : "bg-slate-400"
+                          }`}
+                        />
+
+                        {/* Text */}
+                        <span
+                          className={`text-xs font-semibold capitalize ${
+                            booking?.paymentStatus === "paid"
+                              ? "text-emerald-600 dark:text-emerald-400"
+                              : booking?.paymentStatus === "unpaid"
+                                ? "text-red-600 dark:text-red-400"
+                                : "text-slate-500 dark:text-slate-400"
+                          }`}
+                        >
+                          {booking?.paymentStatus}
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5} className="py-20">
+                    <div className="flex flex-col items-center justify-center text-center">
+                      {/* Icon */}
+                      <div className="w-20 h-20 rounded-full bg-foreground/5 flex items-center justify-center mb-5">
+                        <svg
+                          className="w-10 h-10 text-foreground/30"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth={1.5}
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M8.25 6.75h7.5M8.25 12h7.5M8.25 17.25h4.5M6 3.75h12A2.25 2.25 0 0120.25 6v12A2.25 2.25 0 0118 20.25H6A2.25 2.25 0 013.75 18V6A2.25 2.25 0 016 3.75z"
+                          />
+                        </svg>
+                      </div>
+
+                      {/* Heading */}
+                      <h3 className="text-xl font-bold text-foreground">
+                        No Bookings Found
+                      </h3>
+
+                      {/* Description */}
+                      <p className="mt-2 max-w-sm text-sm text-foreground/60">
+                        You haven&apos;t made any property bookings yet. Browse
+                        available properties and book your next home.
+                      </p>
+
+                      {/* Action */}
+                      <Link
+                        href="/properties"
+                        className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#00523A] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#00402e] transition-colors"
+                      >
+                        Browse Properties
+                      </Link>
                     </div>
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </Card.Content>

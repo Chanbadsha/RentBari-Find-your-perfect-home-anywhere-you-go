@@ -15,7 +15,7 @@ import {
 import { Icon } from "@iconify/react";
 import { MoveRight, User } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -32,8 +32,10 @@ const RegisterForm = () => {
   const [preview, setPreview] = useState(null);
   const [imageUrl, setImageUrl] = useState("");
   const [imgError, setImgError] = useState(false);
-
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
 
   const handleFileChange = async (e) => {
     const file = e.target.files?.[0];
@@ -139,7 +141,7 @@ const RegisterForm = () => {
       if (user) {
         setUser(user);
 
-        router.push("/");
+        router.push(callbackUrl);
       }
     } catch (error) {
     } finally {

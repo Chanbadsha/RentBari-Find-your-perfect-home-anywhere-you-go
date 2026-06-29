@@ -3,16 +3,16 @@
 import { authClient, signIn } from "@/app/lib/auth-client";
 import {
   Button,
+  Checkbox,
   Input,
   Label,
-  TextField,
-  Checkbox,
   Spinner,
+  TextField,
 } from "@heroui/react";
 import { Icon } from "@iconify/react";
-import { MoveRight, User } from "lucide-react";
-import { redirect } from "next/navigation";
-import { use, useState } from "react";
+import { MoveRight } from "lucide-react";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 const LoginForm = () => {
@@ -21,6 +21,10 @@ const LoginForm = () => {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState("");
   const [user, setUser] = useState("");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
   const {
     register,
     handleSubmit,
@@ -46,7 +50,7 @@ const LoginForm = () => {
     if (user) {
       setUser(user);
       setLoading(false);
-      redirect("/");
+      router.push(callbackUrl);
     }
   };
 
@@ -58,6 +62,7 @@ const LoginForm = () => {
     });
     if (data) {
       setGoogleLoading(false);
+      router.push(callbackUrl);
     }
   };
   return (

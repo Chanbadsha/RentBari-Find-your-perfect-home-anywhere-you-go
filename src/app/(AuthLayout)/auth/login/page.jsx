@@ -3,7 +3,8 @@ import { ShieldCheck, Zap } from "lucide-react";
 import Link from "next/link";
 import logo from "@/images/logo.png";
 import Image from "next/image";
-const LoginPage = () => {
+const LoginPage = async ({ searchParams }) => {
+  const callbackUrl = searchParams?.callbackUrl || "/";
   return (
     <div className="min-h-screen  bg-background">
       <div className="w-full min-h-screen  grid md:grid-cols-2 ">
@@ -91,7 +92,7 @@ const LoginPage = () => {
             <p>
               New to RentBari?
               <Link
-                href="/auth/register"
+                href={`/auth/register?callbackUrl=${encodeURIComponent(callbackUrl)}`}
                 className="font-semibold text-primary hover:underline underline-offset-4 transition"
               >
                 Create Account

@@ -4,7 +4,8 @@ import { ShieldCheck, Zap } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-const RegisterPage = () => {
+const RegisterPage = async ({ searchParams }) => {
+  const callbackUrl = searchParams?.callbackUrl || "/";
   return (
     <div className="min-h-screen  bg-background">
       <div className="w-full min-h-screen  grid md:grid-cols-2 ">

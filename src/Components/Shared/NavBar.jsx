@@ -22,18 +22,15 @@ export default function NavBar() {
       path: "/properties",
       label: "Properties",
     },
-    {
-      path: "/services",
-      label: "Services",
-    },
-    {
-      path: "/blogs",
-      label: "Blogs",
-    },
-    {
-      path: `/dashboard/${user?.userRole}`,
-      label: "Dashboard",
-    },
+
+    ...(user
+      ? [
+          {
+            path: `/dashboard/${user?.userRole}`,
+            label: "Dashboard",
+          },
+        ]
+      : []),
   ];
 
   return (

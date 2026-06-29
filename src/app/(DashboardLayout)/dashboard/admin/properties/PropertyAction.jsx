@@ -10,7 +10,7 @@ export const PropertyAction = ({ property }) => {
   const router = useRouter();
   const handleApproveProperty = async () => {
     const propertyId = property?._id;
-    console.log(propertyId);
+
     const updateProperty = await UpdateProperty({
       id: propertyId,
       status: "approved",

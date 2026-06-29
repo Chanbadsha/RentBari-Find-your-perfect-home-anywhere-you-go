@@ -14,14 +14,13 @@ import {
   FiSearch,
   FiSliders,
 } from "react-icons/fi";
-import { PropertyAction } from "../properties/PropertyAction";
 import { getUsers } from "@/app/lib/api/users";
-import UserAction from "./UserAction";
+import UserAction from "../users/UserAction";
+import { getBookings } from "@/app/lib/api/bookings";
+import { BookingAction } from "./BookingsAction";
 
-export default async function AllUsers({ searchParams }) {
-  const user = await getUserSession();
-  const users = (await getUsers()) || [];
-  const properties = (await getAdminProperties()) || [];
+export default async function Bookings({ searchParams }) {
+  const bookings = (await getBookings()) || [];
 
   // Pagination
   const { page = "1" } = await searchParams;
@@ -31,30 +30,33 @@ export default async function AllUsers({ searchParams }) {
   const start = (currentPage - 1) * limit;
   const end = start + limit;
 
-  const paginatedUsers = users?.slice(start, end);
+  const paginatedBookings = bookings?.slice(start, end);
 
-  const totalPages = Math.max(1, Math.ceil(users?.length / limit));
-
-  // const user = await getUserSession();
-  // const properties = (await getPropertiesByUserId(user?.id)) || [];
+  const totalPages = Math.max(1, Math.ceil(bookings?.length / limit));
 
   const stats = [
     {
-      title: "Total Users",
-      value: users.length || 0,
-      badge: "+12 this month",
-      badgeColor: "text-emerald-600 font-medium",
-    },
-    {
-      title: "Property Owners",
-      value: users.filter((u) => u.userRole === "owner").length,
-      badge: "Active",
+      title: "Total Bookings",
+      value: bookings?.length || 0,
+      badge: `${bookings?.filter((b) => b.status === "pending").length || 0} Pending`,
       badgeColor: "text-blue-600 font-medium",
     },
     {
-      title: "Tenants",
-      value: users.filter((u) => u.userRole === "tenant").length,
-      badge: "Registered",
+      title: "Confirmed Bookings",
+      value:
+        bookings?.filter((b) => b.bookingStatus === "approved").length || 0,
+      badge: "Approved",
+      badgeColor: "text-emerald-600 font-medium",
+    },
+    {
+      title: "Total Revenue",
+      value: `৳${
+        bookings
+          ?.filter((b) => b.paymentStatus === "paid")
+          ?.reduce((sum, booking) => sum + (booking.amount || 0), 0)
+          ?.toLocaleString() || 0
+      }`,
+      badge: "Paid",
       badgeColor: "text-amber-600 font-medium",
     },
   ];
@@ -129,100 +131,171 @@ export default async function AllUsers({ searchParams }) {
           <table className="w-full min-w-200 text-left border-collapse">
             <thead>
               <tr className="border-b border-foreground/20 bg-background text-[11px] font-bold uppercase tracking-wider text-foreground/60">
-                <th className="py-4 px-6">Name</th>
-                <th className="py-4 px-6">Email</th>
-                <th className="py-4 px-6">Role</th>
+                <th className="py-4 px-6">Tenant</th>
+                <th className="py-4 px-6">Property</th>
+                <th className="py-4 px-6">Owner</th>
 
                 <th className="py-4 px-6">Status</th>
+                <th className="py-4 px-6">Amount</th>
                 <th className="py-4 px-6">Actions</th>
               </tr>
             </thead>
 
             <tbody className="divide-y divide-slate-100 text-sm">
-              {paginatedUsers.length > 0 ? (
-                paginatedUsers.map((user, ind) => (
+              {paginatedBookings.length > 0 ? (
+                paginatedBookings.map((booking, ind) => (
                   <tr
                     key={ind}
                     className="hover:bg-slate-50/40 transition-colors"
                   >
-                    {/* Users Details */}
+                    {/* Tenant */}
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-4">
                         <Image
-                          height={600}
-                          width={600}
-                          src={ValidImgUrl(user?.image)}
-                          alt={user?.name}
-                          className="w-12 h-12 object-cover rounded-xl border border-foreground/20"
+                          height={48}
+                          width={48}
+                          src={ValidImgUrl(booking?.user?.image)}
+                          alt={booking?.user?.name}
+                          className="w-12 h-12 rounded-xl object-cover border border-foreground/20"
                         />
+
                         <div>
                           <h4 className="font-bold text-foreground text-[15px] leading-tight">
-                            {user?.name}
+                            {booking?.user?.name}
                           </h4>
-                          <span className="text-xs text-foreground/60 font-medium">
-                            User Id: {user?._id.slice(4, 10)}
+
+                          <span className="text-xs text-foreground/60">
+                            {booking?.user?.email}
                           </span>
                         </div>
                       </div>
                     </td>
 
-                    {/* Location */}
-                    <td className="py-4 px-6 text-foreground/70 font-medium">
-                      <div className="flex items-start gap-1.5 max-w-50">
-                        <span>{user?.email}</span>
-                      </div>
-                    </td>
-
-                    {/* Rent Price */}
+                    {/* Property */}
                     <td className="py-4 px-6">
-                      <span className="font-bold capitalize text-foreground">
-                        {user?.userRole}
-                      </span>
-                    </td>
+                      <div>
+                        <p className="font-semibold text-foreground">
+                          {booking?.property?.propertyTitle}
+                        </p>
 
-                    {/* Status Indicator */}
-                    <td className="py-4 px-6">
-                      <div className="flex items-center gap-2">
-                        <span className={`font-bold capitalize text-xs `}>
-                          {user?.userStatus}
+                        <span className="text-xs text-foreground/60">
+                          {booking?.property?.location}
                         </span>
                       </div>
                     </td>
 
+                    {/* Owner */}
                     <td className="py-4 px-6">
-                      <UserAction user={user} />
-                    </td>
-                    {/* Placeholder for actions */}
+                      <div>
+                        <p className="font-semibold text-foreground">
+                          {booking?.propertyOwner?.name}
+                        </p>
 
-                    {/* <td className="py-4 px-6">
-                      <td className="py-4 px-6"></td>
-                    </td> */}
+                        <span className="text-xs text-foreground/60">
+                          {booking?.propertyOwner?.email}
+                        </span>
+                      </div>
+                    </td>
+
+                    {/* Status */}
+                    <td className="py-4 px-6">
+                      <span
+                        className={`
+        inline-flex items-center rounded-full px-3 py-1 text-xs font-bold capitalize
+        ${
+          booking?.bookingStatus === "approved"
+            ? "bg-emerald-100 text-emerald-700"
+            : booking?.bookingStatus === "rejected"
+              ? "bg-red-100 text-red-700"
+              : booking?.bookingStatus === "pending"
+                ? "bg-amber-100 text-amber-700"
+                : "bg-blue-100 text-blue-700"
+        }
+      `}
+                      >
+                        {booking?.bookingStatus}
+                      </span>
+                    </td>
+
+                    {/* Amount */}
+                    <td className="py-4 px-6">
+                      <div className="flex flex-col gap-1">
+                        <span className="font-bold text-[#00523A]">
+                          ৳{booking?.amount?.toLocaleString()}
+                        </span>
+
+                        <span
+                          className={`inline-flex w-fit items-center rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${
+                            booking?.paymentStatus === "paid"
+                              ? "bg-emerald-100 text-emerald-700"
+                              : "bg-amber-100 text-amber-700"
+                          }`}
+                        >
+                          {booking?.paymentStatus === "paid"
+                            ? "Paid"
+                            : "Unpaid"}
+                        </span>
+                      </div>
+                    </td>
+
+                    {/* Actions */}
+                    <td className="py-4 px-6">
+                      <BookingAction booking={booking} />
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={5} className="py-20">
-                    <div className="flex flex-col items-center justify-center text-center">
-                      <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mb-4">
-                        <FiHome className="w-8 h-8 text-slate-400" />
+                  <td colSpan={6} className="py-24">
+                    <div className="flex flex-col items-center justify-center text-center px-6">
+                      {/* Icon */}
+                      <div className="w-20 h-20 rounded-2xl bg-[#00523A]/10 flex items-center justify-center mb-5">
+                        <svg
+                          className="w-10 h-10 text-[#00523A]"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M8 7V3m8 4V3M5 11h14M7 21h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          />
+                        </svg>
                       </div>
 
-                      <h3 className="text-lg font-semibold text-foreground">
-                        No Properties Found
+                      {/* Title */}
+                      <h3 className="text-xl font-bold text-foreground">
+                        No Booking Records Found
                       </h3>
 
-                      <p className="mt-2 text-sm text-foreground/60 max-w-sm">
-                        You haven&apos;t added any properties yet. Create your
-                        first property listing to start receiving bookings.
+                      {/* Description */}
+                      <p className="mt-3 text-sm text-foreground/60 max-w-md leading-relaxed">
+                        There are currently no booking transactions available
+                        across the platform. New tenant booking requests and
+                        completed reservations will appear here automatically.
                       </p>
 
-                      <Link
-                        href="/dashboard/owner/add-property"
-                        className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#00523A] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#00402e] transition-colors"
-                      >
-                        <FiPlus />
-                        Add Property
-                      </Link>
+                      {/* Stats */}
+                      <div className="flex gap-6 mt-6 text-center">
+                        <div>
+                          <p className="text-2xl font-bold text-[#00523A]">0</p>
+                          <p className="text-xs text-foreground/60">Pending</p>
+                        </div>
+
+                        <div>
+                          <p className="text-2xl font-bold text-[#00523A]">0</p>
+                          <p className="text-xs text-foreground/60">Approved</p>
+                        </div>
+
+                        <div>
+                          <p className="text-2xl font-bold text-[#00523A]">0</p>
+                          <p className="text-xs text-foreground/60">
+                            Completed
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </td>
                 </tr>
@@ -236,14 +309,14 @@ export default async function AllUsers({ searchParams }) {
           <span className="text-xs font-medium text-foreground/60">
             Showing{" "}
             <strong className="text-foreground/70 font-semibold">
-              {properties.length === 0 ? 0 : start + 1}-
-              {Math.min(end, properties.length)}
+              {bookings.length === 0 ? 0 : start + 1}-
+              {Math.min(end, bookings.length)}
             </strong>{" "}
             of{" "}
             <strong className="text-foreground/70 font-semibold">
-              {properties.length}
+              {bookings.length}
             </strong>{" "}
-            properties
+            bookings
           </span>
 
           <div className="flex items-center gap-1">

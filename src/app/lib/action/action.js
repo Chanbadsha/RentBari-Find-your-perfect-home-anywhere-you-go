@@ -35,3 +35,8 @@ export const UpdateBooking = async (bookingData) => {
 
   return result;
 };
+export const DeleteBooking = async (bookingId) => {
+  const result = await serverDelete(`bookings/${bookingId}`, {});
+
+  return result;
+};

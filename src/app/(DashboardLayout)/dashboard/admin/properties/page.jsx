@@ -85,11 +85,11 @@ export default async function AllProperties({ searchParams }) {
       </div>
 
       {/* Metrics Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 w-88 md:w-full md:grid-cols-3 gap-6 mb-8">
         {stats.map((stat, idx) => (
           <Card
             key={idx}
-            className="border border-foreground/20 bg-background shadow-sm rounded-2xl p-6"
+            className="border  border-foreground/20 bg-background shadow-sm rounded-2xl p-6"
           >
             <Card.Header className="p-0 pb-2">
               <Card.Description className="text-xs font-semibold uppercase tracking-wider text-foreground/60">
@@ -196,7 +196,7 @@ export default async function AllProperties({ searchParams }) {
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-2">
                         <span className={`w-2 h-2 rounded-full `} />
-                        <span className={`font-bold text-xs `}>
+                        <span className={`font-bold capitalize text-xs `}>
                           {property?.status}
                         </span>
                       </div>

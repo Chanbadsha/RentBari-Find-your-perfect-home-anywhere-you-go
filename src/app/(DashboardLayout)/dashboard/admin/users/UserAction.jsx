@@ -23,7 +23,6 @@ const UserAction = ({ user }) => {
   const router = useRouter();
   const handleChangeStatus = async (value) => {
     try {
-      console.log(value);
       if (value === "activate") {
         const userStatusUpdate = await UpdateUserSession({
           userId: user?._id,
@@ -94,7 +93,6 @@ const UserAction = ({ user }) => {
         toast("Invalid status");
       }
     } catch (error) {
-      console.log(error);
     } finally {
       router.refresh();
     }

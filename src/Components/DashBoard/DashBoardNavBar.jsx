@@ -1,4 +1,5 @@
-import { getUserSession } from "@/app/lib/core/session";
+import { authClient } from "@/app/lib/auth-client";
+// import { getUserSession } from "@/app/lib/core/session";
 import DashBoardNavLink from "@/Utils/DashBoardNavLink";
 import LogoutBtn from "@/Utils/LogoutBtn";
 import { ThemeSwitch } from "@/Utils/ThemeSwitch";
@@ -8,9 +9,10 @@ import Link from "next/link";
 import { FaCalendar, FaClipboardList, FaPlus, FaUsers } from "react-icons/fa";
 import { FaBuilding } from "react-icons/fa6";
 
-const DashBoardNavBar = async () => {
-  const user = await getUserSession();
-
+const DashBoardNavBar = () => {
+  // const user = await getUserSession();
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
   const navItems = [
     // =========================
     // TENANT
@@ -102,17 +104,23 @@ const DashBoardNavBar = async () => {
       role: "admin",
     },
     {
-      path: "/dashboard/admin/reports",
-      label: "Reports",
-      icon: <CircleInfo />,
+      path: "/dashboard/admin/profile",
+      label: "Profile",
+      icon: <Persons />,
       role: "admin",
     },
-    {
-      path: "/dashboard/admin/settings",
-      label: "Settings",
-      icon: <Gear />,
-      role: "admin",
-    },
+    // {
+    //   path: "/dashboard/admin/reports",
+    //   label: "Reports",
+    //   icon: <CircleInfo />,
+    //   role: "admin",
+    // },
+    // {
+    //   path: "/dashboard/admin/settings",
+    //   label: "Settings",
+    //   icon: <Gear />,
+    //   role: "admin",
+    // },
   ];
 
   const filteredNavItems = navItems.filter(
@@ -147,10 +155,10 @@ const DashBoardNavBar = async () => {
             Property Management Dashboard
           </p>
         </div>
-        <ThemeSwitch />
+        {/* <ThemeSwitch /> */}
 
         {/* User Card */}
-        <div className="mt-6 rounded-2xl bg-white/80 dark:bg-white/5 backdrop-blur-sm border border-[#0a5246]/10 dark:border-emerald-500/10 shadow-sm p-4">
+        <div className="mt-6 rounded-2xl hidden md:inline-block bg-white/80 dark:bg-white/5 backdrop-blur-sm border border-[#0a5246]/10 dark:border-emerald-500/10 shadow-sm p-4">
           <div className="flex flex-col items-center">
             <div className="relative">
               <Image

@@ -134,7 +134,7 @@ export default async function AdminDashBoard({ searchParams }) {
                 Recent Property Approval Requests
               </Card.Title>
               <Link
-                href="/dashboard/owner/bookings"
+                href="/dashboard/admin/properties"
                 className="text-xs font-bold text-[#00523A] hover:underline"
               >
                 View All

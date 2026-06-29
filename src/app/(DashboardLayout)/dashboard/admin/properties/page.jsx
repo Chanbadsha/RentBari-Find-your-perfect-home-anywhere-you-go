@@ -205,9 +205,7 @@ export default async function AllProperties({ searchParams }) {
                     {/* Placeholder for actions */}
 
                     <td className="py-4 px-6">
-                      <td className="py-4 px-6">
-                        <PropertyAction property={property} />
-                      </td>
+                      <PropertyAction property={property} />
                     </td>
                   </tr>
                 ))

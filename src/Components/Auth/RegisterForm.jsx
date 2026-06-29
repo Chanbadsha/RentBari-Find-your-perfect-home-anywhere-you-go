@@ -112,6 +112,7 @@ const RegisterForm = () => {
   } = useForm({
     defaultValues: {
       userRole: "tenant",
+      userStatus: "active",
     },
   });
 

@@ -17,6 +17,7 @@ export const auth = betterAuth({
     additionalFields: {
       userRole: { type: "string", required: true, defaultValue: "tenant" },
       favorites: { type: "array", required: true, defaultValue: [] },
+      userStatus: { type: "string", required: true, defaultValue: "active" },
     },
   },
   database: mongodbAdapter(db, {

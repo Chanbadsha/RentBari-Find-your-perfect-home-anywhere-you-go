@@ -35,7 +35,7 @@ const RegisterForm = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const callbackUrl = searchParams.get("next") || "/";
 
   const handleFileChange = async (e) => {
     const file = e.target.files?.[0];

@@ -4,7 +4,7 @@ import Link from "next/link";
 import logo from "@/images/logo.png";
 import Image from "next/image";
 const LoginPage = async ({ searchParams }) => {
-  const callbackUrl = searchParams?.callbackUrl || "/";
+  const callbackUrl = searchParams?.next || "/";
   return (
     <div className="min-h-screen  bg-background">
       <div className="w-full min-h-screen  grid md:grid-cols-2 ">

@@ -5,6 +5,7 @@ import NavLink from "@/Utils/NavLink";
 import { ThemeSwitch } from "@/Utils/ThemeSwitch";
 import { Avatar, Link } from "@heroui/react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 export default function NavBar() {
@@ -12,7 +13,7 @@ export default function NavBar() {
   const [open, setOpen] = useState(false);
   const { data: session, isPending } = authClient.useSession();
   const user = session?.user;
-
+  const router = useRouter();
   const navItems = [
     {
       path: "/",
@@ -141,6 +142,7 @@ export default function NavBar() {
                               fetchOptions: {
                                 onSuccess: () => {
                                   toast.success("User successfully logout");
+                                  router.refresh();
                                 },
                               },
                             });

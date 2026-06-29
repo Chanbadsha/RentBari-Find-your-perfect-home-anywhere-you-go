@@ -24,7 +24,8 @@ const LoginForm = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const callbackUrl = searchParams.get("next") || "/";
+  console.log(callbackUrl);
   const {
     register,
     handleSubmit,
@@ -51,6 +52,8 @@ const LoginForm = () => {
       setUser(user);
       setLoading(false);
       router.push(callbackUrl);
+      // eslint-disable-next-line react-hooks/immutability
+      window.location.href = callbackUrl;
     }
   };
 
@@ -59,10 +62,10 @@ const LoginForm = () => {
     setGoogleLoading(true);
     const data = await authClient.signIn.social({
       provider: "google",
+      redirectUrl: callbackUrl,
     });
     if (data) {
       setGoogleLoading(false);
-      router.push(callbackUrl);
     }
   };
   return (

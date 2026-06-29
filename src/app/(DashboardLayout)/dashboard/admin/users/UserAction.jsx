@@ -53,6 +53,7 @@ const UserAction = ({ user }) => {
 
         if (userDelete.success) {
           toast.success("User deleted successfully");
+          router.push("/dashboard/admin/users");
         } else {
           toast("Failed to delete user");
         }

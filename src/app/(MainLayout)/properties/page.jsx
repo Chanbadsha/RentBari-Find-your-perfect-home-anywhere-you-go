@@ -6,6 +6,7 @@ import PropertySearchBar from "@/Utils/PropertySearchBar";
 
 const PropertiesPage = async ({ searchParams }) => {
   const query = await searchParams;
+  query.status = "approved";
 
   const properties = await getProperties(query);
   const user = await getUserSession();

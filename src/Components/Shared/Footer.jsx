@@ -119,10 +119,10 @@ export default function Footer() {
             <li className="flex items-center space-x-2.5">
               <Envelope />
               <a
-                href="mailto:support@bashanest.com"
+                href="mailto:support@rentbari.com"
                 className="hover:text-foreground text-foreground/70 transition-colors"
               >
-                support@bashanest.com
+                support@rentbari.com
               </a>
             </li>
             <li className="flex items-center space-x-2.5">
@@ -147,7 +147,7 @@ export default function Footer() {
       {/* Lower Copyright Bar */}
       <div className="border-t border-foreground/20 bg-background">
         <div className="max-w-7xl mx-auto px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-foreground/70 font-medium">
-          <div>&copy; {currentYear} BashaNest. All rights reserved.</div>
+          <div>&copy; {currentYear} RentBari. All rights reserved.</div>
           <div className="flex space-x-6">
             <a href="#" className="hover:text-foreground transition-colors">
               Privacy Policy

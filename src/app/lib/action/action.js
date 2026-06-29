@@ -5,7 +5,13 @@ export const AddProperty = async (propertyData) => {
 
   return result;
 };
+export const UpdateProperty = async (propertyData) => {
+  const { id, ...UpdateData } = propertyData;
 
+  const result = await serverPatch(`properties/${propertyData.id}`, UpdateData);
+
+  return result;
+};
 export const DeleteProperty = async (propertyId) => {
   const result = await serverDelete(`properties/${propertyId}`, {});
 

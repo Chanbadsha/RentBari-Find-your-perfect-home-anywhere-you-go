@@ -3,6 +3,9 @@ import { serverFetch } from "../core/server";
 export const getProperties = (query = {}) => {
   return serverFetch("properties", query) || [];
 };
+export const getAdminProperties = (query = {}) => {
+  return serverFetch("admin/properties", query) || [];
+};
 export const getFeaturedProperties = () => {
   return (
     serverFetch(

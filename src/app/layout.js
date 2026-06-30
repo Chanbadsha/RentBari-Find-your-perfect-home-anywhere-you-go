@@ -2,6 +2,7 @@ import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import ThemeProviders from "@/Provider/ThemeProviders";
 import { Toaster } from "react-hot-toast";
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -28,6 +29,7 @@ export default function RootLayout({ children }) {
     >
       <body className="min-h-full bg-mainBackground text-foreground flex flex-col">
         <ThemeProviders>
+          <Analytics />
           <Toaster />
           {children}
         </ThemeProviders>

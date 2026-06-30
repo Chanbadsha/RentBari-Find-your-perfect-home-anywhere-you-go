@@ -3,7 +3,11 @@ import { getUserSession } from "@/app/lib/core/session";
 import NoDataUi from "@/Components/Shared/NoDataUi";
 import PropertyCard from "@/Components/Shared/PropertyCard";
 import PropertySearchBar from "@/Utils/PropertySearchBar";
-
+export const metadata = {
+  title: "Browse Properties | RentBari",
+  description:
+    "Explore verified apartments, flats, houses, and rental properties across Bangladesh. Search, filter, and find your next home with RentBari.",
+};
 const PropertiesPage = async ({ searchParams }) => {
   const query = await searchParams;
   query.status = "approved";

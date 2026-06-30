@@ -158,7 +158,7 @@ const DashBoardNavBar = () => {
         {/* <ThemeSwitch /> */}
 
         {/* User Card */}
-        <div className="mt-6 rounded-2xl hidden md:inline-block bg-white/80 dark:bg-white/5 backdrop-blur-sm border border-[#0a5246]/10 dark:border-emerald-500/10 shadow-sm p-4">
+        <div className="mt-6 rounded-2xl hidden md:inline-block w-full bg-white/80 dark:bg-white/5 backdrop-blur-sm border border-[#0a5246]/10 dark:border-emerald-500/10 shadow-sm p-4">
           <div className="flex flex-col items-center">
             <div className="relative">
               <Image
